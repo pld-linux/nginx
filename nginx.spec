@@ -1,7 +1,8 @@
 # TODO
 # - bconds for modules as these are statically linked in
 # - initscript
-Summary:	high perfomance http and reverse proxy server
+Summary:	High perfomance HTTP and reverse proxy server
+Summary(pl):	Serwer HTTP i odwrotne proxy o wysokiej wydajno¶ci
 Name:		nginx
 Version:	0.1.41
 Release:	0.3
@@ -25,7 +26,10 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		_sysconfdir /etc/%{name}
 
 %description
-high perfomance http and reverse proxy server.
+High perfomance HTTP and reverse proxy server.
+
+%description -l pl
+Serwer HTTP i odwrotne proxy o wysokiej wydajno¶ci.
 
 %prep
 %setup -q
