@@ -4,15 +4,14 @@
 Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl):	Serwer HTTP i odwrotne proxy o wysokiej wydajno¶ci
 Name:		nginx
-Version:	0.1.41
-Release:	0.3
-Epoch:		0
-License:	ASIS
+Version:	0.5.10
+Release:	1
+License:	BSD-like
 Group:		Applications
-Source0:	http://sysoev.ru/nginx/%{name}-%{version}.tar.gz
-# Source0-md5:	475ae6d06dd61dc93fdcaf1069d7db21
+Source0:	http://sysoev.ru/nginx/nginx-0.5.10.tar.gz
+# Source0-md5:	fb2a1656d63371b7f68ba36862110232
 Patch0:		%{name}-DESTDIR.patch
-URL:		http://sysoev.ru/en/
+URL:		http://nginx.net/
 %if %{with initscript}
 BuildRequires:	rpmbuild(macros) >= 1.228
 Requires(post,preun):	rc-scripts
