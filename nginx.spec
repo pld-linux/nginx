@@ -10,7 +10,6 @@ License:	BSD-like
 Group:		Applications
 Source0:	http://sysoev.ru/nginx/nginx-0.5.10.tar.gz
 # Source0-md5:	fb2a1656d63371b7f68ba36862110232
-Patch0:		%{name}-DESTDIR.patch
 URL:		http://nginx.net/
 %if %{with initscript}
 BuildRequires:	rpmbuild(macros) >= 1.228
@@ -32,7 +31,6 @@ Serwer HTTP i odwrotne proxy o wysokiej wydajno¶ci.
 
 %prep
 %setup -q
-%patch0 -p1
 
 %build
 # NB: not autoconf generated configure
@@ -44,7 +42,6 @@ Serwer HTTP i odwrotne proxy o wysokiej wydajno¶ci.
 	--pid-path=%{_localstatedir}/run/%{name}.pid \
 	--user=nobody \
 	--group=nobody \
-	--with-threads \
 	--with-rtsig_module \
 	--with-select_module \
 	--with-poll_module \
@@ -63,9 +60,11 @@ Serwer HTTP i odwrotne proxy o wysokiej wydajno¶ci.
 
 %install
 rm -rf $RPM_BUILD_ROOT
+install -d $RPM_BUILD_ROOT{%{_sbindir},%{_sysconfdir}}
 
-%{__make} install \
-	DESTDIR=$RPM_BUILD_ROOT
+cp -a conf/* $RPM_BUILD_ROOT%{_sysconfdir}
+
+cp objs/%{name} $RPM_BUILD_ROOT%{_sbindir}/%{name}
 
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/*.default
 rm -rf $RPM_BUILD_ROOT%{_prefix}/html
