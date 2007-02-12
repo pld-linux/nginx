@@ -2,7 +2,7 @@
 # - bconds for modules as these are statically linked in
 # - initscript
 Summary:	High perfomance HTTP and reverse proxy server
-Summary(pl):	Serwer HTTP i odwrotne proxy o wysokiej wydajno∂ci
+Summary(pl.UTF-8):   Serwer HTTP i odwrotne proxy o wysokiej wydajno≈õci
 Name:		nginx
 Version:	0.5.10
 Release:	1
@@ -26,8 +26,8 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %description
 High perfomance HTTP and reverse proxy server.
 
-%description -l pl
-Serwer HTTP i odwrotne proxy o wysokiej wydajno∂ci.
+%description -l pl.UTF-8
+Serwer HTTP i odwrotne proxy o wysokiej wydajno≈õci.
 
 %prep
 %setup -q
