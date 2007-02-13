@@ -2,7 +2,7 @@
 # - bconds for modules as these are statically linked in
 # - initscript
 Summary:	High perfomance HTTP and reverse proxy server
-Summary(pl.UTF-8):   Serwer HTTP i odwrotne proxy o wysokiej wydajności
+Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 Name:		nginx
 Version:	0.5.10
 Release:	1
