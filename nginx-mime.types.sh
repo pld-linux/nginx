@@ -16,7 +16,13 @@ awk '!/^#/ && $2 { print } ' $mimetypes | \
 # sort it \
 LC_ALL=C sort -u | \
 # build conf fragment
-awk '{ printf("\t%-40s %s;\n", $1, $2)}' \
+awk '{
+	m = $1;
+	v = substr($0, length($1));
+	x = substr(v, index(v, $2));
+	gsub(/\t+/, " ", x);
+	printf("\t%-40s %s;\n", m, x);
+}' \
 	>> mime.types
 
 # footer
