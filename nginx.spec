@@ -5,14 +5,16 @@ Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 Name:		nginx
 Version:	0.5.14
-Release:	0.1
+Release:	0.2
 License:	BSD-like
 Group:		Networking/Daemons
 Source0:	http://sysoev.ru/nginx/%{name}-%{version}.tar.gz
 # Source0-md5:	3415c2b49b66fae5b11ca348ec0c2605
 Source1:	%{name}.init
+Source2:	%{name}-mime.types.sh
 Patch0:		%{name}-config.patch
 URL:		http://nginx.net/
+BuildRequires:	mailcap
 BuildRequires:	openssl-devel
 BuildRequires:	pcre-devel
 BuildRequires:	rpmbuild(macros) >= 1.268
@@ -39,6 +41,9 @@ Serwer HTTP i odwrotne proxy o wysokiej wydajności.
 %setup -q
 %patch0 -p0
 
+# build mime.types.conf
+sh %{SOURCE2} /etc/mime.types
+
 %build
 # NB: not autoconf generated configure
 ./configure \
@@ -47,8 +52,8 @@ Serwer HTTP i odwrotne proxy o wysokiej wydajności.
 	--conf-path=%{_sysconfdir}/%{name}.conf \
 	--error-log-path=%{_localstatedir}/log/%{name}/error.log \
 	--pid-path=%{_localstatedir}/run/%{name}.pid \
-	--user=nobody \
-	--group=nobody \
+	--user=nginx \
+	--group=nginx \
 	--with-rtsig_module \
 	--with-select_module \
 	--with-poll_module \
@@ -70,6 +75,7 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{/etc/rc.d/init.d,%{_sbindir},%{_sysconfdir},/var/{log/%{name},cache/%{name}}}
 
 install conf/* $RPM_BUILD_ROOT%{_sysconfdir}
+install mime.types $RPM_BUILD_ROOT%{_sysconfdir}/mime.types
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
 
 install objs/%{name} $RPM_BUILD_ROOT%{_sbindir}/%{name}
