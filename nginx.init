@@ -56,7 +56,7 @@ case "$1" in
   stop)
 	# Stop daemons.
 	if [ -f /var/lock/subsys/nginx ]; then
-		msg_stopping nginx.${HTTPD_MPM}
+		msg_stopping nginx
 		killproc --waitforname nginx --waitfortime 60 nginx $CFG
 		# Delete pidfile only when nginx was called successfully
 		if [ $? -eq 0 ]; then
