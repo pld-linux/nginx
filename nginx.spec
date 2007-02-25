@@ -1,36 +1,31 @@
 # TODO
 # - bconds for modules as these are statically linked in
+# - XXX gid 212 is reserved by ies4linux (PLD-doc/uid_gid.db.txt)
 # - logrotate script
-
-%bcond_with     initscript    # initscript
-
 Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 Name:		nginx
 Version:	0.5.14
 Release:	0.1
 License:	BSD-like
-Group:		Applications
+Group:		Networking/Daemons
 Source0:	http://sysoev.ru/nginx/%{name}-%{version}.tar.gz
 # Source0-md5:	3415c2b49b66fae5b11ca348ec0c2605
 Source1:	%{name}.init
 Patch0:		%{name}-config.patch
 URL:		http://nginx.net/
-Requires(post,preun):   /sbin/chkconfig
-Requires(postun):       /usr/sbin/groupdel
-Requires(postun):       /usr/sbin/userdel
-Requires(pre):  /bin/id
-Requires(pre):  /usr/bin/getgid
-Requires(pre):  /usr/sbin/groupadd
-Requires(pre):  /usr/sbin/useradd
-%if %{with initscript}
-BuildRequires:	rpmbuild(macros) >= 1.228
-Requires(post,preun):	/sbin/chkconfig
-Requires(post,preun):	rc-scripts
-%endif
 BuildRequires:	openssl-devel
 BuildRequires:	pcre-devel
+BuildRequires:	rpmbuild(macros) >= 1.268
 BuildRequires:	zlib-devel
+Requires(post,preun):	/sbin/chkconfig
+Requires(postun):	/usr/sbin/groupdel
+Requires(postun):	/usr/sbin/userdel
+Requires(pre):	/bin/id
+Requires(pre):	/usr/bin/getgid
+Requires(pre):	/usr/sbin/groupadd
+Requires(pre):	/usr/sbin/useradd
+Requires:	rc-scripts
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sysconfdir /etc/%{name}
@@ -87,10 +82,10 @@ rm -rf $RPM_BUILD_ROOT%{_prefix}/html
 rm -rf $RPM_BUILD_ROOT
 
 %pre
+# - XXX gid 212 is reserved by ies4linux (PLD-doc/uid_gid.db.txt)
 %groupadd -r -g 212 %{name}
 %useradd -r -u 212 -d /usr/share/empty -s /bin/false -c "Nginx HTTP User" -g %{name} %{name}
 
-%if %{with initscript}
 %post
 /sbin/chkconfig --add %{name}
 %service %{name} restart
@@ -100,14 +95,12 @@ if [ "$1" = "0" ]; then
 	%service -q %{name} stop
 	/sbin/chkconfig --del %{name}
 fi
-%endif
 
 %postun
 if [ "$1" = "0" ]; then
-        %userremove %{name}
-        %groupremove %{name}
+	%userremove %{name}
+	%groupremove %{name}
 fi
-
 
 %files
 %defattr(644,root,root,755)
