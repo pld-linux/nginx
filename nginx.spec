@@ -1,6 +1,5 @@
 # TODO
 # - bconds for modules as these are statically linked in
-# - XXX gid 212 is reserved by ies4linux (PLD-doc/uid_gid.db.txt)
 # - logrotate script
 Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
@@ -82,9 +81,8 @@ rm -rf $RPM_BUILD_ROOT%{_prefix}/html
 rm -rf $RPM_BUILD_ROOT
 
 %pre
-# - XXX gid 212 is reserved by ies4linux (PLD-doc/uid_gid.db.txt)
-%groupadd -r -g 212 %{name}
-%useradd -r -u 212 -d /usr/share/empty -s /bin/false -c "Nginx HTTP User" -g %{name} %{name}
+%groupadd -r -g 213 %{name}
+%useradd -r -u 213 -d /usr/share/empty -s /bin/false -c "Nginx HTTP User" -g %{name} %{name}
 
 %post
 /sbin/chkconfig --add %{name}
