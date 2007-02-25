@@ -1,23 +1,35 @@
 # TODO
 # - bconds for modules as these are statically linked in
-# - initscript
+# - logrotate script
+
+%bcond_with     initscript    # initscript
+
 Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 Name:		nginx
-Version:	0.5.10
-Release:	1
+Version:	0.5.14
+Release:	0.1
 License:	BSD-like
 Group:		Applications
-Source0:	http://sysoev.ru/nginx/nginx-0.5.10.tar.gz
-# Source0-md5:	fb2a1656d63371b7f68ba36862110232
+Source0:	http://sysoev.ru/nginx/%{name}-%{version}.tar.gz
+# Source0-md5:	3415c2b49b66fae5b11ca348ec0c2605
+Source1:	%{name}.init
+Patch0:		%{name}-config.patch
 URL:		http://nginx.net/
+Requires(post,preun):   /sbin/chkconfig
+Requires(postun):       /usr/sbin/groupdel
+Requires(postun):       /usr/sbin/userdel
+Requires(pre):  /bin/id
+Requires(pre):  /usr/bin/getgid
+Requires(pre):  /usr/sbin/groupadd
+Requires(pre):  /usr/sbin/useradd
 %if %{with initscript}
 BuildRequires:	rpmbuild(macros) >= 1.228
-Requires(post,preun):	rc-scripts
 Requires(post,preun):	/sbin/chkconfig
+Requires(post,preun):	rc-scripts
 %endif
-BuildRequires:	pcre-devel
 BuildRequires:	openssl-devel
+BuildRequires:	pcre-devel
 BuildRequires:	zlib-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -31,6 +43,7 @@ Serwer HTTP i odwrotne proxy o wysokiej wydajności.
 
 %prep
 %setup -q
+%patch0 -p0
 
 %build
 # NB: not autoconf generated configure
@@ -60,17 +73,22 @@ Serwer HTTP i odwrotne proxy o wysokiej wydajności.
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_sbindir},%{_sysconfdir}}
+install -d $RPM_BUILD_ROOT{/etc/rc.d/init.d,%{_sbindir},%{_sysconfdir},/var/{log/%{name},cache/%{name}}}
 
-cp -a conf/* $RPM_BUILD_ROOT%{_sysconfdir}
+install conf/* $RPM_BUILD_ROOT%{_sysconfdir}
+install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
 
-cp objs/%{name} $RPM_BUILD_ROOT%{_sbindir}/%{name}
+install objs/%{name} $RPM_BUILD_ROOT%{_sbindir}/%{name}
 
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/*.default
 rm -rf $RPM_BUILD_ROOT%{_prefix}/html
 
 %clean
 rm -rf $RPM_BUILD_ROOT
+
+%pre
+%groupadd -r -g 212 %{name}
+%useradd -r -u 212 -d /usr/share/empty -s /bin/false -c "Nginx HTTP User" -g %{name} %{name}
 
 %if %{with initscript}
 %post
@@ -84,12 +102,22 @@ if [ "$1" = "0" ]; then
 fi
 %endif
 
+%postun
+if [ "$1" = "0" ]; then
+        %userremove %{name}
+        %groupremove %{name}
+fi
+
+
 %files
 %defattr(644,root,root,755)
 %doc CHANGES LICENSE README html/index.html conf/nginx.conf
 %doc %lang(ru) CHANGES.ru
-%dir %{_sysconfdir}
-%{_sysconfdir}/koi-win
-%{_sysconfdir}/mime.types
-%{_sysconfdir}/nginx.conf
-%attr(755,root,root) %{_sbindir}/nginx
+%attr(754,root,root) /etc/rc.d/init.d/%{name}
+%dir %attr(754,root,root) %{_sysconfdir}
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}.conf
+%attr(640,root,root) %{_sysconfdir}/*[_-]*
+%attr(640,root,root) %{_sysconfdir}/mime.types
+%attr(755,root,root) %{_sbindir}/%{name}
+%attr(770,root,%{name}) /var/cache/%{name}
+%attr(750,%{name},logs) /var/log/%{name}
