@@ -3,7 +3,7 @@
 # nginx	Nginx Web Server
 #
 # chkconfig:	345 85 15
-# description:	Apache is a World Wide Web server.  It is used to serve \
+# description:	Nginx is a World Wide Web server.  It is used to serve \
 #		HTML files and CGI.
 # processname:	nginx
 # pidfile:	/var/run/nginx.pid
@@ -22,7 +22,6 @@
 # Check that networking is up.
 if is_yes "${NETWORKING}"; then
 	if [ ! -f /var/lock/subsys/network -a "$1" != stop -a "$1" != status ]; then
-		# nls "ERROR: Networking is down. %s can't be run." <service>
 		msg_network_down nginx
 		exit 1
 	fi
@@ -39,10 +38,7 @@ else
 	CFG=""
 fi
 
-RETVAL=0
-# See how we were called.
-case "$1" in
-  start)
+start() {
 	# Check if the service is already running?
 	if [ ! -f /var/lock/subsys/nginx ]; then
 		msg_starting nginx
@@ -52,35 +48,46 @@ case "$1" in
 	else
 		msg_already_running nginx
 	fi
-	;;
-  stop)
+}
+
+stop() {
 	# Stop daemons.
 	if [ -f /var/lock/subsys/nginx ]; then
 		msg_stopping nginx
 		killproc --waitforname nginx --waitfortime 60 nginx $CFG
 		# Delete pidfile only when nginx was called successfully
 		if [ $? -eq 0 ]; then
-			rm -f /var/lock/subsys/nginx /var/run/nginx.pid /var/run/nginx.loc* >/dev/null 2>&1
+			rm -f /var/lock/subsys/nginx /var/run/nginx.pid >/dev/null 2>&1
 		fi
 	else
 		msg_not_running nginx
 	fi
+}
+
+RETVAL=0
+# See how we were called.
+case "$1" in
+  start)
+  	start
+	;;
+  stop)
+  	stop
 	;;
   status)
 	status nginx
 	RETVAL=$?
 	;;
   restart)
-	$0 stop
-	$0 start
+	stop
+	start
 	;;
   reload|force-reload|graceful)
 	if [ -f /var/lock/subsys/nginx ]; then
 		msg_reloading nginx
-		killproc nginx "-HUP"
+		killproc nginx -HUP
 		RETVAL=$?
 	else
-		msg_not_running nginx >&2
+		msg_not_running nginx
 		RETVAL=7
 	fi
 	;;
