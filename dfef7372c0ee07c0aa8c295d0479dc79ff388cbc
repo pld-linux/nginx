@@ -1,0 +1,2 @@
+- generate mime.types
+- pass --user,--group nginx to configure
