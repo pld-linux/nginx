@@ -161,5 +161,5 @@ fi
 %attr(755,root,root) %{_sbindir}/%{name}
 %attr(770,root,%{name}) /var/cache/%{name}
 %attr(750,%{name},logs) /var/log/%{name}
-config(noreplace,missingok) %verify(not md5 mtime size) %{_nginxdir}/html/*
+%config(noreplace,missingok) %verify(not md5 mtime size) %{_nginxdir}/html/*
 #%attr(755,%{name},%{name}) %{_nginxdir}/html/favicon.ico
