@@ -149,6 +149,10 @@ fi
 %doc %lang(ru) CHANGES.ru
 %attr(754,root,root) /etc/rc.d/init.d/%{name}
 %dir %attr(754,root,root) %{_sysconfdir}
+%dir %{_nginxdir}
+%dir %{_nginxdir}/cgi-bin
+%dir %{_nginxdir}/html
+%dir %{_nginxdir}/errors
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}.conf
 %attr(640,root,root) %{_sysconfdir}/*[_-]*
 %attr(640,root,root) %{_sysconfdir}/proxy.conf
@@ -157,4 +161,5 @@ fi
 %attr(755,root,root) %{_sbindir}/%{name}
 %attr(770,root,%{name}) /var/cache/%{name}
 %attr(750,%{name},logs) /var/log/%{name}
-%attr(755,%{name},%{name}) %{_nginxdir}/html/favicon.ico
+config(noreplace,missingok) %verify(not md5 mtime size) %{_nginxdir}/html/*
+#%attr(755,%{name},%{name}) %{_nginxdir}/html/favicon.ico
