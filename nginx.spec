@@ -1,6 +1,7 @@
 # TODO
 # - more bconds (??)
 # - subpackage with error pages
+# - missing Provides user/group
 # Conditional build for nginx:
 %bcond_with	stub_status		# stats module
 %bcond_with	rtsig
@@ -25,9 +26,9 @@ Source3:	http://www.nginx.eu/favicon.ico
 # Source3-md5:	2aaf2115c752cbdbfb8a2f0b3c3189ab
 Source4:	http://www.nginx.eu/download/proxy.conf
 # Source4-md5:	f5263ae01c2edb18f46d5d1df2d3a5cd
-Source5:	http://www.nginx.eu/download/nginx.monitrc
+Source5:	http://www.nginx.eu/download/%{name}.monitrc
 # Source5-md5:	1d3f5eedfd34fe95213f9e0fc19daa88
-Source6:	http://www.nginx.eu/download/nginx.conf
+Source6:	http://www.nginx.eu/download/%{name}.conf
 # Source6-md5:	1c112d6f03d0f365e4acc98c1d96261a
 Source7:	%{name}.logrotate
 Patch0:		%{name}-config.patch
@@ -51,13 +52,13 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		_nginxdir	/home/services/%{name}
 
 %description
-Nginx ("engine x") is a high-performance HTTP server and reverse proxy, 
-as well as an IMAP/POP3 proxy server. Nginx was written by Igor Sysoev 
-for Rambler.ru, Russia's second-most visited website, where it has been 
-running in production for over two and a half years. 
-Igor has released the source code under a BSD-like license. 
-Although still in beta, Nginx is known for its stability, rich feature set, 
-simple configuration, and low resource consumption.
+Nginx ("engine x") is a high-performance HTTP server and reverse
+proxy, as well as an IMAP/POP3 proxy server. Nginx was written by Igor
+Sysoev for Rambler.ru, Russia's second-most visited website, where it
+has been running in production for over two and a half years. Igor has
+released the source code under a BSD-like license. Although still in
+beta, Nginx is known for its stability, rich feature set, simple
+configuration, and low resource consumption.
 
 %description -l pl.UTF-8
 Serwer HTTP i odwrotne proxy o wysokiej wydajności.
