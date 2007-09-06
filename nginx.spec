@@ -1,7 +1,6 @@
 # TODO
 # - more bconds (??)
 # - subpackage with error pages
-# - missing Provides user/group
 # Conditional build for nginx:
 %bcond_with	stub_status		# stats module
 %bcond_with	rtsig
@@ -46,6 +45,9 @@ Requires(pre):	/usr/bin/getgid
 Requires(pre):	/usr/sbin/groupadd
 Requires(pre):	/usr/sbin/useradd
 Requires:	rc-scripts
+Provides:	group(http)
+Provides:	group(nginx)
+Provides:	user(nginx)
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sysconfdir	/etc/%{name}
