@@ -51,7 +51,6 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		_nginxdir	/home/services/%{name}
 
 %description
-High perfomance HTTP and reverse proxy server.
 Nginx ("engine x") is a high-performance HTTP server and reverse proxy, 
 as well as an IMAP/POP3 proxy server. Nginx was written by Igor Sysoev 
 for Rambler.ru, Russia's second-most visited website, where it has been 
