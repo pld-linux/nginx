@@ -1,5 +1,4 @@
 # TODO
-# - logrotate script
 # - more bconds (??)
 # - subpackage with error pages
 # Conditional build for nginx:
@@ -15,7 +14,7 @@ Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 Name:		nginx
 Version:	0.5.31
-Release:	2
+Release:	3
 License:	BSD-like
 Group:		Networking/Daemons
 Source0:	http://sysoev.ru/nginx/%{name}-%{version}.tar.gz
@@ -30,6 +29,7 @@ Source5:	http://www.nginx.eu/download/nginx.monitrc
 # Source5-md5:	1d3f5eedfd34fe95213f9e0fc19daa88
 Source6:	http://www.nginx.eu/download/nginx.conf
 # Source6-md5:	1c112d6f03d0f365e4acc98c1d96261a
+Source7:	%{name}.logrotate
 Patch0:		%{name}-config.patch
 URL:		http://nginx.net/
 BuildRequires:	mailcap
@@ -52,9 +52,31 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
 High perfomance HTTP and reverse proxy server.
+Nginx ("engine x") is a high-performance HTTP server and reverse proxy, 
+as well as an IMAP/POP3 proxy server. Nginx was written by Igor Sysoev 
+for Rambler.ru, Russia's second-most visited website, where it has been 
+running in production for over two and a half years. 
+Igor has released the source code under a BSD-like license. 
+Although still in beta, Nginx is known for its stability, rich feature set, 
+simple configuration, and low resource consumption.
 
 %description -l pl.UTF-8
 Serwer HTTP i odwrotne proxy o wysokiej wydajności.
+
+
+%package -n monit-rc-nginx
+Summary:	Nginx  support for monit
+Summary(pl.UTF-8):	Wsparcie nginx dla monit
+Group:		Applications/System
+Requires:	%{name} = %{version}-%{release}
+Requires:	monit
+
+%description -n monit-rc-nginx
+monitrc file for monitoring nginx webserver server.
+
+%description -n monit-rc-nginx -l pl.UTF-8
+Plik monitrc do monitorowania serwera www nging.
+
 
 %prep
 %setup -q
@@ -96,15 +118,17 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT/etc/rc.d/init.d \
 	$RPM_BUILD_ROOT%{_nginxdir}/{cgi-bin,html,errors} \
 	$RPM_BUILD_ROOT{%{_localstatedir}/log/{%{name},archive/%{name}},%{_localstatedir}/cache/%{name}} \
-	$RPM_BUILD_ROOT{%{_sbindir},%{_sysconfdir}}
+	$RPM_BUILD_ROOT{%{_sbindir},%{_sysconfdir}} \
+	$RPM_BUILD_ROOT/etc/{logrotate.d,monit}
 
 install conf/* $RPM_BUILD_ROOT%{_sysconfdir}
 install mime.types $RPM_BUILD_ROOT%{_sysconfdir}/mime.types
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
 install %{SOURCE3} $RPM_BUILD_ROOT%{_nginxdir}/html/favicon.ico
 install %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/proxy.conf
-install %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/nginx.monitrc
+install %{SOURCE5} $RPM_BUILD_ROOT/etc/monit/%{name}.monitrc
 install %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}/nginx.conf
+install %{SOURCE7} $RPM_BUILD_ROOT/etc/logrotate.d/%{name}
 
 install objs/%{name} $RPM_BUILD_ROOT%{_sbindir}/%{name}
 
@@ -154,12 +178,15 @@ fi
 %dir %{_nginxdir}/html
 %dir %{_nginxdir}/errors
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}.conf
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/logrotate.d/%{name}
 %attr(640,root,root) %{_sysconfdir}/*[_-]*
 %attr(640,root,root) %{_sysconfdir}/proxy.conf
-%attr(640,root,root) %{_sysconfdir}/nginx.monitrc
 %attr(640,root,root) %{_sysconfdir}/mime.types
 %attr(755,root,root) %{_sbindir}/%{name}
 %attr(770,root,%{name}) /var/cache/%{name}
 %attr(750,%{name},logs) /var/log/%{name}
 %config(noreplace,missingok) %verify(not md5 mtime size) %{_nginxdir}/html/*
-#%attr(755,%{name},%{name}) %{_nginxdir}/html/favicon.ico
+
+%files -n monit-rc-nginx
+%defattr(644,root,root,755)
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/monit/%{name}.monitrc
