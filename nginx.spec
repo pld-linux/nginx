@@ -1,14 +1,17 @@
 # TODO
 # - more bconds (??)
 # - subpackage with error pages
+# - /etc/sysconfig/nginx file
+# - prepare style like nginx.conf
+#
 # Conditional build for nginx:
-%bcond_with	stub_status		# stats module
-%bcond_with	rtsig
-%bcond_with	select
-%bcond_with	poll
-%bcond_with	ssl			# ssl support
-%bcond_with	imap			# imap proxy
-%bcond_without	http_browser		# parse header "User-agent"
+%bcond_without	stub_status		# stats module
+%bcond_without	rtsig
+%bcond_without	select
+%bcond_without	poll
+%bcond_without	ssl			# ssl support
+%bcond_without	imap			# imap proxy
+%bcond_with	http_browser		# header "User-agent" parser
 #
 Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
@@ -77,7 +80,7 @@ Requires:	monit
 monitrc file for monitoring nginx webserver server.
 
 %description -n monit-rc-nginx -l pl.UTF-8
-Plik monitrc do monitorowania serwera www nging.
+Plik monitrc do monitorowania serwera www nginx.
 
 
 %prep
@@ -103,7 +106,7 @@ sh %{SOURCE2} /etc/mime.types
 	%{?with_poll:--with-poll_module} \
 	%{?with_ssl:--with-http_ssl_module} \
 	%{?with_imap:--with-imap} \
-	%{?with_http_browser:--without-http_browser_module} \
+	%{!?with_http_browser:--without-http_browser_module} \
 	--http-log-path=%{_localstatedir}/log/%{name}/access.log \
 	--http-client-body-temp-path=%{_localstatedir}/cache/%{name}/client_body_temp \
 	--http-proxy-temp-path=%{_localstatedir}/cache/%{name}/proxy_temp \
