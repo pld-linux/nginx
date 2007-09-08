@@ -1,6 +1,6 @@
 /var/log/nginx/*.log {
 	olddir /var/log/archive/nginx
-#	create 644 nginx nginx
+	create 644 nginx nginx
 	sharedscripts
 	postrotate
 		/sbin/service nginx graceful > /dev/null
