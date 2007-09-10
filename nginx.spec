@@ -1,6 +1,5 @@
 # TODO
 # - more bconds (??)
-# - subpackage with error pages
 # - /etc/sysconfig/nginx file
 # - prepare style like nginx.conf
 #
@@ -130,6 +129,8 @@ install conf/* $RPM_BUILD_ROOT%{_sysconfdir}
 install mime.types $RPM_BUILD_ROOT%{_sysconfdir}/mime.types
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
 install %{SOURCE3} $RPM_BUILD_ROOT%{_nginxdir}/html/favicon.ico
+install html/index.html $RPM_BUILD_ROOT%{_nginxdir}/html
+install html/50x.html $RPM_BUILD_ROOT%{_nginxdir}/errors
 install %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/proxy.conf
 install %{SOURCE5} $RPM_BUILD_ROOT/etc/monit/%{name}.monitrc
 install %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}/nginx.conf
@@ -192,6 +193,7 @@ fi
 %attr(750,root,root) %dir /var/log/archive/%{name}
 %attr(750,%{name},logs) /var/log/%{name}
 %config(noreplace,missingok) %verify(not md5 mtime size) %{_nginxdir}/html/*
+%config(noreplace,missingok) %verify(not md5 mtime size) %{_nginxdir}/errors/*
 
 %files -n monit-rc-nginx
 %defattr(644,root,root,755)
