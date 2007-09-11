@@ -50,7 +50,7 @@ Requires:	rc-scripts >= 0.2.0
 Provides:	group(http)
 Provides:	group(nginx)
 Provides:	user(nginx)
-Conflicts:	logrotate < 3.7.4
+Conflicts:	logrotate < 3.7-4
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sysconfdir	/etc/%{name}
