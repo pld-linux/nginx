@@ -46,7 +46,8 @@ Requires(pre):	/bin/id
 Requires(pre):	/usr/bin/getgid
 Requires(pre):	/usr/sbin/groupadd
 Requires(pre):	/usr/sbin/useradd
-Requires:	rc-scripts
+Requires:	logrotate >= 3.7.4
+Requires:	rc-scripts >= 0.2.0
 Provides:	group(http)
 Provides:	group(nginx)
 Provides:	user(nginx)
