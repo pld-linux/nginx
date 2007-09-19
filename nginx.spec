@@ -10,13 +10,15 @@
 %bcond_without	poll
 %bcond_without	ssl			# ssl support
 %bcond_without	imap			# imap proxy
+%bcond_without	addition
+#%bcond_without	perl			# perl module
 %bcond_with	http_browser		# header "User-agent" parser
 #
 Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 Name:		nginx
 Version:	0.5.31
-Release:	3.1
+Release:	3.2
 License:	BSD-like
 Group:		Networking/Daemons
 Source0:	http://sysoev.ru/nginx/%{name}-%{version}.tar.gz
@@ -50,6 +52,7 @@ Requires:	rc-scripts >= 0.2.0
 Provides:	group(http)
 Provides:	group(nginx)
 Provides:	user(nginx)
+Provides:	webserver
 Conflicts:	logrotate < 3.7-4
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -105,6 +108,8 @@ sh %{SOURCE2} /etc/mime.types
 	%{?with_select:--with-select_module} \
 	%{?with_poll:--with-poll_module} \
 	%{?with_ssl:--with-http_ssl_module} \
+	%{?with_addition:--with-http_addition_module} \
+#	%{?with_perl:--with-http_perl_module} \
 	%{?with_imap:--with-imap} \
 	%{!?with_http_browser:--without-http_browser_module} \
 	--http-log-path=%{_localstatedir}/log/%{name}/access.log \
