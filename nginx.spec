@@ -18,7 +18,7 @@ Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 Name:		nginx
 Version:	0.5.31
-Release:	3.3
+Release:	4
 License:	BSD-like
 Group:		Networking/Daemons
 Source0:	http://sysoev.ru/nginx/%{name}-%{version}.tar.gz
@@ -35,6 +35,7 @@ Source6:	http://www.nginx.eu/download/%{name}.conf
 # Source6-md5:	1c112d6f03d0f365e4acc98c1d96261a
 Source7:	%{name}.logrotate
 Patch0:		%{name}-config.patch
+Patch1:		%{name}-autoindexDoS.patch
 URL:		http://nginx.net/
 BuildRequires:	mailcap
 BuildRequires:	openssl-devel
@@ -89,6 +90,7 @@ Plik monitrc do monitorowania serwera www nginx.
 %prep
 %setup -q
 %patch0 -p0
+%patch1 -p0
 
 # build mime.types.conf
 sh %{SOURCE2} /etc/mime.types
