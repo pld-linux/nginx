@@ -1,24 +1,28 @@
 # TODO
-# - more bconds (??)
 # - /etc/sysconfig/nginx file
-# - prepare style like nginx.conf
+# - prepare pld style like nginx.conf
+# - split into nginx-common, nginx, nginx-perl packages
 #
 # Conditional build for nginx:
-%bcond_without	stub_status		# stats module
-%bcond_without	rtsig
-%bcond_without	select
-%bcond_without	poll
-%bcond_without	ssl			# ssl support
-%bcond_without	imap			# imap proxy
-%bcond_without	addition
-#%bcond_without	perl			# perl module
+%bcond_without	addition	# adds module
+%bcond_without	dav		# WebDAV
+%bcond_without	flv		# FLV stream
+%bcond_without	imap		# imap proxy
+%bcond_without	mail		# mail module
+%bcond_without	perl		# perl module
+%bcond_without	poll		# poll
+%bcond_without	realip		# real ip (behind proxy)
+%bcond_without	rtsig		# rtsig
+%bcond_without	select		# select
+%bcond_without	status		# stats module
+%bcond_without	ssl		# ssl support
 %bcond_with	http_browser		# header "User-agent" parser
 #
 Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 Name:		nginx
 Version:	0.5.31
-Release:	4
+Release:	4.1
 License:	BSD-like
 Group:		Networking/Daemons
 Source0:	http://sysoev.ru/nginx/%{name}-%{version}.tar.gz
@@ -40,6 +44,7 @@ URL:		http://nginx.net/
 BuildRequires:	mailcap
 BuildRequires:	openssl-devel
 BuildRequires:	pcre-devel
+%{?with_perl:BuildRequires: perl-devel}
 BuildRequires:	rpmbuild(macros) >= 1.268
 BuildRequires:	zlib-devel
 Requires(post,preun):	/sbin/chkconfig
@@ -49,7 +54,10 @@ Requires(pre):	/bin/id
 Requires(pre):	/usr/bin/getgid
 Requires(pre):	/usr/sbin/groupadd
 Requires(pre):	/usr/sbin/useradd
+Requires:	openssl
+Requires:	pcre
 Requires:	rc-scripts >= 0.2.0
+Requires:	zlib
 Provides:	group(http)
 Provides:	group(nginx)
 Provides:	user(nginx)
@@ -72,6 +80,10 @@ configuration, and low resource consumption.
 %description -l pl.UTF-8
 Serwer HTTP i odwrotne proxy o wysokiej wydajności.
 
+#%package common
+#Summary:	Configuration files and documentation for Nginx
+#Summary(pl.UTF-8):	Pliki konfiguracyjne i dokumentacja dla Nginx
+#Group:		Networking/Daemons
 
 %package -n monit-rc-nginx
 Summary:	Nginx  support for monit
@@ -103,15 +115,22 @@ sh %{SOURCE2} /etc/mime.types
 	--conf-path=%{_sysconfdir}/%{name}.conf \
 	--error-log-path=%{_localstatedir}/log/%{name}/error.log \
 	--pid-path=%{_localstatedir}/run/%{name}.pid \
+	--lock-path=%{_localstatedir}/lock/subsys/%{name} \
 	--user=nginx \
 	--group=nginx \
-	%{?with_stub_status:--with-http_stub_status_module} \
+	%{?with_addition:--with-http_addition_module} \
+	%{?with_dav:--with-http_dav_module} \
+	%{?with_flv:--with-http_flv_module} \
+	%{?with_imap:--with-imap} \
+	%{?with_mail:--with-mail} \
+	%{?with_mail:--with-mail_ssl_module} \
+	%{?with_perl:--with-http_perl_module} \
+	%{?with_poll:--with-poll_module} \
+	%{?with_realip:--with-http_realip_module} \
 	%{?with_rtsig:--with-rtsig_module} \
 	%{?with_select:--with-select_module} \
-	%{?with_poll:--with-poll_module} \
+	%{?with_status:--with-http_stub_status_module} \
 	%{?with_ssl:--with-http_ssl_module} \
-	%{?with_addition:--with-http_addition_module} \
-	%{?with_imap:--with-imap} \
 	%{!?with_http_browser:--without-http_browser_module} \
 	--http-log-path=%{_localstatedir}/log/%{name}/access.log \
 	--http-client-body-temp-path=%{_localstatedir}/cache/%{name}/client_body_temp \
@@ -121,7 +140,6 @@ sh %{SOURCE2} /etc/mime.types
 	--with-cc-opt="%{rpmcflags}" \
 	--with-ld-opt="%{rpmldflags}" \
 	%{?debug:--with-debug}
-
 %{__make}
 
 %install
@@ -129,7 +147,9 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT/etc/rc.d/init.d \
 	$RPM_BUILD_ROOT%{_nginxdir}/{cgi-bin,html,errors} \
 	$RPM_BUILD_ROOT{%{_localstatedir}/log/{%{name},archive/%{name}},%{_localstatedir}/cache/%{name}} \
+	$RPM_BUILD_ROOT%{_localstatedir}/lock/subsys/%{name} \
 	$RPM_BUILD_ROOT{%{_sbindir},%{_sysconfdir}} \
+	$RPM_BUILD_ROOT{%{perl_vendorarch},%{perl_vendorarch}/auto/%{name}} \
 	$RPM_BUILD_ROOT/etc/{logrotate.d,monit}
 
 install conf/* $RPM_BUILD_ROOT%{_sysconfdir}
@@ -142,7 +162,9 @@ install %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/proxy.conf
 install %{SOURCE5} $RPM_BUILD_ROOT/etc/monit/%{name}.monitrc
 install %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}/nginx.conf
 install %{SOURCE7} $RPM_BUILD_ROOT/etc/logrotate.d/%{name}
-
+install objs/src/http/modules/perl/nginx.pm $RPM_BUILD_ROOT%{perl_vendorarch}/%{name}.pm
+install objs/src/http/modules/perl/blib/arch/auto/nginx/nginx.so $RPM_BUILD_ROOT%{perl_vendorarch}/auto/%{name}/%{name}.so
+install objs/src/http/modules/perl/blib/arch/auto/nginx/nginx.bs $RPM_BUILD_ROOT%{perl_vendorarch}/auto/%{name}/%{name}.bs
 install objs/%{name} $RPM_BUILD_ROOT%{_sbindir}/%{name}
 
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/*.default
@@ -182,7 +204,7 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc CHANGES LICENSE README html/index.html conf/nginx.conf
+%doc CHANGES LICENSE README html/index.html conf/nginx.conf objs/src/http/modules/perl/blib/man3/nginx.3pm
 %doc %lang(ru) CHANGES.ru
 %attr(754,root,root) /etc/rc.d/init.d/%{name}
 %dir %attr(754,root,root) %{_sysconfdir}
@@ -196,6 +218,10 @@ fi
 %attr(640,root,root) %{_sysconfdir}/proxy.conf
 %attr(640,root,root) %{_sysconfdir}/mime.types
 %attr(755,root,root) %{_sbindir}/%{name}
+%dir %{perl_vendorarch}/auto/%{name}
+%attr(755,root,root) %{perl_vendorarch}/auto/%{name}/%{name}.so
+%attr(700,root,root) %{perl_vendorarch}/auto/%{name}/%{name}.bs
+%attr(700,root,root) %{perl_vendorarch}/%{name}.pm
 %attr(770,root,%{name}) /var/cache/%{name}
 %attr(750,root,root) %dir /var/log/archive/%{name}
 %attr(750,%{name},logs) /var/log/%{name}
