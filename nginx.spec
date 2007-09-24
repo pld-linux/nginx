@@ -4,19 +4,19 @@
 # - split into nginx-common, nginx, nginx-perl packages
 #
 # Conditional build for nginx:
+%bcond_without	light		# don't build light version
+%bcond_without	mail		# don't build imap/mail proxy
+%bcond_without	perl		# don't build with perl module
 %bcond_without	addition	# adds module
 %bcond_without	dav		# WebDAV
 %bcond_without	flv		# FLV stream
-%bcond_without	imap		# imap proxy
-%bcond_without	mail		# mail module
-%bcond_without	perl		# perl module
 %bcond_without	poll		# poll
 %bcond_without	realip		# real ip (behind proxy)
 %bcond_without	rtsig		# rtsig
 %bcond_without	select		# select
 %bcond_without	status		# stats module
 %bcond_without	ssl		# ssl support
-%bcond_with	http_browser		# header "User-agent" parser
+%bcond_with	http_browser	# header "User-agent" parser
 #
 Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
@@ -77,7 +77,64 @@ beta, Nginx is known for its stability, rich feature set, simple
 configuration, and low resource consumption.
 
 %description -l pl.UTF-8
-Serwer HTTP i odwrotne proxy o wysokiej wydajności.
+Nginx ("engine x") jest wysokowydajnym serwerem HTTP, odwrotnym proxy
+a także IMAP/POP3 proxy. Nginx został napisany przez Igora Sysoev'a
+na potrzeby serwisu Rambler.ru. Jest to drugi pod względem ilości
+odwiedzin serwis w Rosji i działa od ponad dwóch i pół roku. Igor
+opublikował źródła na licencji BSD. Mimo, że projekt jest ciągle
+w fazie beta, już zasłynął dzieki stabilności, bogactwu dodatków,
+prostej konfiguracji oraz małej "zasobożerności".
+
+%package light
+Summary:	High perfomance HTTP and reverse proxy server
+Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajno�~[ci
+Group:		Applications/System
+Requires:	nginx-common
+Provides:	group(http)
+Provides:	group(nginx)
+Provides:	user(nginx)
+Provides:	webserver
+
+%description light
+The smallest, but also the fastest nginx edition. No additional
+modules, no perl support, no imap proxy
+
+%description light -l pl.UTF-8
+Najmniejsza i najszybsza wersja nginx. Bez wsparcia dla perla,
+dodatkowych modulow oraz imap proxy
+
+%package perl
+Summary:	High perfomance HTTP and reverse proxy server
+Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajno�~[ci
+Group:		Applications/System
+Requires:	nginx-common
+Provides:	group(http)
+Provides:	group(nginx)
+Provides:	user(nginx)
+Provides:	webserver
+
+%description perl
+Nginx with perl support. Mail modules not included.
+
+%description perl -l pl.UTF-8
+Nignx z obsluga perla. Bez wsparcia dla modulow poczty.
+
+%package mail
+Summary:	High perfomance HTTP and reverse proxy server
+Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajno�~[ci
+Group:		Applications/System
+Requires:	nginx-common
+Provides:	group(http)
+Provides:	group(nginx)
+Provides:	user(nginx)
+Provides:	webserver
+
+%description mail
+Nginx with mail support. Only mail modules included.
+
+%description mail -l pl.UTF-8
+Nignx ze wsparciem tylko dla modulow poczty.
+
 
 #%package common
 #Summary:	Configuration files and documentation for Nginx
@@ -107,6 +164,103 @@ sh %{SOURCE2} /etc/mime.types
 
 %build
 # NB: not autoconf generated configure
+cp -f configure auto/
+#
+%if %{with perl}
+./configure \
+	--prefix=%{_prefix} \
+	--sbin-path=%{_sbindir}/%{name} \
+	--conf-path=%{_sysconfdir}/%{name}.conf \
+	--error-log-path=%{_localstatedir}/log/%{name}/error.log \
+	--pid-path=%{_localstatedir}/run/%{name}.pid \
+	--lock-path=%{_localstatedir}/lock/subsys/%{name} \
+	--user=nginx \
+	--group=nginx \
+	--with-http_perl_module \
+	%{?with_addition:--with-http_addition_module} \
+	%{?with_dav:--with-http_dav_module} \
+	%{?with_flv:--with-http_flv_module} \
+	%{?with_poll:--with-poll_module} \
+	%{?with_realip:--with-http_realip_module} \
+	%{?with_rtsig:--with-rtsig_module} \
+	%{?with_select:--with-select_module} \
+	%{?with_status:--with-http_stub_status_module} \
+	%{?with_ssl:--with-http_ssl_module} \
+	%{!?with_http_browser:--without-http_browser_module} \
+	--http-log-path=%{_localstatedir}/log/%{name}/access.log \
+	--http-client-body-temp-path=%{_localstatedir}/cache/%{name}/client_body_temp \
+	--http-proxy-temp-path=%{_localstatedir}/cache/%{name}/proxy_temp \
+	--http-fastcgi-temp-path=%{_localstatedir}/cache/%{name}/fastcgi_temp \
+	--with-cc="%{__cc}" \
+	--with-cc-opt="%{rpmcflags}" \
+	--with-ld-opt="%{rpmldflags}"
+%{__make}
+mv -f objs/nginx contrib/nginx.perl
+%endif
+
+%if %{with mail}
+%{__make} clean
+./configure \
+	--prefix=%{_prefix} \
+	--sbin-path=%{_sbindir}/%{name} \
+	--conf-path=%{_sysconfdir}/%{name}.conf \
+	--error-log-path=%{_localstatedir}/log/%{name}/error.log \
+	--pid-path=%{_localstatedir}/run/%{name}.pid \
+	--lock-path=%{_localstatedir}/lock/subsys/%{name} \
+	--user=nginx \
+	--group=nginx \
+	--with-imap \
+	--with-mail \
+	--with-mail_ssl_module \
+	%{?with_addition:--with-http_addition_module} \
+	%{?with_poll:--with-poll_module} \
+	%{?with_realip:--with-http_realip_module} \
+	%{?with_rtsig:--with-rtsig_module} \
+	%{?with_select:--with-select_module} \
+	%{!?with_http_browser:--without-http_browser_module} \
+	--http-log-path=%{_localstatedir}/log/%{name}/access.log \
+	--http-client-body-temp-path=%{_localstatedir}/cache/%{name}/client_body_temp \
+	--http-proxy-temp-path=%{_localstatedir}/cache/%{name}/proxy_temp \
+	--http-fastcgi-temp-path=%{_localstatedir}/cache/%{name}/fastcgi_temp \
+	--with-cc="%{__cc}" \
+	--with-cc-opt="%{rpmcflags}" \
+	--with-ld-opt="%{rpmldflags}" \
+	%{?debug:--with-debug}
+%{__make}
+mv -f objs/nginx contrib/nginx.mail
+%endif
+
+%if %{with light}
+%{__make} clean
+./configure \
+	--prefix=%{_prefix} \
+	--sbin-path=%{_sbindir}/%{name} \
+	--conf-path=%{_sysconfdir}/%{name}.conf \
+	--error-log-path=%{_localstatedir}/log/%{name}/error.log \
+	--pid-path=%{_localstatedir}/run/%{name}.pid \
+	--lock-path=%{_localstatedir}/lock/subsys/%{name} \
+	--user=nginx \
+	--group=nginx \
+	%{?with_poll:--with-poll_module} \
+	%{?with_realip:--with-http_realip_module} \
+	%{?with_rtsig:--with-rtsig_module} \
+	%{?with_select:--with-select_module} \
+	%{?with_status:--with-http_stub_status_module} \
+	%{?with_ssl:--with-http_ssl_module} \
+	--without-http_browser_module \
+	--http-log-path=%{_localstatedir}/log/%{name}/access.log \
+	--http-client-body-temp-path=%{_localstatedir}/cache/%{name}/client_body_temp \
+	--http-proxy-temp-path=%{_localstatedir}/cache/%{name}/proxy_temp \
+	--http-fastcgi-temp-path=%{_localstatedir}/cache/%{name}/fastcgi_temp \
+	--with-cc="%{__cc}" \
+	--with-cc-opt="%{rpmcflags}" \
+	--with-ld-opt="%{rpmldflags}" \
+	%{?debug:--with-debug}
+%{__make}
+mv -f objs/nginx contrib/nginx.light
+%endif
+
+%{__make} clean
 ./configure \
 	--prefix=%{_prefix} \
 	--sbin-path=%{_sbindir}/%{name} \
@@ -139,6 +293,7 @@ sh %{SOURCE2} /etc/mime.types
 	--with-ld-opt="%{rpmldflags}" \
 	%{?debug:--with-debug}
 %{__make}
+
 
 %install
 rm -rf $RPM_BUILD_ROOT
