@@ -1,5 +1,6 @@
 # TODO
 # - /etc/sysconfig/nginx file
+# - missing perl build/install requires
 # - prepare pld style like nginx.conf
 # - split into nginx-common, nginx, nginx-perl packages
 #
@@ -22,7 +23,7 @@ Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 Name:		nginx
 Version:	0.5.33
-Release:	0.1
+Release:	0.2
 License:	BSD-like
 Group:		Networking/Daemons
 Source0:	http://sysoev.ru/nginx/%{name}-%{version}.tar.gz
@@ -43,7 +44,9 @@ URL:		http://nginx.net/
 BuildRequires:	mailcap
 BuildRequires:	openssl-devel
 BuildRequires:	pcre-devel
+%{?with_perl:BuildRequires: perl-CGI}
 %{?with_perl:BuildRequires: perl-devel}
+%{?with_perl:BuildRequires: rpm-perlprov}
 BuildRequires:	rpmbuild(macros) >= 1.268
 BuildRequires:	zlib-devel
 Requires(post,preun):	/sbin/chkconfig
@@ -55,6 +58,7 @@ Requires(pre):	/usr/sbin/groupadd
 Requires(pre):	/usr/sbin/useradd
 Requires:	openssl
 Requires:	pcre
+%{?with_perl:BuildRequires: perl-devel}
 Requires:	rc-scripts >= 0.2.0
 Requires:	zlib
 Provides:	group(http)
@@ -108,6 +112,7 @@ prostej konfiguracji oraz małej "zasobożerności".
 #Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajno�~[ci
 #Group:		Applications/System
 #Requires:	nginx-common
+#Requires:	perl-mod_%{mod_name} = %{epoch}:%{version}-%{release}
 #Provides:	group(http)
 #Provides:	group(nginx)
 #Provides:	user(nginx)
