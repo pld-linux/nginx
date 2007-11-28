@@ -21,12 +21,12 @@
 Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 Name:		nginx
-Version:	0.5.32
+Version:	0.5.33
 Release:	0.1
 License:	BSD-like
 Group:		Networking/Daemons
 Source0:	http://sysoev.ru/nginx/%{name}-%{version}.tar.gz
-# Source0-md5:	0088269b8a59a146b0ba9c9ee29853bb
+# Source0-md5:	a78be74b4fd8e009545ef02488fcac86
 Source1:	%{name}.init
 Source2:	%{name}-mime.types.sh
 Source3:	http://www.nginx.eu/favicon.ico
@@ -85,55 +85,55 @@ opublikował źródła na licencji BSD. Mimo, że projekt jest ciągle
 w fazie beta, już zasłynął dzieki stabilności, bogactwu dodatków,
 prostej konfiguracji oraz małej "zasobożerności".
 
-%package light
-Summary:	High perfomance HTTP and reverse proxy server
-Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajno�~[ci
-Group:		Applications/System
-Requires:	nginx-common
-Provides:	group(http)
-Provides:	group(nginx)
-Provides:	user(nginx)
-Provides:	webserver
+#%package light
+#Summary:	High perfomance HTTP and reverse proxy server
+#Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajno�~[ci
+#Group:		Applications/System
+#Requires:	nginx-common
+#Provides:	group(http)
+#Provides:	group(nginx)
+#Provides:	user(nginx)
+#Provides:	webserver
 
-%description light
-The smallest, but also the fastest nginx edition. No additional
-modules, no perl support, no imap proxy
+#%description light
+#The smallest, but also the fastest nginx edition. No additional
+#modules, no perl support, no imap proxy
 
-%description light -l pl.UTF-8
-Najmniejsza i najszybsza wersja nginx. Bez wsparcia dla perla,
-dodatkowych modulow oraz imap proxy
+#%description light -l pl.UTF-8
+#Najmniejsza i najszybsza wersja nginx. Bez wsparcia dla perla,
+#dodatkowych modulow oraz imap proxy
 
-%package perl
-Summary:	High perfomance HTTP and reverse proxy server
-Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajno�~[ci
-Group:		Applications/System
-Requires:	nginx-common
-Provides:	group(http)
-Provides:	group(nginx)
-Provides:	user(nginx)
-Provides:	webserver
+#%package perl
+#Summary:	High perfomance HTTP and reverse proxy server
+#Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajno�~[ci
+#Group:		Applications/System
+#Requires:	nginx-common
+#Provides:	group(http)
+#Provides:	group(nginx)
+#Provides:	user(nginx)
+#Provides:	webserver
 
-%description perl
-Nginx with perl support. Mail modules not included.
+#%description perl
+#Nginx with perl support. Mail modules not included.
 
-%description perl -l pl.UTF-8
-Nignx z obsluga perla. Bez wsparcia dla modulow poczty.
+#%description perl -l pl.UTF-8
+#Nignx z obsluga perla. Bez wsparcia dla modulow poczty.
 
-%package mail
-Summary:	High perfomance HTTP and reverse proxy server
-Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajno�~[ci
-Group:		Applications/System
-Requires:	nginx-common
-Provides:	group(http)
-Provides:	group(nginx)
-Provides:	user(nginx)
-Provides:	webserver
+#%package mail
+#Summary:	High perfomance HTTP and reverse proxy server
+#Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajno�~[ci
+#Group:		Applications/System
+#Requires:	nginx-common
+#Provides:	group(http)
+#Provides:	group(nginx)
+#Provides:	user(nginx)
+#Provides:	webserver
 
-%description mail
-Nginx with mail support. Only mail modules included.
+#%description mail
+#Nginx with mail support. Only mail modules included.
 
-%description mail -l pl.UTF-8
-Nignx ze wsparciem tylko dla modulow poczty.
+#%description mail -l pl.UTF-8
+#Nignx ze wsparciem tylko dla modulow poczty.
 
 
 #%package common
@@ -248,6 +248,9 @@ mv -f objs/nginx contrib/nginx.mail
 	%{?with_status:--with-http_stub_status_module} \
 	%{?with_ssl:--with-http_ssl_module} \
 	--without-http_browser_module \
+	--without-mail_pop3_module \
+	--without-mail_imap_module \
+	--without-mail_smtp_module \
 	--http-log-path=%{_localstatedir}/log/%{name}/access.log \
 	--http-client-body-temp-path=%{_localstatedir}/cache/%{name}/client_body_temp \
 	--http-proxy-temp-path=%{_localstatedir}/cache/%{name}/proxy_temp \
