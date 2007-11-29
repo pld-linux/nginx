@@ -56,6 +56,7 @@ Requires(pre):	/bin/id
 Requires(pre):	/usr/bin/getgid
 Requires(pre):	/usr/sbin/groupadd
 Requires(pre):	/usr/sbin/useradd
+Requires:	%{name}-common = %{version}-%{release}
 Requires:	openssl
 Requires:	pcre
 Requires:	rc-scripts >= 0.2.0
@@ -65,6 +66,9 @@ Provides:	group(nginx)
 Provides:	user(nginx)
 Provides:	webserver
 Conflicts:	logrotate < 3.7-4
+Conflicts:	%{name}-light
+Conflicts:	%{name}-mail
+Conflicts:	%{name}-perl
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sysconfdir	/etc/%{name}
@@ -79,6 +83,9 @@ released the source code under a BSD-like license. Although still in
 beta, Nginx is known for its stability, rich feature set, simple
 configuration, and low resource consumption.
 
+This is standard nginx version, without perl support and imap, pop3,
+smtp proxy.
+
 %description -l pl.UTF-8
 Nginx ("engine x") jest wysokowydajnym serwerem HTTP, odwrotnym proxy
 a tak≈ºe IMAP/POP3 proxy. Nginx zosta≈Ç napisany przez Igora Sysoev'a
@@ -88,56 +95,138 @@ opublikowa≈Ç ≈∫r√≥d≈Ça na licencji BSD. Mimo, ≈ºe projekt jest ciƒÖgle
 w fazie beta, ju≈º zas≈ynƒ≈ dzieki stabilno≈i, bogactwu dodatk√≥w,
 prostej konfiguracji oraz ma≈ej "zasobo≈ºerno≈i".
 
+To jest standardowa wersja nginx, bez obs≥ugi perla oraz proxy dla
+imap, pop3, smtp.
+
 %package light
 Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajnoÔøΩ~[ci
-Group:		Applications/System
-Requires:	nginx-common
+License:	BSD-like
+Group:		Networking/Daemons
+URL:		http://nginx.net/
+Requires(post,preun):	/sbin/chkconfig
+Requires(postun):	/usr/sbin/groupdel
+Requires(postun):	/usr/sbin/userdel
+Requires:	%{name}-common = %{version}-%{release}
+Requires:	openssl
+Requires:	pcre
+Requires:	zlib
 Provides:	group(http)
 Provides:	group(nginx)
 Provides:	user(nginx)
 Provides:	webserver
+Conflicts:	%{name}
+Conflicts:	%{name}-mail
+Conflicts:	%{name}-perl
 
 %description light
+Nginx ("engine x") is a high-performance HTTP server and reverse
+proxy, as well as an IMAP/POP3 proxy server. Nginx was written by Igor
+Sysoev for Rambler.ru, Russia's second-most visited website, where it
+has been running in production for over two and a half years. Igor has
+released the source code under a BSD-like license. Although still in
+beta, Nginx is known for its stability, rich feature set, simple
+configuration, and low resource consumption.
+
 The smallest, but also the fastest nginx edition. No additional
-modules, no perl support, no imap, pop3, smtp proxy
+modules, no perl, no dav, no flv, no imap, pop3, smtp proxy.
 
 %description light -l pl.UTF-8
+Nginx ("engine x") jest wysokowydajnym serwerem HTTP, odwrotnym proxy
+a tak≈ºe IMAP/POP3 proxy. Nginx zosta≈<82> napisany przez Igora Sysoev'a
+na potrzeby serwisu Rambler.ru. Jest to drugi pod wzglƒ<99>dem ilo≈<9B>ci
+odwiedzin serwis w Rosji i dzia≈<82>a od ponad dw√≥ch i p√≥≈<82> roku. Igor
+opublikowa≈<82> ≈∫r√≥d≈<82>a na licencji BSD. Mimo, ≈ºe projekt jest ciƒ<85>gle
+w fazie beta, ju≈º zas≈ynƒ≈ dzieki stabilno≈i, bogactwu dodatk√≥w,
+prostej konfiguracji oraz ma≈ej "zasobo≈ºerno≈i".
+
 Najmniejsza i najszybsza wersja nginx. Bez wsparcia dla perla,
-dodatkowych modulow oraz imap, pop3, smtp proxy
+dav, flv oraz imap, pop3, smtp proxy.
 
 %package perl
 Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajnoÔøΩ~[ci
-Group:		Applications/System
-Requires:	nginx-common
+License:	BSD-like
+Group:		Networking/Daemons
+URL:            http://nginx.net/
+Requires(post,preun):	/sbin/chkconfig
+Requires(postun):	/usr/sbin/groupdel
+Requires(postun):	/usr/sbin/userdel
+Requires:	%{name}-common = %{version}-%{release}
+Requires:	openssl
 Requires:	perl-mod_%{mod_name} = %{epoch}:%{version}-%{release}
 Provides:	group(http)
 Provides:	group(nginx)
 Provides:	user(nginx)
 Provides:	webserver
+Conflicts:	%{name}
+Conflicts:	%{name}-light
+Conflicts:	%{name}-mail
 
 %description perl
+Nginx ("engine x") is a high-performance HTTP server and reverse
+proxy, as well as an IMAP/POP3 proxy server. Nginx was written by Igor
+Sysoev for Rambler.ru, Russia's second-most visited website, where it
+has been running in production for over two and a half years. Igor has
+released the source code under a BSD-like license. Although still in
+beta, Nginx is known for its stability, rich feature set, simple
+configuration, and low resource consumption.
+
 Nginx with perl support. Mail modules not included.
 
 %description perl -l pl.UTF-8
-Nignx z obsluga perla. Bez wsparcia dla modulow poczty.
+Nginx ("engine x") jest wysokowydajnym serwerem HTTP, odwrotnym proxy
+a tak≈ºe IMAP/POP3 proxy. Nginx zosta≈<82> napisany przez Igora Sysoev'a
+na potrzeby serwisu Rambler.ru. Jest to drugi pod wzglƒ<99>dem ilo≈<9B>ci
+odwiedzin serwis w Rosji i dzia≈<82>a od ponad dw√≥ch i p√≥≈<82> roku. Igor
+opublikowa≈<82> ≈∫r√≥d≈<82>a na licencji BSD. Mimo, ≈ºe projekt jest ciƒ<85>gle
+w fazie beta, ju≈º zas≈ynƒ≈ dzieki stabilno≈i, bogactwu dodatk√≥w,
+prostej konfiguracji oraz ma≈ej "zasobo≈ºerno≈i".
+
+Nginx z obsluga perla. Bez wsparcia dla modulow poczty.
 
 %package mail
 Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajnoÔøΩ~[ci
-Group:		Applications/System
-Requires:	nginx-common
+License:	BSD-like
+Group:		Networking/Daemons
+URL:		http://nginx.net/
+Requires(post,preun):	/sbin/chkconfig
+Requires(postun):	/usr/sbin/groupdel
+Requires(postun):	/usr/sbin/userdel
+Requires:	%{name}-common = %{version}-%{release}
+Requires:	openssl
+Requires:	pcre
+Requires:	zlib
 Provides:	group(http)
 Provides:	group(nginx)
 Provides:	user(nginx)
 Provides:	webserver
+Conflicts:	%{name}
+Conflicts:	%{name}-light
+Conflicts:	%{name}-perl
 
 %description mail
+Nginx ("engine x") is a high-performance HTTP server and reverse
+proxy, as well as an IMAP/POP3 proxy server. Nginx was written by Igor
+Sysoev for Rambler.ru, Russia's second-most visited website, where it
+has been running in production for over two and a half years. Igor has
+released the source code under a BSD-like license. Although still in
+beta, Nginx is known for its stability, rich feature set, simple
+configuration, and low resource consumption.
+
 Nginx with mail support. Only mail modules included.
 
 %description mail -l pl.UTF-8
-Nignx ze wsparciem tylko dla modulow poczty.
+Nginx ("engine x") jest wysokowydajnym serwerem HTTP, odwrotnym proxy
+a tak≈ºe IMAP/POP3 proxy. Nginx zosta≈<82> napisany przez Igora Sysoev'a
+na potrzeby serwisu Rambler.ru. Jest to drugi pod wzglƒ<99>dem ilo≈<9B>ci
+odwiedzin serwis w Rosji i dzia≈<82>a od ponad dw√≥ch i p√≥≈<82> roku. Igor
+opublikowa≈<82> ≈∫r√≥d≈<82>a na licencji BSD. Mimo, ≈ºe projekt jest ciƒ<85>gle
+w fazie beta, ju≈º zas≈ynƒ≈ dzieki stabilno≈i, bogactwu dodatk√≥w,
+prostej konfiguracji oraz ma≈ej "zasobo≈ºerno≈i".
+
+Nginx ze wsparciem tylko dla modulow poczty.
 
 
 %package common
@@ -146,14 +235,33 @@ Summary(pl.UTF-8):	Pliki konfiguracyjne i dokumentacja dla Nginx
 Group:		Networking/Daemons
 
 %description common
-Common files for nginx daemon
+Nginx ("engine x") is a high-performance HTTP server and reverse
+proxy, as well as an IMAP/POP3 proxy server. Nginx was written by Igor
+Sysoev for Rambler.ru, Russia's second-most visited website, where it
+has been running in production for over two and a half years. Igor has
+released the source code under a BSD-like license. Although still in
+beta, Nginx is known for its stability, rich feature set, simple
+configuration, and low resource consumption.
+
+Common files for nginx daemon.
 
 %description common -l pl.UTF-8
-Niezbedne pliki dla nginx
+Nginx ("engine x") jest wysokowydajnym serwerem HTTP, odwrotnym proxy
+a tak≈ºe IMAP/POP3 proxy. Nginx zosta≈<82> napisany przez Igora Sysoev'a
+na potrzeby serwisu Rambler.ru. Jest to drugi pod wzglƒ<99>dem ilo≈<9B>ci
+odwiedzin serwis w Rosji i dzia≈<82>a od ponad dw√≥ch i p√≥≈<82> roku. Igor
+opublikowa≈<82> ≈∫r√≥d≈<82>a na licencji BSD. Mimo, ≈ºe projekt jest ciƒ<85>gle
+w fazie beta, ju≈º zas≈ynƒ≈ dzieki stabilno≈i, bogactwu dodatk√≥w,
+prostej konfiguracji oraz ma≈ej "zasobo≈ºerno≈i".
+
+Niezbedne pliki dla nginx.
+
 %package -n monit-rc-nginx
 Summary:	Nginx  support for monit
 Summary(pl.UTF-8):	Wsparcie nginx dla monit
+License:	BSD-like
 Group:		Applications/System
+URL:		http://nginx.eu/
 Requires:	%{name} = %{version}-%{release}
 Requires:	monit
 
@@ -185,7 +293,6 @@ cp -f configure auto/
 	--lock-path=%{_localstatedir}/lock/subsys/%{name} \
 	--user=nginx \
 	--group=nginx \
-	--enable-fastcgi \
 	--with-http_perl_module \
 	--without-mail_pop3_module \
 	--without-mail_imap_module \
@@ -318,7 +425,6 @@ install -d $RPM_BUILD_ROOT/etc/rc.d/init.d \
 	$RPM_BUILD_ROOT{%{_localstatedir}/log/{%{name},archive/%{name}},%{_localstatedir}/cache/%{name}} \
 	$RPM_BUILD_ROOT%{_localstatedir}/lock/subsys/%{name} \
 	$RPM_BUILD_ROOT{%{_sbindir},%{_sysconfdir}} \
-	$RPM_BUILD_ROOT{%{perl_vendorarch},%{perl_vendorarch}/auto/%{name}} \
 	$RPM_BUILD_ROOT/etc/{logrotate.d,monit}
 
 install conf/* $RPM_BUILD_ROOT%{_sysconfdir}
@@ -331,10 +437,23 @@ install %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/proxy.conf
 install %{SOURCE5} $RPM_BUILD_ROOT/etc/monit/%{name}.monitrc
 install %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}/nginx.conf
 install %{SOURCE7} $RPM_BUILD_ROOT/etc/logrotate.d/%{name}
+install objs/%{name} $RPM_BUILD_ROOT%{_sbindir}/%{name}
+
+%if %{with light}
+install contrib/nginx.light $RPM_BUILD_ROOT%{_sbindir}/%{name}
+%endif
+
+%if %{with mail}
+install contrib/nginx.mail $RPM_BUILD_ROOT%{_sbindir}/%{name}
+%endif
+
+%if %{with perl}
+install -d $RPM_BUILD_ROOT{%{perl_vendorarch},%{perl_vendorarch}/auto/%{name}}
 install objs/src/http/modules/perl/nginx.pm $RPM_BUILD_ROOT%{perl_vendorarch}/%{name}.pm
 install objs/src/http/modules/perl/blib/arch/auto/nginx/nginx.so $RPM_BUILD_ROOT%{perl_vendorarch}/auto/%{name}/%{name}.so
 install objs/src/http/modules/perl/blib/arch/auto/nginx/nginx.bs $RPM_BUILD_ROOT%{perl_vendorarch}/auto/%{name}/%{name}.bs
-install objs/%{name} $RPM_BUILD_ROOT%{_sbindir}/%{name}
+install contrib/nginx.perl $RPM_BUILD_ROOT%{_sbindir}/%{name}
+%endif
 
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/*.default
 rm -rf $RPM_BUILD_ROOT%{_prefix}/html
@@ -373,6 +492,10 @@ fi
 
 %files
 %defattr(644,root,root,755)
+%attr(755,root,root) %{_sbindir}/%{name}
+
+%files common
+%defattr(644,root,root,755)
 %doc CHANGES LICENSE README html/index.html conf/nginx.conf objs/src/http/modules/perl/blib/man3/nginx.3pm
 %doc %lang(ru) CHANGES.ru
 %attr(754,root,root) /etc/rc.d/init.d/%{name}
@@ -386,16 +509,33 @@ fi
 %attr(640,root,root) %{_sysconfdir}/*[_-]*
 %attr(640,root,root) %{_sysconfdir}/proxy.conf
 %attr(640,root,root) %{_sysconfdir}/mime.types
-%attr(755,root,root) %{_sbindir}/%{name}
-%dir %{perl_vendorarch}/auto/%{name}
-%attr(755,root,root) %{perl_vendorarch}/auto/%{name}/%{name}.so
-%attr(700,root,root) %{perl_vendorarch}/auto/%{name}/%{name}.bs
-%attr(700,root,root) %{perl_vendorarch}/%{name}.pm
 %attr(770,root,%{name}) /var/cache/%{name}
 %attr(750,root,root) %dir /var/log/archive/%{name}
 %attr(750,%{name},logs) /var/log/%{name}
 %config(noreplace,missingok) %verify(not md5 mtime size) %{_nginxdir}/html/*
 %config(noreplace,missingok) %verify(not md5 mtime size) %{_nginxdir}/errors/*
+
+%if %{with mail}
+%files mail
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_sbindir}/%{name}
+%endif
+
+%if %{with light}
+%files light
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_sbindir}/%{name}
+%endif
+
+%if %{with perl}
+%files perl
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_sbindir}/%{name}
+%dir %{perl_vendorarch}/auto/%{name}
+%attr(755,root,root) %{perl_vendorarch}/auto/%{name}/%{name}.so
+%attr(700,root,root) %{perl_vendorarch}/auto/%{name}/%{name}.bs
+%attr(700,root,root) %{perl_vendorarch}/%{name}.pm
+%endif
 
 %files -n monit-rc-nginx
 %defattr(644,root,root,755)
