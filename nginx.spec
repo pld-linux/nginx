@@ -58,7 +58,6 @@ Requires(pre):	/usr/sbin/groupadd
 Requires(pre):	/usr/sbin/useradd
 Requires:	openssl
 Requires:	pcre
-%{?with_perl:BuildRequires: perl-devel}
 Requires:	rc-scripts >= 0.2.0
 Requires:	zlib
 Provides:	group(http)
@@ -86,65 +85,65 @@ a także IMAP/POP3 proxy. Nginx został napisany przez Igora Sysoev'a
 na potrzeby serwisu Rambler.ru. Jest to drugi pod względem ilości
 odwiedzin serwis w Rosji i działa od ponad dwóch i pół roku. Igor
 opublikował źródła na licencji BSD. Mimo, że projekt jest ciągle
-w fazie beta, już zasłynął dzieki stabilności, bogactwu dodatków,
-prostej konfiguracji oraz małej "zasobożerności".
+w fazie beta, już zas�yn�� dzieki stabilno�i, bogactwu dodatków,
+prostej konfiguracji oraz ma�ej "zasobożerno�i".
 
-#%package light
-#Summary:	High perfomance HTTP and reverse proxy server
-#Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajno�~[ci
-#Group:		Applications/System
-#Requires:	nginx-common
-#Provides:	group(http)
-#Provides:	group(nginx)
-#Provides:	user(nginx)
-#Provides:	webserver
+%package light
+Summary:	High perfomance HTTP and reverse proxy server
+Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajno�~[ci
+Group:		Applications/System
+Requires:	nginx-common
+Provides:	group(http)
+Provides:	group(nginx)
+Provides:	user(nginx)
+Provides:	webserver
 
-#%description light
-#The smallest, but also the fastest nginx edition. No additional
-#modules, no perl support, no imap proxy
+%description light
+The smallest, but also the fastest nginx edition. No additional
+modules, no perl support, no imap, pop3, smtp proxy
 
-#%description light -l pl.UTF-8
-#Najmniejsza i najszybsza wersja nginx. Bez wsparcia dla perla,
-#dodatkowych modulow oraz imap proxy
+%description light -l pl.UTF-8
+Najmniejsza i najszybsza wersja nginx. Bez wsparcia dla perla,
+dodatkowych modulow oraz imap, pop3, smtp proxy
 
-#%package perl
-#Summary:	High perfomance HTTP and reverse proxy server
-#Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajno�~[ci
-#Group:		Applications/System
-#Requires:	nginx-common
-#Requires:	perl-mod_%{mod_name} = %{epoch}:%{version}-%{release}
-#Provides:	group(http)
-#Provides:	group(nginx)
-#Provides:	user(nginx)
-#Provides:	webserver
+%package perl
+Summary:	High perfomance HTTP and reverse proxy server
+Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajno�~[ci
+Group:		Applications/System
+Requires:	nginx-common
+Requires:	perl-mod_%{mod_name} = %{epoch}:%{version}-%{release}
+Provides:	group(http)
+Provides:	group(nginx)
+Provides:	user(nginx)
+Provides:	webserver
 
-#%description perl
-#Nginx with perl support. Mail modules not included.
+%description perl
+Nginx with perl support. Mail modules not included.
 
-#%description perl -l pl.UTF-8
-#Nignx z obsluga perla. Bez wsparcia dla modulow poczty.
+%description perl -l pl.UTF-8
+Nignx z obsluga perla. Bez wsparcia dla modulow poczty.
 
-#%package mail
-#Summary:	High perfomance HTTP and reverse proxy server
-#Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajno�~[ci
-#Group:		Applications/System
-#Requires:	nginx-common
-#Provides:	group(http)
-#Provides:	group(nginx)
-#Provides:	user(nginx)
-#Provides:	webserver
+%package mail
+Summary:	High perfomance HTTP and reverse proxy server
+Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajno�~[ci
+Group:		Applications/System
+Requires:	nginx-common
+Provides:	group(http)
+Provides:	group(nginx)
+Provides:	user(nginx)
+Provides:	webserver
 
-#%description mail
-#Nginx with mail support. Only mail modules included.
+%description mail
+Nginx with mail support. Only mail modules included.
 
-#%description mail -l pl.UTF-8
-#Nignx ze wsparciem tylko dla modulow poczty.
+%description mail -l pl.UTF-8
+Nignx ze wsparciem tylko dla modulow poczty.
 
 
-#%package common
-#Summary:	Configuration files and documentation for Nginx
-#Summary(pl.UTF-8):	Pliki konfiguracyjne i dokumentacja dla Nginx
-#Group:		Networking/Daemons
+%package common
+Summary:	Configuration files and documentation for Nginx
+Summary(pl.UTF-8):	Pliki konfiguracyjne i dokumentacja dla Nginx
+Group:		Networking/Daemons
 
 %package -n monit-rc-nginx
 Summary:	Nginx  support for monit
@@ -181,7 +180,11 @@ cp -f configure auto/
 	--lock-path=%{_localstatedir}/lock/subsys/%{name} \
 	--user=nginx \
 	--group=nginx \
+	--enable-fastcgi \
 	--with-http_perl_module \
+	--without-mail_pop3_module \
+	--without-mail_imap_module \
+	--without-mail_smtp_module \
 	%{?with_addition:--with-http_addition_module} \
 	%{?with_dav:--with-http_dav_module} \
 	%{?with_flv:--with-http_flv_module} \
