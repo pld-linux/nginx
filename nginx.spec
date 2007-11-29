@@ -100,7 +100,7 @@ imap, pop3, smtp.
 
 %package light
 Summary:	High perfomance HTTP and reverse proxy server
-Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajnoÔøΩ~[ci
+Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajno≈õci
 License:	BSD-like
 Group:		Networking/Daemons
 URL:		http://nginx.net/
@@ -128,24 +128,24 @@ released the source code under a BSD-like license. Although still in
 beta, Nginx is known for its stability, rich feature set, simple
 configuration, and low resource consumption.
 
-The smallest, but also the fastest nginx edition. No additional
-modules, no perl, no dav, no flv, no imap, pop3, smtp proxy.
+The smallest, but also the fastest Nginx edition. No additional
+modules, no Perl, no DAV, no FLV, no IMAP, POP3, SMTP proxy.
 
 %description light -l pl.UTF-8
 Nginx ("engine x") jest wysokowydajnym serwerem HTTP, odwrotnym proxy
-a tak≈ºe IMAP/POP3 proxy. Nginx zosta≈<82> napisany przez Igora Sysoev'a
-na potrzeby serwisu Rambler.ru. Jest to drugi pod wzglƒ<99>dem ilo≈<9B>ci
-odwiedzin serwis w Rosji i dzia≈<82>a od ponad dw√≥ch i p√≥≈<82> roku. Igor
-opublikowa≈<82> ≈∫r√≥d≈<82>a na licencji BSD. Mimo, ≈ºe projekt jest ciƒ<85>gle
+a tak≈ºe IMAP/POP3 proxy. Nginx zosta≈Ç napisany przez Igora Sysoev'a
+na potrzeby serwisu Rambler.ru. Jest to drugi pod wzglƒôdem ilo≈õci
+odwiedzin serwis w Rosji i dzia≈Ça od ponad dw√≥ch i p√≥≈Ç roku. Igor
+opublikowa≈Ç ≈∫r√≥d≈Ça na licencji BSD. Mimo, ≈ºe projekt jest ciƒÖgle
 w fazie beta, ju≈º zas≈ynƒ≈ dzieki stabilno≈i, bogactwu dodatk√≥w,
 prostej konfiguracji oraz ma≈ej "zasobo≈ºerno≈i".
 
-Najmniejsza i najszybsza wersja nginx. Bez wsparcia dla perla,
-dav, flv oraz imap, pop3, smtp proxy.
+Najmniejsza i najszybsza wersja Nginx. Bez wsparcia dla Perla,
+DAV, FLV oraz IMAP, POP3, SMTP proxy.
 
 %package perl
 Summary:	High perfomance HTTP and reverse proxy server
-Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajnoÔøΩ~[ci
+Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajno≈õci
 License:	BSD-like
 Group:		Networking/Daemons
 URL:		http://nginx.net/
@@ -171,22 +171,22 @@ released the source code under a BSD-like license. Although still in
 beta, Nginx is known for its stability, rich feature set, simple
 configuration, and low resource consumption.
 
-Nginx with perl support. Mail modules not included.
+Nginx with Perl support. Mail modules not included.
 
 %description perl -l pl.UTF-8
 Nginx ("engine x") jest wysokowydajnym serwerem HTTP, odwrotnym proxy
-a tak≈ºe IMAP/POP3 proxy. Nginx zosta≈<82> napisany przez Igora Sysoev'a
-na potrzeby serwisu Rambler.ru. Jest to drugi pod wzglƒ<99>dem ilo≈<9B>ci
-odwiedzin serwis w Rosji i dzia≈<82>a od ponad dw√≥ch i p√≥≈<82> roku. Igor
-opublikowa≈<82> ≈∫r√≥d≈<82>a na licencji BSD. Mimo, ≈ºe projekt jest ciƒ<85>gle
+a tak≈ºe IMAP/POP3 proxy. Nginx zosta≈Ç napisany przez Igora Sysoev'a
+na potrzeby serwisu Rambler.ru. Jest to drugi pod wzglƒôdem ilo≈õci
+odwiedzin serwis w Rosji i dzia≈Ça od ponad dw√≥ch i p√≥≈Ç roku. Igor
+opublikowa≈Ç ≈∫r√≥d≈Ça na licencji BSD. Mimo, ≈ºe projekt jest ciƒÖgle
 w fazie beta, ju≈º zas≈ynƒ≈ dzieki stabilno≈i, bogactwu dodatk√≥w,
 prostej konfiguracji oraz ma≈ej "zasobo≈ºerno≈i".
 
-Nginx z obsluga perla. Bez wsparcia dla modulow poczty.
+Nignx z obs≈ÇugƒÖ Perla. Bez wsparcia dla modu≈Ç√≥w poczty.
 
 %package mail
 Summary:	High perfomance HTTP and reverse proxy server
-Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajnoÔøΩ~[ci
+Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajno≈õci
 License:	BSD-like
 Group:		Networking/Daemons
 URL:		http://nginx.net/
@@ -218,15 +218,14 @@ Nginx with mail support. Only mail modules included.
 
 %description mail -l pl.UTF-8
 Nginx ("engine x") jest wysokowydajnym serwerem HTTP, odwrotnym proxy
-a tak≈ºe IMAP/POP3 proxy. Nginx zosta≈<82> napisany przez Igora Sysoev'a
-na potrzeby serwisu Rambler.ru. Jest to drugi pod wzglƒ<99>dem ilo≈<9B>ci
-odwiedzin serwis w Rosji i dzia≈<82>a od ponad dw√≥ch i p√≥≈<82> roku. Igor
-opublikowa≈<82> ≈∫r√≥d≈<82>a na licencji BSD. Mimo, ≈ºe projekt jest ciƒ<85>gle
+a tak≈ºe IMAP/POP3 proxy. Nginx zosta≈Ç napisany przez Igora Sysoev'a
+na potrzeby serwisu Rambler.ru. Jest to drugi pod wzglƒôdem ilo≈õci
+odwiedzin serwis w Rosji i dzia≈Ça od ponad dw√≥ch i p√≥≈Ç roku. Igor
+opublikowa≈Ç ≈∫r√≥d≈Ça na licencji BSD. Mimo, ≈ºe projekt jest ciƒÖgle
 w fazie beta, ju≈º zas≈ynƒ≈ dzieki stabilno≈i, bogactwu dodatk√≥w,
 prostej konfiguracji oraz ma≈ej "zasobo≈ºerno≈i".
 
-Nginx ze wsparciem tylko dla modulow poczty.
-
+Nginx ze wsparciem tylko dla modu≈Ç√≥w poczty.
 
 %package common
 Summary:	Configuration files and documentation for Nginx
@@ -253,22 +252,22 @@ released the source code under a BSD-like license. Although still in
 beta, Nginx is known for its stability, rich feature set, simple
 configuration, and low resource consumption.
 
-Common files for nginx daemon.
+Common files for Nginx daemon.
 
 %description common -l pl.UTF-8
 Nginx ("engine x") jest wysokowydajnym serwerem HTTP, odwrotnym proxy
-a tak≈ºe IMAP/POP3 proxy. Nginx zosta≈<82> napisany przez Igora Sysoev'a
-na potrzeby serwisu Rambler.ru. Jest to drugi pod wzglƒ<99>dem ilo≈<9B>ci
-odwiedzin serwis w Rosji i dzia≈<82>a od ponad dw√≥ch i p√≥≈<82> roku. Igor
-opublikowa≈<82> ≈∫r√≥d≈<82>a na licencji BSD. Mimo, ≈ºe projekt jest ciƒ<85>gle
+a tak≈ºe IMAP/POP3 proxy. Nginx zosta≈Ç napisany przez Igora Sysoev'a
+na potrzeby serwisu Rambler.ru. Jest to drugi pod wzglƒôdem ilo≈õci
+odwiedzin serwis w Rosji i dzia≈Ça od ponad dw√≥ch i p√≥≈Ç roku. Igor
+opublikowa≈Ç ≈∫r√≥d≈Ça na licencji BSD. Mimo, ≈ºe projekt jest ciƒÖgle
 w fazie beta, ju≈º zas≈ynƒ≈ dzieki stabilno≈i, bogactwu dodatk√≥w,
 prostej konfiguracji oraz ma≈ej "zasobo≈ºerno≈i".
 
-Niezbedne pliki dla nginx.
+Niezbedne pliki dla Nginx.
 
 %package -n monit-rc-nginx
-Summary:	Nginx  support for monit
-Summary(pl.UTF-8):	Wsparcie nginx dla monit
+Summary:	Nginx support for monit
+Summary(pl.UTF-8):	Wsparcie Nginx dla monit
 License:	BSD-like
 Group:		Applications/System
 URL:		http://nginx.eu/
@@ -276,11 +275,10 @@ Requires:	%{name} = %{version}-%{release}
 Requires:	monit
 
 %description -n monit-rc-nginx
-monitrc file for monitoring nginx webserver server.
+monitrc file for monitoring Nginx webserver server.
 
 %description -n monit-rc-nginx -l pl.UTF-8
-Plik monitrc do monitorowania serwera www nginx.
-
+Plik monitrc do monitorowania serwera WWW Nginx.
 
 %prep
 %setup -q
