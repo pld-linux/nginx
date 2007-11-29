@@ -328,10 +328,10 @@ mv -f objs/nginx contrib/nginx.perl
 mv -f objs/src/http/modules/perl/blib/arch/auto/nginx/nginx.bs contrib/nginx.bs
 mv -f objs/src/http/modules/perl/blib/arch/auto/nginx/nginx.so contrib/nginx.so
 mv -f objs/src/http/modules/perl/nginx.pm contrib/nginx.pm
+%{__make} clean
 %endif
 
 %if %{with mail}
-%{__make} clean
 ./configure \
 	--prefix=%{_prefix} \
 	--sbin-path=%{_sbindir}/%{name} \
@@ -358,10 +358,10 @@ mv -f objs/src/http/modules/perl/nginx.pm contrib/nginx.pm
 	%{?debug:--with-debug}
 %{__make}
 mv -f objs/nginx contrib/nginx.mail
+%{__make} clean
 %endif
 
 %if %{with light}
-%{__make} clean
 ./configure \
 	--prefix=%{_prefix} \
 	--sbin-path=%{_sbindir}/%{name} \
@@ -391,6 +391,7 @@ mv -f objs/nginx contrib/nginx.mail
 	%{?debug:--with-debug}
 %{__make}
 mv -f objs/nginx contrib/nginx.light
+%{__make} clean
 %endif
 
 %{__make} clean
