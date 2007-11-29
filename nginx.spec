@@ -145,6 +145,11 @@ Summary:	Configuration files and documentation for Nginx
 Summary(pl.UTF-8):	Pliki konfiguracyjne i dokumentacja dla Nginx
 Group:		Networking/Daemons
 
+%description common
+Common files for nginx daemon
+
+%description common -l pl.UTF-8
+Niezbedne pliki dla nginx
 %package -n monit-rc-nginx
 Summary:	Nginx  support for monit
 Summary(pl.UTF-8):	Wsparcie nginx dla monit
