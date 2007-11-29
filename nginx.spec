@@ -11,6 +11,7 @@
 %bcond_without	addition	# adds module
 %bcond_without	dav		# WebDAV
 %bcond_without	flv		# FLV stream
+%bcond_without	sub		# ngx_http_sub_module
 %bcond_without	poll		# poll
 %bcond_without	realip		# real ip (behind proxy)
 %bcond_without	rtsig		# rtsig
@@ -23,7 +24,7 @@ Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 Name:		nginx
 Version:	0.5.33
-Release:	0.2
+Release:	0.3
 License:	BSD-like
 Group:		Networking/Daemons
 Source0:	http://sysoev.ru/nginx/%{name}-%{version}.tar.gz
@@ -148,7 +149,7 @@ Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajno�~[ci
 License:	BSD-like
 Group:		Networking/Daemons
-URL:            http://nginx.net/
+URL:		http://nginx.net/
 Requires(post,preun):	/sbin/chkconfig
 Requires(postun):	/usr/sbin/groupdel
 Requires(postun):	/usr/sbin/userdel
@@ -232,7 +233,18 @@ Nginx ze wsparciem tylko dla modulow poczty.
 %package common
 Summary:	Configuration files and documentation for Nginx
 Summary(pl.UTF-8):	Pliki konfiguracyjne i dokumentacja dla Nginx
+License:	BSD-like
 Group:		Networking/Daemons
+URL:		http://nginx.net/
+Requires(post,preun):	/sbin/chkconfig
+Requires(postun):	/usr/sbin/groupdel
+Requires(postun):	/usr/sbin/userdel
+Requires(pre):	/bin/id
+Requires(pre):	/usr/bin/getgid
+Requires(pre):	/usr/sbin/groupadd
+Requires(pre):	/usr/sbin/useradd
+Requires:	rc-scripts >= 0.2.0
+Conflicts:	logrotate < 3.7-4
 
 %description common
 Nginx ("engine x") is a high-performance HTTP server and reverse
@@ -300,6 +312,7 @@ cp -f configure auto/
 	%{?with_addition:--with-http_addition_module} \
 	%{?with_dav:--with-http_dav_module} \
 	%{?with_flv:--with-http_flv_module} \
+	%{?with_sub:--with-http_sub_module} \
 	%{?with_poll:--with-poll_module} \
 	%{?with_realip:--with-http_realip_module} \
 	%{?with_rtsig:--with-rtsig_module} \
@@ -316,6 +329,9 @@ cp -f configure auto/
 	--with-ld-opt="%{rpmldflags}"
 %{__make}
 mv -f objs/nginx contrib/nginx.perl
+mv -f objs/src/http/modules/perl/blib/arch/auto/nginx/nginx.bs contrib/nginx.bs
+mv -f objs/src/http/modules/perl/blib/arch/auto/nginx/nginx.so contrib/nginx.so
+mv -f objs/src/http/modules/perl/nginx.pm contrib/nginx.pm
 %endif
 
 %if %{with mail}
@@ -332,12 +348,10 @@ mv -f objs/nginx contrib/nginx.perl
 	--with-imap \
 	--with-mail \
 	--with-mail_ssl_module \
-	%{?with_addition:--with-http_addition_module} \
+	--without-http \
 	%{?with_poll:--with-poll_module} \
-	%{?with_realip:--with-http_realip_module} \
 	%{?with_rtsig:--with-rtsig_module} \
 	%{?with_select:--with-select_module} \
-	%{!?with_http_browser:--without-http_browser_module} \
 	--http-log-path=%{_localstatedir}/log/%{name}/access.log \
 	--http-client-body-temp-path=%{_localstatedir}/cache/%{name}/client_body_temp \
 	--http-proxy-temp-path=%{_localstatedir}/cache/%{name}/proxy_temp \
@@ -396,10 +410,7 @@ mv -f objs/nginx contrib/nginx.light
 	%{?with_addition:--with-http_addition_module} \
 	%{?with_dav:--with-http_dav_module} \
 	%{?with_flv:--with-http_flv_module} \
-	%{?with_imap:--with-imap} \
-	%{?with_mail:--with-mail} \
-	%{?with_mail:--with-mail_ssl_module} \
-	%{?with_perl:--with-http_perl_module} \
+	%{?with_sub:--with-http_sub_module} \
 	%{?with_poll:--with-poll_module} \
 	%{?with_realip:--with-http_realip_module} \
 	%{?with_rtsig:--with-rtsig_module} \
@@ -449,9 +460,9 @@ install contrib/nginx.mail $RPM_BUILD_ROOT%{_sbindir}/%{name}
 
 %if %{with perl}
 install -d $RPM_BUILD_ROOT{%{perl_vendorarch},%{perl_vendorarch}/auto/%{name}}
-install objs/src/http/modules/perl/nginx.pm $RPM_BUILD_ROOT%{perl_vendorarch}/%{name}.pm
-install objs/src/http/modules/perl/blib/arch/auto/nginx/nginx.so $RPM_BUILD_ROOT%{perl_vendorarch}/auto/%{name}/%{name}.so
-install objs/src/http/modules/perl/blib/arch/auto/nginx/nginx.bs $RPM_BUILD_ROOT%{perl_vendorarch}/auto/%{name}/%{name}.bs
+install contrib/nginx.pm $RPM_BUILD_ROOT%{perl_vendorarch}/%{name}.pm
+install contrib/nginx.so $RPM_BUILD_ROOT%{perl_vendorarch}/auto/%{name}/%{name}.so
+install contrib/nginx.bs $RPM_BUILD_ROOT%{perl_vendorarch}/auto/%{name}/%{name}.bs
 install contrib/nginx.perl $RPM_BUILD_ROOT%{_sbindir}/%{name}
 %endif
 
