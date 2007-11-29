@@ -2,7 +2,6 @@
 # - /etc/sysconfig/nginx file
 # - missing perl build/install requires
 # - prepare pld style like nginx.conf
-# - split into nginx-common, nginx, nginx-perl packages
 #
 # Conditional build for nginx:
 %bcond_without	light		# don't build light version
@@ -24,7 +23,7 @@ Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 Name:		nginx
 Version:	0.5.33
-Release:	0.3
+Release:	0.5
 License:	BSD-like
 Group:		Networking/Daemons
 Source0:	http://sysoev.ru/nginx/%{name}-%{version}.tar.gz
@@ -155,7 +154,6 @@ Requires(postun):	/usr/sbin/groupdel
 Requires(postun):	/usr/sbin/userdel
 Requires:	%{name}-common = %{version}-%{release}
 Requires:	openssl
-Requires:	perl-mod_%{mod_name} = %{epoch}:%{version}-%{release}
 Provides:	group(http)
 Provides:	group(nginx)
 Provides:	user(nginx)
@@ -472,13 +470,13 @@ rm -rf $RPM_BUILD_ROOT%{_prefix}/html
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%pre
+%pre common
 %groupadd -r -g 213 %{name}
 %groupadd -g 51 http
 %useradd -r -u 213 -d /usr/share/empty -s /bin/false -c "Nginx HTTP User" -g %{name} %{name}
 %addusertogroup %{name} http
 
-%post
+%post common
 for a in access.log error.log; do
 	if [ ! -f /var/log/%{name}/$a ]; then
 		touch /var/log/%{name}/$a
@@ -486,6 +484,20 @@ for a in access.log error.log; do
 		chmod 644 /var/log/%{name}/$a
 	fi
 done
+
+%pre
+/sbin/chkconfig --add %{name}
+%service %{name} restart
+
+%pre light
+/sbin/chkconfig --add %{name}
+%service %{name} restart
+
+%pre perl
+/sbin/chkconfig --add %{name}
+%service %{name} restart
+
+%pre mail
 /sbin/chkconfig --add %{name}
 %service %{name} restart
 
@@ -495,7 +507,25 @@ if [ "$1" = "0" ]; then
 	/sbin/chkconfig --del %{name}
 fi
 
-%postun
+%preun light
+if [ "$1" = "0" ]; then
+	%service -q %{name} stop
+	/sbin/chkconfig --del %{name}
+fi
+
+%preun perl
+if [ "$1" = "0" ]; then
+	%service -q %{name} stop
+	/sbin/chkconfig --del %{name}
+fi
+
+%preun mail
+if [ "$1" = "0" ]; then
+	%service -q %{name} stop
+	/sbin/chkconfig --del %{name}
+fi
+
+%postun common
 if [ "$1" = "0" ]; then
 	%userremove %{name}
 	%groupremove %{name}
@@ -507,7 +537,7 @@ fi
 
 %files common
 %defattr(644,root,root,755)
-%doc CHANGES LICENSE README html/index.html conf/nginx.conf objs/src/http/modules/perl/blib/man3/nginx.3pm
+%doc CHANGES LICENSE README html/index.html conf/nginx.conf 
 %doc %lang(ru) CHANGES.ru
 %attr(754,root,root) /etc/rc.d/init.d/%{name}
 %dir %attr(754,root,root) %{_sysconfdir}
