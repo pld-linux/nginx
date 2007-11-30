@@ -24,7 +24,7 @@ Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 Name:		nginx
 Version:	0.5.33
-Release:	0.7
+Release:	0.8
 License:	BSD-like
 Group:		Networking/Daemons
 Source0:	http://sysoev.ru/nginx/%{name}-%{version}.tar.gz
@@ -46,8 +46,8 @@ Source12:	%{name}-perl.monitrc
 Source13:	%{name}-perl.init
 Source14:	%{name}-standard.conf
 Source15:	%{name}-standard.monitrc
-Source15:	%{name}-standard.init
-Source16:	%{name}-mime.types.sh
+Source16:	%{name}-standard.init
+Source17:	%{name}-mime.types.sh
 Patch0:		%{name}-config.patch
 URL:		http://nginx.net/
 BuildRequires:	mailcap
@@ -121,9 +121,6 @@ Provides:	group(nginx)
 Provides:	nginx-daemon
 Provides:	user(nginx)
 Provides:	webserver
-#Conflicts:	%{name}
-#Conflicts:	%{name}-mail
-#Conflicts:	%{name}-perl
 
 %description light
 The smallest, but also the fastest Nginx edition. No additional
@@ -149,9 +146,6 @@ Provides:	group(nginx)
 Provides:       nginx-daemon
 Provides:	user(nginx)
 Provides:	webserver
-#Conflicts:	%{name}
-#Conflicts:	%{name}-light
-#Conflicts:	%{name}-mail
 
 %description perl
 Nginx with Perl support. Mail modules not included.
@@ -177,9 +171,6 @@ Provides:	group(nginx)
 Provides:       nginx-daemon
 Provides:	user(nginx)
 Provides:	webserver
-#Conflicts:	%{name}
-#Conflicts:	%{name}-light
-#Conflicts:	%{name}-perl
 
 %description mail
 Nginx with mail support. Only mail modules included.
@@ -244,7 +235,7 @@ Plik monitrc do monitorowania serwera WWW Nginx.
 %patch0 -p0
 
 # build mime.types.conf
-#sh %{SOURCE16} /etc/mime.types
+#sh %{SOURCE17} /etc/mime.types
 
 %build
 # NB: not autoconf generated configure
@@ -391,7 +382,8 @@ install -d $RPM_BUILD_ROOT/etc/rc.d/init.d \
 	$RPM_BUILD_ROOT{%{_sbindir},%{_sysconfdir}} \
 	$RPM_BUILD_ROOT/etc/{logrotate.d,monit}
 
-#install conf/* $RPM_BUILD_ROOT%{_sysconfdir}
+install conf/* $RPM_BUILD_ROOT%{_sysconfdir}
+install conf/fastcgi_params $RPM_BUILD_ROOT%{_sysconfdir}/fastcgi.params
 install html/index.html $RPM_BUILD_ROOT%{_nginxdir}/html
 install html/50x.html $RPM_BUILD_ROOT%{_nginxdir}/errors
 install %{SOURCE1} $RPM_BUILD_ROOT%{_nginxdir}/html/favicon.ico
@@ -444,10 +436,18 @@ rm -rf $RPM_BUILD_ROOT
 for a in access.log error.log; do
 	if [ ! -f /var/log/%{name}/nginx-standard_$a ]; then
 		touch /var/log/%{name}/nginx-standard_$a
-		chown nginx:nginx /var/log/%{name}/nginx-standard_$a
+		chown nginx:nginx /var/log/%{name}/nginx-standard_$a	
 		chmod 644 /var/log/%{name}/nginx-standard_$a
 	fi
 done
+if [ "$1" = "1" ]; then
+	/sbin/chkconfig --add %{name}-standard
+	if [ -f /var/lock/subsys/%{name}-standard ]; then
+		%service %{name}-standard restart 1>&2
+	else
+		echo "Run \"/etc/rc.d/init.d/nginx-standard start\" to start nginx daemon."
+	fi
+fi
 
 %post light
 for a in access.log error.log; do
@@ -457,6 +457,14 @@ for a in access.log error.log; do
 		chmod 644 /var/log/%{name}/nginx-light_$a
 	fi
 done
+if [ "$1" = "1" ]; then
+	/sbin/chkconfig --add %{name}-light
+	if [ -f /var/lock/subsys/%{name}-light ]; then
+		%service %{name}-light restart 1>&2
+	else
+		echo "Run \"/etc/rc.d/init.d/nginx-light start\" to start nginx daemon."
+	fi
+fi
 
 %post perl
 for a in access.log error.log; do
@@ -466,6 +474,14 @@ for a in access.log error.log; do
 		chmod 644 /var/log/%{name}/nginx-perl_$a
 	fi
 done
+if [ "$1" = "1" ]; then
+	/sbin/chkconfig --add %{name}-perl
+	if [ -f /var/lock/subsys/%{name}-perl ]; then
+		%service %{name}-perl restart 1>&2
+	else
+		echo "Run \"/etc/rc.d/init.d/nginx-perl start\" to start nginx daemon."
+	fi
+fi
 
 %post mail
 for a in access.log error.log; do
@@ -475,44 +491,44 @@ for a in access.log error.log; do
 		chmod 644 /var/log/%{name}/nginx-mail_$a
 	fi
 done
-
-%pre standard
-/sbin/chkconfig --add %{name}-standard
-%service %{name}-standard restart
-
-%pre light
-/sbin/chkconfig --add %{name}-light
-%service %{name}-light restart
-
-%pre perl
-/sbin/chkconfig --add %{name}-perl
-%service %{name}-perl restart
-
-%pre mail
-/sbin/chkconfig --add %{name}-mail
-%service %{name}-mail restart
+if [ "$1" = "1" ]; then
+	/sbin/chkconfig --add %{name}-mail
+	if [ -f /var/lock/subsys/%{name}-mail ]; then
+		%service %{name}-mail restart 1>&2
+	else
+		echo "Run \"/etc/rc.d/init.d/nginx-mail start\" to start nginx daemon."
+	fi
+fi
 
 %preun standard
-if [ "$1" = "0" ]; then
-	%service -q %{name}-standard stop
+if [ "$1" = "0" ];then
+	if [ -f /var/lock/subsys/%{name}-standard ]; then
+		%service -q %{name}-standard stop 
+	fi
 	/sbin/chkconfig --del %{name}-standard
 fi
 
 %preun light
 if [ "$1" = "0" ]; then
-	%service -q %{name}-light stop
+	if [ -f /var/lock/subsys/%{name}-light ]; then
+		%service -q %{name}-light stop
+	fi
 	/sbin/chkconfig --del %{name}-light
 fi
 
 %preun perl
 if [ "$1" = "0" ]; then
-	%service -q %{name}-perl stop
+	if [ -f /var/lock/subsys/%{name}-perl ]; then
+		%service -q %{name}-perl stop
+	fi
 	/sbin/chkconfig --del %{name}-perl
 fi
 
 %preun mail
 if [ "$1" = "0" ]; then
-	%service -q %{name}-mail stop
+	if [ -f /var/lock/subsys/%{name}-mail ]; then
+		%service -q %{name}-mail stop
+	fi
 	/sbin/chkconfig --del %{name}-mail
 fi
 
