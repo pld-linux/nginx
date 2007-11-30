@@ -1,0 +1,32 @@
+check host nginx-mail with address 127.0.0.1
+	group nginx
+	if failed host 127.0.0.1 port 25 type TCP protocol smtp for 2 cycles then alert
+	if failed host 127.0.0.1 port 110 type TCP protocol pop3 for 2 cycles then alert
+	if failed host 127.0.0.1 port 143 type TCP proto tcp for 2 cycles then alert
+#	if failed icmp type echo with timeout 20 seconds for 5 cycles then alert
+#	alert root@localhost
+#	alert 123456@sms on { timeout }
+	depends on nginx-mail_bin
+	depends on nginx-mail_rc
+
+
+
+check file nginx-mail_bin with path /usr/sbin/nginx-mail
+	group nginx
+	if failed checksum then unmonitor
+	if failed permission 755 then unmonitor
+	if failed uid root then unmonitor
+	if failed gid root then unmonitor
+#	alert root@localhost
+
+check file nginx-mail_rc with path /etc/rc.d/init.d/nginx-mail
+	group nginx
+	if failed checksum then unmonitor
+	if failed permission 754 then unmonitor
+	if failed uid root then unmonitor
+	if failed gid root then unmonitor
+#	alert root@localhost
+
+check file nginx-mail.conf path /etc/nginx/nginx-mail.conf
+	if changed sha1 checksum 
+	then exec "/etc/init.d/nginx-mail graceful"
