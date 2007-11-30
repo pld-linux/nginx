@@ -70,11 +70,11 @@ Requires:	openssl
 Requires:	pcre
 Requires:	rc-scripts >= 0.2.0
 Requires:	zlib
+Suggests:	nginx-standard
 Provides:	group(http)
 Provides:	group(nginx)
 Provides:	user(nginx)
 Provides:	webserver
-Suggests:	nginx-standard
 Conflicts:	logrotate < 3.7-4
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -127,8 +127,8 @@ The smallest, but also the fastest Nginx edition. No additional
 modules, no Perl, no DAV, no FLV, no IMAP, POP3, SMTP proxy.
 
 %description light -l pl.UTF-8
-Najmniejsza i najszybsza wersja Nginx. Bez wsparcia dla Perla,
-DAV, FLV oraz IMAP, POP3, SMTP proxy.
+Najmniejsza i najszybsza wersja Nginx. Bez wsparcia dla Perla, DAV,
+FLV oraz IMAP, POP3, SMTP proxy.
 
 %package perl
 Summary:	High perfomance HTTP and reverse proxy server
@@ -143,7 +143,7 @@ Requires:	%{name} = %{version}-%{release}
 Requires:	openssl
 Provides:	group(http)
 Provides:	group(nginx)
-Provides:       nginx-daemon
+Provides:	nginx-daemon
 Provides:	user(nginx)
 Provides:	webserver
 
@@ -168,7 +168,7 @@ Requires:	pcre
 Requires:	zlib
 Provides:	group(http)
 Provides:	group(nginx)
-Provides:       nginx-daemon
+Provides:	nginx-daemon
 Provides:	user(nginx)
 Provides:	webserver
 
@@ -188,7 +188,7 @@ Requires(post,preun):	/sbin/chkconfig
 Requires(postun):	/usr/sbin/groupdel
 Requires(postun):	/usr/sbin/userdel
 Requires:	%{name} = %{version}-%{release}
-Provides:       nginx-daemon
+Provides:	nginx-daemon
 Conflicts:	logrotate < 3.7-4
 
 %description standard
@@ -221,8 +221,8 @@ Summary(pl.UTF-8):	Wsparcie Nginx dla monit
 License:	BSD-like
 Group:		Applications/System
 URL:		http://nginx.eu/
-Requires:	monit
 Requires:	%{name} = %{version}-%{release}
+Requires:	monit
 
 %description -n monit-rc-nginx
 monitrc file for monitoring Nginx webserver server.
@@ -436,7 +436,7 @@ rm -rf $RPM_BUILD_ROOT
 for a in access.log error.log; do
 	if [ ! -f /var/log/%{name}/nginx-standard_$a ]; then
 		touch /var/log/%{name}/nginx-standard_$a
-		chown nginx:nginx /var/log/%{name}/nginx-standard_$a	
+		chown nginx:nginx /var/log/%{name}/nginx-standard_$a
 		chmod 644 /var/log/%{name}/nginx-standard_$a
 	fi
 done
@@ -503,7 +503,7 @@ fi
 %preun standard
 if [ "$1" = "0" ];then
 	if [ -f /var/lock/subsys/%{name}-standard ]; then
-		%service -q %{name}-standard stop 
+		%service -q %{name}-standard stop
 	fi
 	/sbin/chkconfig --del %{name}-standard
 fi
