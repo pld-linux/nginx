@@ -244,7 +244,7 @@ Plik monitrc do monitorowania serwera WWW Nginx.
 %patch0 -p0
 
 # build mime.types.conf
-#sh %{SOURCE13} /etc/mime.types
+#sh %{SOURCE16} /etc/mime.types
 
 %build
 # NB: not autoconf generated configure
