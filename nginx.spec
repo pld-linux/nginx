@@ -24,7 +24,7 @@ Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 Name:		nginx
 Version:	0.5.33
-Release:	0.5
+Release:	0.6
 License:	BSD-like
 Group:		Networking/Daemons
 Source0:	http://sysoev.ru/nginx/%{name}-%{version}.tar.gz
@@ -346,7 +346,7 @@ mv -f objs/nginx contrib/nginx-light
 ./configure \
 	--prefix=%{_prefix} \
 	--sbin-path=%{_sbindir}/%{name}-standard \
-	--conf-path=%{_sysconfdir}/%{name}.conf \
+	--conf-path=%{_sysconfdir}/%{name}-standard.conf \
 	--error-log-path=%{_localstatedir}/log/%{name}/%{name}-standard_error.log \
 	--http-log-path=%{_localstatedir}/log/%{name}/%{name}-standard_access.log \
 	--pid-path=%{_localstatedir}/run/%{name}-standard.pid \
