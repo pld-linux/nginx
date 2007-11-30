@@ -215,17 +215,13 @@ To jest standardowa wersja nginx, bez obs?ugi perla oraz proxy dla
 imap, pop3, smtp.
 
 %package -n monit-rc-nginx
-Summary:       Nginx support for monit
-Summary(pl.UTF-8):     Wsparcie Nginx dla monit
-License:       BSD-like
-Group:         Applications/System
-URL:           http://nginx.eu/
-Requires:       monit
-Requires:      %{name} = %{version}-%{release}
-Provides:       group(http)
-Provides:       group(nginx)
-Provides:       user(nginx)
-Provides:       webserver
+Summary:	Nginx support for monit
+Summary(pl.UTF-8):	Wsparcie Nginx dla monit
+License:	BSD-like
+Group:		Applications/System
+URL:		http://nginx.eu/
+Requires:	monit
+Requires:	%{name} = %{version}-%{release}
 
 %description -n monit-rc-nginx
 monitrc file for monitoring Nginx webserver server.
