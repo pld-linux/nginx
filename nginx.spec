@@ -560,7 +560,7 @@ fi
 %files perl
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_sbindir}/%{name}-perl
-attr(770,root,%{name}) /var/cache/%{name}-perl
+%attr(770,root,%{name}) /var/cache/%{name}-perl
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}-perl.conf
 %dir %{perl_vendorarch}/auto/%{name}
 %attr(755,root,root) %{perl_vendorarch}/auto/%{name}/%{name}.so
