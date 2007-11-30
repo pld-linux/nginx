@@ -70,6 +70,7 @@ Provides:	group(http)
 Provides:	group(nginx)
 Provides:	user(nginx)
 Provides:	webserver
+Suggests:	nginx-standard
 Conflicts:	logrotate < 3.7-4
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
