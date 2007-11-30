@@ -382,7 +382,6 @@ install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}-standard
 install %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}-light.conf
 install %{SOURCE6} $RPM_BUILD_ROOT/etc/monit/%{name}-light.monitrc
 install contrib/nginx-light $RPM_BUILD_ROOT%{_sbindir}/%{name}-light
-
 %endif
 
 %if %{with mail}
@@ -413,12 +412,39 @@ rm -rf $RPM_BUILD_ROOT
 %useradd -r -u 213 -d /usr/share/empty -s /bin/false -c "Nginx HTTP User" -g %{name} %{name}
 %addusertogroup %{name} http
 
-%post
+%post standard
 for a in access.log error.log; do
-	if [ ! -f /var/log/%{name}/$a ]; then
-		touch /var/log/%{name}/$a
-		chown nginx:nginx /var/log/%{name}/$a
-		chmod 644 /var/log/%{name}/$a
+	if [ ! -f /var/log/%{name}/nginx-standard_$a ]; then
+		touch /var/log/%{name}/nginx-standard_$a
+		chown nginx:nginx /var/log/%{name}/nginx-standard_$a
+		chmod 644 /var/log/%{name}/nginx-standard_$a
+	fi
+done
+
+%post light
+for a in access.log error.log; do
+	if [ ! -f /var/log/%{name}/nginx-light_$a ]; then
+		touch /var/log/%{name}/nginx-light_$a
+		chown nginx:nginx /var/log/%{name}/nginx-light_$a
+		chmod 644 /var/log/%{name}/nginx-light_$a
+	fi
+done
+
+%post perl
+for a in access.log error.log; do
+	if [ ! -f /var/log/%{name}/nginx-perl_$a ]; then
+		touch /var/log/%{name}/nginx-perl_$a
+		chown nginx:nginx /var/log/%{name}/nginx-perl_$a
+		chmod 644 /var/log/%{name}/nginx-perl_$a
+	fi
+done
+
+%post mail
+for a in access.log error.log; do
+	if [ ! -f /var/log/%{name}/nginx-mail_$a ]; then
+		touch /var/log/%{name}/nginx-mail_$a
+		chown nginx:nginx /var/log/%{name}/nginx-mail_$a
+		chmod 644 /var/log/%{name}/nginx-mail_$a
 	fi
 done
 
@@ -472,7 +498,6 @@ fi
 %defattr(644,root,root,755)
 %doc CHANGES LICENSE README html/index.html conf/nginx.conf
 %doc %lang(ru) CHANGES.ru
-%attr(754,root,root) /etc/rc.d/init.d/%{name}-standard
 %dir %attr(754,root,root) %{_sysconfdir}
 %dir %{_nginxdir}
 %dir %{_nginxdir}/cgi-bin
