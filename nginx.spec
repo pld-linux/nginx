@@ -61,7 +61,6 @@ Requires(pre):	/bin/id
 Requires(pre):	/usr/bin/getgid
 Requires(pre):	/usr/sbin/groupadd
 Requires(pre):	/usr/sbin/useradd
-Requires:	monit
 Requires:	openssl
 Requires:	pcre
 Requires:	rc-scripts >= 0.2.0
@@ -214,6 +213,25 @@ prostej konfiguracji oraz ma≈ej "zasobo≈ºerno≈i".
 
 To jest standardowa wersja nginx, bez obs?ugi perla oraz proxy dla
 imap, pop3, smtp.
+
+%package -n monit-rc-nginx
+Summary:       Nginx support for monit
+Summary(pl.UTF-8):     Wsparcie Nginx dla monit
+License:       BSD-like
+Group:         Applications/System
+URL:           http://nginx.eu/
+Requires:       monit
+Requires:      %{name} = %{version}-%{release}
+Provides:       group(http)
+Provides:       group(nginx)
+Provides:       user(nginx)
+Provides:       webserver
+
+%description -n monit-rc-nginx
+monitrc file for monitoring Nginx webserver server.
+
+%description -n monit-rc-nginx -l pl.UTF-8
+Plik monitrc do monitorowania serwera WWW Nginx.
 
 %prep
 %setup -q
@@ -521,7 +539,6 @@ fi
 %attr(755,root,root) %{_sbindir}/%{name}-standard
 %attr(770,root,%{name}) /var/cache/%{name}-standard
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}-standard.conf
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/monit/%{name}-standard.monitrc
 
 %if %{with mail}
 %files mail
@@ -529,7 +546,6 @@ fi
 %attr(755,root,root) %{_sbindir}/%{name}-mail
 %attr(770,root,%{name}) /var/cache/%{name}-mail
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}-mail.conf
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/monit/%{name}-mail.monitrc
 %endif
 
 %if %{with light}
@@ -538,7 +554,6 @@ fi
 %attr(755,root,root) %{_sbindir}/%{name}-light
 %attr(770,root,%{name}) /var/cache/%{name}-light
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}-light.conf
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/monit/%{name}-light.monitrc
 %endif
 
 %if %{with perl}
@@ -551,5 +566,17 @@ attr(770,root,%{name}) /var/cache/%{name}-perl
 %attr(755,root,root) %{perl_vendorarch}/auto/%{name}/%{name}.so
 %attr(700,root,root) %{perl_vendorarch}/auto/%{name}/%{name}.bs
 %attr(700,root,root) %{perl_vendorarch}/%{name}.pm
+%endif
+
+%files -n monit-rc-nginx
+%defattr(644,root,root,755)
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/monit/%{name}-standard.monitrc
+%if %{with perl}
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/monit/%{name}-perl.monitrc
+%endif
+%if %{with light}
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/monit/%{name}-light.monitrc
+%endif
+%if %{with mail}
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/monit/%{name}-mail.monitrc
 %endif
