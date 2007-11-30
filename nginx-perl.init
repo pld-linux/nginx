@@ -1,0 +1,100 @@
+#!/bin/sh
+#
+# nginx	Nginx Web Server (perl version)
+#
+# chkconfig:	345 85 15
+# description:	Nginx is a World Wide Web server.  It is used to serve \
+#		HTML files and CGI.
+# processname:	nginx-perl
+# pidfile:	/var/run/nginx-perl.pid
+# config:	/etc/nginx/nginx-perl.conf
+
+
+# Source function library
+. /etc/rc.d/init.d/functions
+
+# Get network config
+. /etc/sysconfig/network
+
+# Get service config
+[ -f /etc/sysconfig/nginx ] && . /etc/sysconfig/nginx
+
+# Check that networking is up.
+if is_yes "${NETWORKING}"; then
+	if [ ! -f /var/lock/subsys/network -a "$1" != stop -a "$1" != status ]; then
+		msg_network_down nginx-perl
+		exit 1
+	fi
+else
+	exit 0
+fi
+
+if [ -d "${HTTPD_CONF:-'/etc/nginx/nginx-perl.conf'}" ]; then
+	CFG="-f ${HTTPD_CONF:-'/etc/nginx/nginx-perl.conf'}"
+elif [ -n "$HTTPD_CONF" ]; then
+	echo "error: HTTPD_CONF='$HTTPD_CONF': not a file, not a directory"
+	exit 1
+else
+	CFG=""
+fi
+
+start() {
+	# Check if the service is already running?
+	if [ ! -f /var/lock/subsys/nginx-perl ]; then
+		msg_starting nginx-perl
+		daemon nginx-perl $CFG $HTTPD_OPTS
+		RETVAL=$?
+		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/nginx-perl
+	else
+		msg_already_running nginx-perl
+	fi
+}
+
+stop() {
+	# Stop daemons.
+	if [ -f /var/lock/subsys/nginx-perl ]; then
+		msg_stopping nginx-perl
+		killproc --waitforname nginx-perl --waitfortime 60 nginx-perl $CFG
+		# Delete pidfile only when nginx was called successfully
+		if [ $? -eq 0 ]; then
+			rm -f /var/lock/subsys/nginx-perl /var/run/nginx-perl.pid >/dev/null 2>&1
+		fi
+	else
+		msg_not_running nginx-perl
+	fi
+}
+
+RETVAL=0
+# See how we were called.
+case "$1" in
+  start)
+  	start
+	;;
+  stop)
+  	stop
+	;;
+  status)
+	status nginx-perl
+	RETVAL=$?
+	;;
+  restart)
+	stop
+	start
+	;;
+  reload|force-reload|graceful)
+	if [ -f /var/lock/subsys/nginx-perl ]; then
+		msg_reloading nginx-perl
+		killproc nginx-perl -HUP
+		RETVAL=$?
+	else
+		msg_not_running nginx-perl
+		RETVAL=7
+	fi
+	;;
+  *)
+	msg_usage "$0 {start|stop|restart|reload|force-reload|graceful|status}"
+	exit 3
+	;;
+esac
+
+exit $RETVAL
