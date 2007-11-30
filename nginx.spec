@@ -43,6 +43,7 @@ Source9:	%{name}-perl.conf
 Source10:	%{name}-perl.monitrc
 Source11:	%{name}-standard.conf
 Source12:	%{name}-standard.monitrc
+Source13:	%{name}-mime.types.sh
 Patch0:		%{name}-config.patch
 URL:		http://nginx.net/
 BuildRequires:	mailcap
@@ -217,6 +218,9 @@ imap, pop3, smtp.
 %prep
 %setup -q
 %patch0 -p0
+
+# build mime.types.conf
+#sh %{SOURCE13} /etc/mime.types
 
 %build
 # NB: not autoconf generated configure
