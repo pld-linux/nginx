@@ -65,10 +65,10 @@ Provides:	group(http)
 Provides:	group(nginx)
 Provides:	user(nginx)
 Provides:	webserver
-Conflicts:	logrotate < 3.7-4
 Conflicts:	%{name}-light
 Conflicts:	%{name}-mail
 Conflicts:	%{name}-perl
+Conflicts:	logrotate < 3.7-4
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sysconfdir	/etc/%{name}
@@ -536,7 +536,7 @@ fi
 
 %files common
 %defattr(644,root,root,755)
-%doc CHANGES LICENSE README html/index.html conf/nginx.conf 
+%doc CHANGES LICENSE README html/index.html conf/nginx.conf
 %doc %lang(ru) CHANGES.ru
 %attr(754,root,root) /etc/rc.d/init.d/%{name}
 %dir %attr(754,root,root) %{_sysconfdir}
