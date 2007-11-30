@@ -290,7 +290,6 @@ mv -f objs/src/http/modules/perl/nginx.pm contrib/nginx.pm
 %endif
 
 %if %{with mail}
-%{__make} clean
 ./configure \
 	--prefix=%{_prefix} \
 	--sbin-path=%{_sbindir}/%{name}-mail \
@@ -320,7 +319,6 @@ mv -f objs/nginx contrib/nginx-mail
 %endif
 
 %if %{with light}
-%{__make} clean
 ./configure \
 	--prefix=%{_prefix} \
 	--sbin-path=%{_sbindir}/%{name}-light \
@@ -352,7 +350,6 @@ mv -f objs/nginx contrib/nginx-mail
 mv -f objs/nginx contrib/nginx-light
 %endif
 
-%{__make} clean
 ./configure \
 	--prefix=%{_prefix} \
 	--sbin-path=%{_sbindir}/%{name}-standard \
