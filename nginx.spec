@@ -24,7 +24,7 @@ Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 Name:		nginx
 Version:	0.5.33
-Release:	0.6
+Release:	0.7
 License:	BSD-like
 Group:		Networking/Daemons
 Source0:	http://sysoev.ru/nginx/%{name}-%{version}.tar.gz
@@ -37,13 +37,17 @@ Source3:	%{name}.logrotate
 Source4:	%{name}.mime
 Source5:	%{name}-light.conf
 Source6:	%{name}-light.monitrc
-Source7:	%{name}-mail.conf
-Source8:	%{name}-mail.monitrc
-Source9:	%{name}-perl.conf
-Source10:	%{name}-perl.monitrc
-Source11:	%{name}-standard.conf
-Source12:	%{name}-standard.monitrc
-Source13:	%{name}-mime.types.sh
+Source7:	%{name}-light.init
+Source8:	%{name}-mail.conf
+Source9:	%{name}-mail.monitrc
+Source10:	%{name}-mail.init
+Source11:	%{name}-perl.conf
+Source12:	%{name}-perl.monitrc
+Source13:	%{name}-perl.init
+Source14:	%{name}-standard.conf
+Source15:	%{name}-standard.monitrc
+Source15:	%{name}-standard.init
+Source16:	%{name}-mime.types.sh
 Patch0:		%{name}-config.patch
 URL:		http://nginx.net/
 BuildRequires:	mailcap
@@ -397,27 +401,30 @@ install %{SOURCE1} $RPM_BUILD_ROOT%{_nginxdir}/html/favicon.ico
 install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/proxy.conf
 install %{SOURCE3} $RPM_BUILD_ROOT/etc/logrotate.d/%{name}
 install %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/mime.types
-install %{SOURCE11} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}-standard.conf
-install %{SOURCE12} $RPM_BUILD_ROOT/etc/monit/%{name}-standard.monitrc
+install %{SOURCE14} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}-standard.conf
+install %{SOURCE15} $RPM_BUILD_ROOT/etc/monit/%{name}-standard.monitrc
+install %{SOURCE16} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}-standard
 install objs/%{name} $RPM_BUILD_ROOT%{_sbindir}/%{name}-standard
-install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}-standard
 
 %if %{with light}
 install %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}-light.conf
 install %{SOURCE6} $RPM_BUILD_ROOT/etc/monit/%{name}-light.monitrc
+install %{SOURCE7} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}-light
 install contrib/nginx-light $RPM_BUILD_ROOT%{_sbindir}/%{name}-light
 %endif
 
 %if %{with mail}
-install %{SOURCE7} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}-mail.conf
-install %{SOURCE8} $RPM_BUILD_ROOT/etc/monit/%{name}-mail.monitrc
+install %{SOURCE8} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}-mail.conf
+install %{SOURCE9} $RPM_BUILD_ROOT/etc/monit/%{name}-mail.monitrc
+install %{SOURCE10} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}-mail
 install contrib/nginx-mail $RPM_BUILD_ROOT%{_sbindir}/%{name}-mail
 %endif
 
 %if %{with perl}
 install -d $RPM_BUILD_ROOT{%{perl_vendorarch},%{perl_vendorarch}/auto/%{name}}
-install %{SOURCE7} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}-perl.conf
-install %{SOURCE8} $RPM_BUILD_ROOT/etc/monit/%{name}-perl.monitrc
+install %{SOURCE11} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}-perl.conf
+install %{SOURCE12} $RPM_BUILD_ROOT/etc/monit/%{name}-perl.monitrc
+install %{SOURCE13} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}-perl
 install contrib/nginx.pm $RPM_BUILD_ROOT%{perl_vendorarch}/%{name}.pm
 install contrib/nginx.so $RPM_BUILD_ROOT%{perl_vendorarch}/auto/%{name}/%{name}.so
 install contrib/nginx.bs $RPM_BUILD_ROOT%{perl_vendorarch}/auto/%{name}/%{name}.bs
@@ -540,6 +547,7 @@ fi
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_sbindir}/%{name}-standard
 %attr(770,root,%{name}) /var/cache/%{name}-standard
+%attr(754,root,root) /etc/rc.d/init.d/%{name}-standard
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}-standard.conf
 
 %if %{with mail}
@@ -547,6 +555,7 @@ fi
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_sbindir}/%{name}-mail
 %attr(770,root,%{name}) /var/cache/%{name}-mail
+%attr(754,root,root) /etc/rc.d/init.d/%{name}-mail
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}-mail.conf
 %endif
 
@@ -555,6 +564,7 @@ fi
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_sbindir}/%{name}-light
 %attr(770,root,%{name}) /var/cache/%{name}-light
+%attr(754,root,root) /etc/rc.d/init.d/%{name}-light
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}-light.conf
 %endif
 
@@ -562,6 +572,7 @@ fi
 %files perl
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_sbindir}/%{name}-perl
+%attr(754,root,root) /etc/rc.d/init.d/%{name}-perl
 %attr(770,root,%{name}) /var/cache/%{name}-perl
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}-perl.conf
 %dir %{perl_vendorarch}/auto/%{name}
