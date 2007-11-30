@@ -2,6 +2,7 @@
 # - /etc/sysconfig/nginx file
 # - missing perl build/install requires
 # - prepare pld style like nginx.conf
+# - maybe -with-cpu-opt=CPU (pentium, pentiumpro, pentium3, pentium4, athlon, opteron, amd64, sparc32, sparc64, ppc64)
 #
 # Conditional build for nginx:
 %bcond_without	light		# don't build light version
@@ -28,17 +29,20 @@ License:	BSD-like
 Group:		Networking/Daemons
 Source0:	http://sysoev.ru/nginx/%{name}-%{version}.tar.gz
 # Source0-md5:	a78be74b4fd8e009545ef02488fcac86
-Source1:	%{name}.init
-Source2:	%{name}-mime.types.sh
-Source3:	http://www.nginx.eu/favicon.ico
-# Source3-md5:	2aaf2115c752cbdbfb8a2f0b3c3189ab
-Source4:	http://www.nginx.eu/download/proxy.conf
-# Source4-md5:	f5263ae01c2edb18f46d5d1df2d3a5cd
-Source5:	http://www.nginx.eu/download/%{name}.monitrc
-# Source5-md5:	1d3f5eedfd34fe95213f9e0fc19daa88
-Source6:	http://www.nginx.eu/download/%{name}.conf
-# Source6-md5:	1c112d6f03d0f365e4acc98c1d96261a
-Source7:	%{name}.logrotate
+Source1:	http://www.nginx.eu/favicon.ico
+# Source1-md5:	2aaf2115c752cbdbfb8a2f0b3c3189ab
+Source2:	http://www.nginx.eu/download/proxy.conf
+# Source2-md5:	f5263ae01c2edb18f46d5d1df2d3a5cd
+Source3:	%{name}.logrotate
+Source4:	%{name}.mime
+Source5:	%{name}-light.conf
+Source6:	%{name}-light.monitrc
+Source7:	%{name}-mail.conf
+Source8:	%{name}-mail.monitrc
+Source9:	%{name}-perl.conf
+Source10:	%{name}-perl.monitrc
+Source11:	%{name}-standard.conf
+Source12:	%{name}-standard.monitrc
 Patch0:		%{name}-config.patch
 URL:		http://nginx.net/
 BuildRequires:	mailcap
@@ -65,10 +69,7 @@ Provides:	group(http)
 Provides:	group(nginx)
 Provides:	user(nginx)
 Provides:	webserver
-#Conflicts:	%{name}-light
-#Conflicts:	%{name}-mail
-#Conflicts:	%{name}-perl
-#Conflicts:	logrotate < 3.7-4
+Conflicts:	logrotate < 3.7-4
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sysconfdir	/etc/%{name}
@@ -235,9 +236,6 @@ Plik monitrc do monitorowania serwera WWW Nginx.
 %setup -q
 %patch0 -p0
 
-# build mime.types.conf
-sh %{SOURCE2} /etc/mime.types
-
 %build
 # NB: not autoconf generated configure
 cp -f configure auto/
@@ -347,12 +345,12 @@ mv -f objs/nginx contrib/nginx-light
 %{__make} clean
 ./configure \
 	--prefix=%{_prefix} \
-	--sbin-path=%{_sbindir}/%{name} \
+	--sbin-path=%{_sbindir}/%{name}-standard \
 	--conf-path=%{_sysconfdir}/%{name}.conf \
-	--error-log-path=%{_localstatedir}/log/%{name}/%{name}_error.log \
-	--http-log-path=%{_localstatedir}/log/%{name}/%{name}_access.log \
-	--pid-path=%{_localstatedir}/run/%{name}.pid \
-	--lock-path=%{_localstatedir}/lock/subsys/%{name} \
+	--error-log-path=%{_localstatedir}/log/%{name}/%{name}-standard_error.log \
+	--http-log-path=%{_localstatedir}/log/%{name}/%{name}-standard_access.log \
+	--pid-path=%{_localstatedir}/run/%{name}-standard.pid \
+	--lock-path=%{_localstatedir}/lock/subsys/%{name}-standard \
 	--user=nginx \
 	--group=nginx \
 	%{?with_addition:--with-http_addition_module} \
@@ -366,9 +364,9 @@ mv -f objs/nginx contrib/nginx-light
 	%{?with_status:--with-http_stub_status_module} \
 	%{?with_ssl:--with-http_ssl_module} \
 	%{!?with_http_browser:--without-http_browser_module} \
-	--http-client-body-temp-path=%{_localstatedir}/cache/%{name}/client_body_temp \
-	--http-proxy-temp-path=%{_localstatedir}/cache/%{name}/proxy_temp \
-	--http-fastcgi-temp-path=%{_localstatedir}/cache/%{name}/fastcgi_temp \
+	--http-client-body-temp-path=%{_localstatedir}/cache/%{name}-standard/client_body_temp \
+	--http-proxy-temp-path=%{_localstatedir}/cache/%{name}-standard/proxy_temp \
+	--http-fastcgi-temp-path=%{_localstatedir}/cache/%{name}-standard/fastcgi_temp \
 	--with-cc="%{__cc}" \
 	--with-cc-opt="%{rpmcflags}" \
 	--with-ld-opt="%{rpmldflags}" \
@@ -381,33 +379,40 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT/etc/rc.d/init.d \
 	$RPM_BUILD_ROOT%{_nginxdir}/{cgi-bin,html,errors} \
 	$RPM_BUILD_ROOT%{_localstatedir}/log/{%{name},archive/%{name}} \
-	$RPM_BUILD_ROOT%{_localstatedir}/cache/{%{name},%{name}-perl,%{name}-mail,%{name}-light} \
-	$RPM_BUILD_ROOT%{_localstatedir}/lock/subsys/%{name} \
+	$RPM_BUILD_ROOT%{_localstatedir}/cache/{%{name}-standard,%{name}-perl,%{name}-mail,%{name}-light} \
+	$RPM_BUILD_ROOT%{_localstatedir}/lock/subsys/{%{name}-standard,%{name}-perl,%{name}-mail,%{name}-light} \
 	$RPM_BUILD_ROOT{%{_sbindir},%{_sysconfdir}} \
 	$RPM_BUILD_ROOT/etc/{logrotate.d,monit}
 
-install conf/* $RPM_BUILD_ROOT%{_sysconfdir}
-install mime.types $RPM_BUILD_ROOT%{_sysconfdir}/mime.types
-install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
-install %{SOURCE3} $RPM_BUILD_ROOT%{_nginxdir}/html/favicon.ico
+#install conf/* $RPM_BUILD_ROOT%{_sysconfdir}
 install html/index.html $RPM_BUILD_ROOT%{_nginxdir}/html
 install html/50x.html $RPM_BUILD_ROOT%{_nginxdir}/errors
-install %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/proxy.conf
-install %{SOURCE5} $RPM_BUILD_ROOT/etc/monit/%{name}.monitrc
-install %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}/nginx.conf
-install %{SOURCE7} $RPM_BUILD_ROOT/etc/logrotate.d/%{name}
+install %{SOURCE1} $RPM_BUILD_ROOT%{_nginxdir}/html/favicon.ico
+install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/proxy.conf
+install %{SOURCE3} $RPM_BUILD_ROOT/etc/logrotate.d/%{name}
+install %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/mime.types
+install %{SOURCE11} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}-standard.conf
+install %{SOURCE12} $RPM_BUILD_ROOT/etc/monit/%{name}-standard.monitrc
 install objs/%{name} $RPM_BUILD_ROOT%{_sbindir}/%{name}-standard
+install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}-standard
 
 %if %{with light}
+install %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}-light.conf
+install %{SOURCE6} $RPM_BUILD_ROOT/etc/monit/%{name}-light.monitrc
 install contrib/nginx-light $RPM_BUILD_ROOT%{_sbindir}/%{name}-light
+
 %endif
 
 %if %{with mail}
+install %{SOURCE7} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}-mail.conf
+install %{SOURCE8} $RPM_BUILD_ROOT/etc/monit/%{name}-mail.monitrc
 install contrib/nginx-mail $RPM_BUILD_ROOT%{_sbindir}/%{name}-mail
 %endif
 
 %if %{with perl}
 install -d $RPM_BUILD_ROOT{%{perl_vendorarch},%{perl_vendorarch}/auto/%{name}}
+install %{SOURCE7} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}-perl.conf
+install %{SOURCE8} $RPM_BUILD_ROOT/etc/monit/%{name}-perl.monitrc
 install contrib/nginx.pm $RPM_BUILD_ROOT%{perl_vendorarch}/%{name}.pm
 install contrib/nginx.so $RPM_BUILD_ROOT%{perl_vendorarch}/auto/%{name}/%{name}.so
 install contrib/nginx.bs $RPM_BUILD_ROOT%{perl_vendorarch}/auto/%{name}/%{name}.bs
@@ -436,43 +441,43 @@ for a in access.log error.log; do
 done
 
 %pre standard
-/sbin/chkconfig --add %{name}
-%service %{name} restart
+/sbin/chkconfig --add %{name}-standard
+%service %{name}-standard restart
 
 %pre light
-/sbin/chkconfig --add %{name}
-%service %{name} restart
+/sbin/chkconfig --add %{name}-light
+%service %{name}-light restart
 
 %pre perl
-/sbin/chkconfig --add %{name}
-%service %{name} restart
+/sbin/chkconfig --add %{name}-perl
+%service %{name}-perl restart
 
 %pre mail
-/sbin/chkconfig --add %{name}
-%service %{name} restart
+/sbin/chkconfig --add %{name}-mail
+%service %{name}-mail restart
 
 %preun standard
 if [ "$1" = "0" ]; then
-	%service -q %{name} stop
-	/sbin/chkconfig --del %{name}
+	%service -q %{name}-standard stop
+	/sbin/chkconfig --del %{name}-standard
 fi
 
 %preun light
 if [ "$1" = "0" ]; then
-	%service -q %{name} stop
-	/sbin/chkconfig --del %{name}
+	%service -q %{name}-light stop
+	/sbin/chkconfig --del %{name}-light
 fi
 
 %preun perl
 if [ "$1" = "0" ]; then
-	%service -q %{name} stop
-	/sbin/chkconfig --del %{name}
+	%service -q %{name}-perl stop
+	/sbin/chkconfig --del %{name}-perl
 fi
 
 %preun mail
 if [ "$1" = "0" ]; then
-	%service -q %{name} stop
-	/sbin/chkconfig --del %{name}
+	%service -q %{name}-mail stop
+	/sbin/chkconfig --del %{name}-mail
 fi
 
 %postun
