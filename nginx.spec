@@ -61,6 +61,7 @@ Requires(pre):	/bin/id
 Requires(pre):	/usr/bin/getgid
 Requires(pre):	/usr/sbin/groupadd
 Requires(pre):	/usr/sbin/useradd
+Requires:	nginx-daemon
 Requires:	openssl
 Requires:	pcre
 Requires:	rc-scripts >= 0.2.0
@@ -112,6 +113,7 @@ Requires:	pcre
 Requires:	zlib
 Provides:	group(http)
 Provides:	group(nginx)
+Provides:	nginx-daemon
 Provides:	user(nginx)
 Provides:	webserver
 #Conflicts:	%{name}
@@ -139,6 +141,7 @@ Requires:	%{name} = %{version}-%{release}
 Requires:	openssl
 Provides:	group(http)
 Provides:	group(nginx)
+Provides:       nginx-daemon
 Provides:	user(nginx)
 Provides:	webserver
 #Conflicts:	%{name}
@@ -166,6 +169,7 @@ Requires:	pcre
 Requires:	zlib
 Provides:	group(http)
 Provides:	group(nginx)
+Provides:       nginx-daemon
 Provides:	user(nginx)
 Provides:	webserver
 #Conflicts:	%{name}
@@ -188,6 +192,7 @@ Requires(post,preun):	/sbin/chkconfig
 Requires(postun):	/usr/sbin/groupdel
 Requires(postun):	/usr/sbin/userdel
 Requires:	%{name} = %{version}-%{release}
+Provides:       nginx-daemon
 Conflicts:	logrotate < 3.7-4
 
 %description standard
