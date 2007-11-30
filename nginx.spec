@@ -396,7 +396,7 @@ install %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/proxy.conf
 install %{SOURCE5} $RPM_BUILD_ROOT/etc/monit/%{name}.monitrc
 install %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}/nginx.conf
 install %{SOURCE7} $RPM_BUILD_ROOT/etc/logrotate.d/%{name}
-install objs/%{name} $RPM_BUILD_ROOT%{_sbindir}/%{name}
+install objs/%{name} $RPM_BUILD_ROOT%{_sbindir}/%{name}-standard
 
 %if %{with light}
 install contrib/nginx-light $RPM_BUILD_ROOT%{_sbindir}/%{name}-light
@@ -504,7 +504,7 @@ fi
 
 %files standard
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_sbindir}/%{name}
+%attr(755,root,root) %{_sbindir}/%{name}-standard
 
 %if %{with mail}
 %files mail
