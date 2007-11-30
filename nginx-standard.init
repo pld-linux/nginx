@@ -1,0 +1,100 @@
+#!/bin/sh
+#
+# nginx	Nginx Web Server (standard version)
+#
+# chkconfig:	345 85 15
+# description:	Nginx is a World Wide Web server.  It is used to serve \
+#		HTML files and CGI.
+# processname:	nginx-standard
+# pidfile:	/var/run/nginx-standard.pid
+# config:	/etc/nginx/nginx-standard.conf
+
+
+# Source function library
+. /etc/rc.d/init.d/functions
+
+# Get network config
+. /etc/sysconfig/network
+
+# Get service config
+[ -f /etc/sysconfig/nginx ] && . /etc/sysconfig/nginx
+
+# Check that networking is up.
+if is_yes "${NETWORKING}"; then
+	if [ ! -f /var/lock/subsys/network -a "$1" != stop -a "$1" != status ]; then
+		msg_network_down nginx-standard
+		exit 1
+	fi
+else
+	exit 0
+fi
+
+if [ -d "${HTTPD_CONF:-'/etc/nginx/nginx-standard.conf'}" ]; then
+	CFG="-f ${HTTPD_CONF:-'/etc/nginx/nginx-standard.conf'}"
+elif [ -n "$HTTPD_CONF" ]; then
+	echo "error: HTTPD_CONF='$HTTPD_CONF': not a file, not a directory"
+	exit 1
+else
+	CFG=""
+fi
+
+start() {
+	# Check if the service is already running?
+	if [ ! -f /var/lock/subsys/nginx-standard ]; then
+		msg_starting nginx-standard
+		daemon nginx-standard $CFG $HTTPD_OPTS
+		RETVAL=$?
+		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/nginx-standard
+	else
+		msg_already_running nginx-standard
+	fi
+}
+
+stop() {
+	# Stop daemons.
+	if [ -f /var/lock/subsys/nginx-standard ]; then
+		msg_stopping nginx-standard
+		killproc --waitforname nginx-standard --waitfortime 60 nginx-standard $CFG
+		# Delete pidfile only when nginx was called successfully
+		if [ $? -eq 0 ]; then
+			rm -f /var/lock/subsys/nginx-standard /var/run/nginx-standard.pid >/dev/null 2>&1
+		fi
+	else
+		msg_not_running nginx-standard
+	fi
+}
+
+RETVAL=0
+# See how we were called.
+case "$1" in
+  start)
+  	start
+	;;
+  stop)
+  	stop
+	;;
+  status)
+	status nginx-standard
+	RETVAL=$?
+	;;
+  restart)
+	stop
+	start
+	;;
+  reload|force-reload|graceful)
+	if [ -f /var/lock/subsys/nginx-standard ]; then
+		msg_reloading nginx-standard
+		killproc nginx-standard -HUP
+		RETVAL=$?
+	else
+		msg_not_running nginx-standard
+		RETVAL=7
+	fi
+	;;
+  *)
+	msg_usage "$0 {start|stop|restart|reload|force-reload|graceful|status}"
+	exit 3
+	;;
+esac
+
+exit $RETVAL
