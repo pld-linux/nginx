@@ -515,16 +515,16 @@ fi
 %files standard
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_sbindir}/%{name}-standard
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}-standard.conf
 %attr(770,root,%{name}) /var/cache/%{name}-standard
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}-standard.conf
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/monit/%{name}-standard.monitrc
 
 %if %{with mail}
 %files mail
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_sbindir}/%{name}-mail
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}-mail.conf
 %attr(770,root,%{name}) /var/cache/%{name}-mail
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}-mail.conf
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/monit/%{name}-mail.monitrc
 %endif
 
@@ -532,8 +532,8 @@ fi
 %files light
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_sbindir}/%{name}-light
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}-light.conf
 %attr(770,root,%{name}) /var/cache/%{name}-light
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}-light.conf
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/monit/%{name}-light.monitrc
 %endif
 
@@ -541,11 +541,11 @@ fi
 %files perl
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_sbindir}/%{name}-perl
+attr(770,root,%{name}) /var/cache/%{name}-perl
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}-perl.conf
 %dir %{perl_vendorarch}/auto/%{name}
 %attr(755,root,root) %{perl_vendorarch}/auto/%{name}/%{name}.so
 %attr(700,root,root) %{perl_vendorarch}/auto/%{name}/%{name}.bs
 %attr(700,root,root) %{perl_vendorarch}/%{name}.pm
-%attr(770,root,%{name}) /var/cache/%{name}-perl
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/monit/%{name}-perl.monitrc
 %endif
