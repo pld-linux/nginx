@@ -451,7 +451,7 @@ if [ "$1" = "1" ]; then
 		echo "Run \"/etc/rc.d/init.d/nginx-standard start\" to start nginx daemon."
 	fi
 fi
-echo "Notice now deamon is usign \"/etc/nginx/nginx-standard.conf\" file"
+echo "Notice: deamon is now using \"/etc/nginx/nginx-standard.conf\" file"
 
 %post light
 for a in access.log error.log; do
@@ -469,7 +469,7 @@ if [ "$1" = "1" ]; then
 		echo "Run \"/etc/rc.d/init.d/nginx-light start\" to start nginx daemon."
 	fi
 fi
-echo "Notice now deamon is usign \"/etc/nginx/nginx-light.conf\" file"
+echo "Notice: deamon is now using \"/etc/nginx/nginx-light.conf\" file"
 
 %post perl
 for a in access.log error.log; do
@@ -487,7 +487,7 @@ if [ "$1" = "1" ]; then
 		echo "Run \"/etc/rc.d/init.d/nginx-perl start\" to start nginx daemon."
 	fi
 fi
-echo "Notice now deamon is usign \"/etc/nginx/nginx-perl.conf\" file"
+echo "Notice: deamon is now using \"/etc/nginx/nginx-perl.conf\" file"
 
 %post mail
 for a in access.log error.log; do
@@ -505,7 +505,7 @@ if [ "$1" = "1" ]; then
 		echo "Run \"/etc/rc.d/init.d/nginx-mail start\" to start nginx daemon."
 	fi
 fi
-echo "Notice now deamon is usign \"/etc/nginx/nginx-mail.conf\" file"
+echo "Notice: deamon is now using \"/etc/nginx/nginx-mail.conf\" file"
 
 %preun standard
 if [ "$1" = "0" ];then
