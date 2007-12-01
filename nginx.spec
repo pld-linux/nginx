@@ -1,4 +1,5 @@
 # TODO
+# - fix sysconfdir duplicates
 # - /etc/sysconfig/nginx file
 # - missing perl build/install requires
 # - maybe -with-cpu-opt=CPU (pentium, pentiumpro, pentium3, pentium4, athlon, opteron, amd64, sparc32, sparc64, ppc64) ?
@@ -94,11 +95,11 @@ Common files for Nginx daemon.
 
 %description -l pl.UTF-8
 Nginx ("engine x") jest wysokowydajnym serwerem HTTP, odwrotnym proxy
-a także IMAP/POP3 proxy. Nginx został napisany przez Igora Sysoev'a
+a także IMAP/POP3 proxy. Nginx został napisany przez Igora Sysoeva
 na potrzeby serwisu Rambler.ru. Jest to drugi pod względem ilości
 odwiedzin serwis w Rosji i działa od ponad dwóch i pół roku. Igor
 opublikował źródła na licencji BSD. Mimo, że projekt jest ciągle
-w fazie beta, już zasłynął dzieki stabilności, bogactwu dodatków,
+w fazie beta, już zasłynął dzięki stabilności, bogactwu dodatków,
 prostej konfiguracji oraz małej "zasobożerności".
 
 Niezbędne pliki dla Nginx.
@@ -106,9 +107,7 @@ Niezbędne pliki dla Nginx.
 %package light
 Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
-License:	BSD-like
 Group:		Networking/Daemons
-URL:		http://nginx.net/
 Requires(post,preun):	/sbin/chkconfig
 Requires(postun):	/usr/sbin/groupdel
 Requires(postun):	/usr/sbin/userdel
@@ -133,9 +132,7 @@ FLV oraz IMAP, POP3, SMTP proxy.
 %package perl
 Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
-License:	BSD-like
 Group:		Networking/Daemons
-URL:		http://nginx.net/
 Requires(post,preun):	/sbin/chkconfig
 Requires(postun):	/usr/sbin/groupdel
 Requires(postun):	/usr/sbin/userdel
@@ -156,9 +153,7 @@ Nignx z obsługą Perla. Bez wsparcia dla modułów poczty.
 %package mail
 Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
-License:	BSD-like
 Group:		Networking/Daemons
-URL:		http://nginx.net/
 Requires(post,preun):	/sbin/chkconfig
 Requires(postun):	/usr/sbin/groupdel
 Requires(postun):	/usr/sbin/userdel
@@ -181,9 +176,7 @@ Nginx ze wsparciem tylko dla modułów poczty.
 %package standard
 Summary:	Configuration files and documentation for Nginx
 Summary(pl.UTF-8):	Pliki konfiguracyjne i dokumentacja dla Nginx
-License:	BSD-like
 Group:		Networking/Daemons
-URL:		http://nginx.net/
 Requires(post,preun):	/sbin/chkconfig
 Requires(postun):	/usr/sbin/groupdel
 Requires(postun):	/usr/sbin/userdel
@@ -208,11 +201,11 @@ SMTP proxy.
 
 %description standard -l pl.UTF-8
 Nginx ("engine x") jest wysokowydajnym serwerem HTTP, odwrotnym proxy
-a także IMAP/POP3 proxy. Nginx został napisany przez Igora Sysoev'a
+a także IMAP/POP3 proxy. Nginx został napisany przez Igora Sysoeva
 na potrzeby serwisu Rambler.ru. Jest to drugi pod względem ilości
 odwiedzin serwis w Rosji i działa od ponad dwóch i pół roku. Igor
 opublikował źródła na licencji BSD. Mimo, że projekt jest ciągle
-w fazie beta, już zasłynął dzieki stabilności, bogactwu dodatków,
+w fazie beta, już zasłynął dzięki stabilności, bogactwu dodatków,
 prostej konfiguracji oraz małej "zasobożerności".
 
 To jest standardowa wersja Nginx, bez obsługi Perla oraz proxy dla
@@ -221,7 +214,6 @@ IMAP, POP3, SMTP.
 %package -n monit-rc-nginx
 Summary:	Nginx support for monit
 Summary(pl.UTF-8):	Wsparcie Nginx dla monit
-License:	BSD-like
 Group:		Applications/System
 URL:		http://nginx.eu/
 Requires:	%{name} = %{version}-%{release}
@@ -438,6 +430,7 @@ rm -rf $RPM_BUILD_ROOT
 %post standard
 for a in access.log error.log; do
 	if [ ! -f /var/log/%{name}/nginx-standard_$a ]; then
+		umask 022
 		touch /var/log/%{name}/nginx-standard_$a
 		chown nginx:nginx /var/log/%{name}/nginx-standard_$a
 		chmod 644 /var/log/%{name}/nginx-standard_$a
@@ -450,6 +443,7 @@ echo 'NOTE: daemon is now using "/etc/nginx/nginx-standard.conf" as config.'
 %post light
 for a in access.log error.log; do
 	if [ ! -f /var/log/%{name}/nginx-light_$a ]; then
+		umask 022
 		touch /var/log/%{name}/nginx-light_$a
 		chown nginx:nginx /var/log/%{name}/nginx-light_$a
 		chmod 644 /var/log/%{name}/nginx-light_$a
@@ -462,6 +456,7 @@ echo 'NOTE: daemon is now using "/etc/nginx/nginx-light.conf" file'
 %post perl
 for a in access.log error.log; do
 	if [ ! -f /var/log/%{name}/nginx-perl_$a ]; then
+		umask 022
 		touch /var/log/%{name}/nginx-perl_$a
 		chown nginx:nginx /var/log/%{name}/nginx-perl_$a
 		chmod 644 /var/log/%{name}/nginx-perl_$a
@@ -474,6 +469,7 @@ echo 'NOTE: daemon is now using "/etc/nginx/nginx-perl.conf" file'
 %post mail
 for a in access.log error.log; do
 	if [ ! -f /var/log/%{name}/nginx-mail_$a ]; then
+		umask 022
 		touch /var/log/%{name}/nginx-mail_$a
 		chown nginx:nginx /var/log/%{name}/nginx-mail_$a
 		chmod 644 /var/log/%{name}/nginx-mail_$a
@@ -523,8 +519,9 @@ fi
 %dir %{_nginxdir}/html
 %dir %{_nginxdir}/errors
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/logrotate.d/%{name}
+# XXX: duplicates, don't use such glob here
 %attr(640,root,root) %{_sysconfdir}/*[_-]*
-%attr(640,root,root) %{_sysconfdir}/proxy.conf
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/proxy.conf
 %attr(640,root,root) %{_sysconfdir}/mime.types
 %attr(750,root,root) %dir /var/log/archive/%{name}
 %attr(750,%{name},logs) /var/log/%{name}
@@ -565,8 +562,8 @@ fi
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}-perl.conf
 %dir %{perl_vendorarch}/auto/%{name}
 %attr(755,root,root) %{perl_vendorarch}/auto/%{name}/%{name}.so
-%attr(700,root,root) %{perl_vendorarch}/auto/%{name}/%{name}.bs
-%attr(700,root,root) %{perl_vendorarch}/%{name}.pm
+%{perl_vendorarch}/auto/%{name}/%{name}.bs
+%{perl_vendorarch}/%{name}.pm
 %endif
 
 %files -n monit-rc-nginx
