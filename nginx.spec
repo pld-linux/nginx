@@ -2,7 +2,6 @@
 # - fix sysconfdir duplicates
 # - /etc/sysconfig/nginx file
 # - missing perl build/install requires
-# - maybe -with-cpu-opt=CPU (pentium, pentiumpro, pentium3, pentium4, athlon, opteron, amd64, sparc32, sparc64, ppc64) ?
 # - nginx should have own group (and work with it) or use http group ?
 #
 # Conditional build for nginx:
