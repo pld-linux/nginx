@@ -98,10 +98,10 @@ a tak偶e IMAP/POP3 proxy. Nginx zosta艂 napisany przez Igora Sysoev'a
 na potrzeby serwisu Rambler.ru. Jest to drugi pod wzgl臋dem ilo艣ci
 odwiedzin serwis w Rosji i dzia艂a od ponad dw贸ch i p贸艂 roku. Igor
 opublikowa艂 藕r贸d艂a na licencji BSD. Mimo, 偶e projekt jest ci膮gle
-w fazie beta, ju偶 zas舮n呐 dzieki stabilno舏, bogactwu dodatk贸w,
-prostej konfiguracji oraz ma舉j "zasobo偶erno舏".
+w fazie beta, ju偶 zas艂yn膮艂 dzieki stabilno艣ci, bogactwu dodatk贸w,
+prostej konfiguracji oraz ma艂ej "zasobo偶erno艣ci".
 
-Niezb縟ne pliki dla Nginx.
+Niezb臋dne pliki dla Nginx.
 
 %package light
 Summary:	High perfomance HTTP and reverse proxy server
@@ -203,8 +203,8 @@ released the source code under a BSD-like license. Although still in
 beta, Nginx is known for its stability, rich feature set, simple
 configuration, and low resource consumption.
 
-This is standard nginx version, without perl support and imap, pop3,
-smtp proxy. 
+This is standard Nginx version, without Perl support and IMAP, POP3,
+SMTP proxy. 
 
 %description standard -l pl.UTF-8
 Nginx ("engine x") jest wysokowydajnym serwerem HTTP, odwrotnym proxy
@@ -212,11 +212,11 @@ a tak偶e IMAP/POP3 proxy. Nginx zosta艂 napisany przez Igora Sysoev'a
 na potrzeby serwisu Rambler.ru. Jest to drugi pod wzgl臋dem ilo艣ci
 odwiedzin serwis w Rosji i dzia艂a od ponad dw贸ch i p贸艂 roku. Igor
 opublikowa艂 藕r贸d艂a na licencji BSD. Mimo, 偶e projekt jest ci膮gle
-w fazie beta, ju偶 zas舮n呐 dzieki stabilno舏, bogactwu dodatk贸w,
-prostej konfiguracji oraz ma舉j "zasobo偶erno舏".
+w fazie beta, ju偶 zas艂yn膮艂 dzieki stabilno艣ci, bogactwu dodatk贸w,
+prostej konfiguracji oraz ma艂ej "zasobo偶erno艣ci".
 
-To jest standardowa wersja nginx, bez obs?ugi perla oraz proxy dla
-imap, pop3, smtp.
+To jest standardowa wersja Nginx, bez obs艂ugi Perla oraz proxy dla
+IMAP, POP3, SMTP.
 
 %package -n monit-rc-nginx
 Summary:	Nginx support for monit
@@ -228,10 +228,10 @@ Requires:	%{name} = %{version}-%{release}
 Requires:	monit
 
 %description -n monit-rc-nginx
-monitrc file for monitoring nginx webserver server.
+monitrc file for monitoring Nginx webserver server.
 
 %description -n monit-rc-nginx -l pl.UTF-8
-Plik monitrc do monitorowania serwera WWW nginx.
+Plik monitrc do monitorowania serwera WWW Nginx.
 
 %prep
 %setup -q
