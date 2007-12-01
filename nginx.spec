@@ -445,11 +445,7 @@ for a in access.log error.log; do
 done
 if [ "$1" = "1" ]; then
 	/sbin/chkconfig --add %{name}-standard
-	if [ -f /var/lock/subsys/%{name}-standard ]; then
-		%service %{name}-standard restart 1>&2
-	else
-		echo "Run \"/etc/rc.d/init.d/nginx-standard start\" to start nginx daemon."
-	fi
+	%service %{name}-standard restart
 fi
 echo "Notice: deamon is now using \"/etc/nginx/nginx-standard.conf\" file"
 
@@ -463,11 +459,7 @@ for a in access.log error.log; do
 done
 if [ "$1" = "1" ]; then
 	/sbin/chkconfig --add %{name}-light
-	if [ -f /var/lock/subsys/%{name}-light ]; then
-		%service %{name}-light restart 1>&2
-	else
-		echo "Run \"/etc/rc.d/init.d/nginx-light start\" to start nginx daemon."
-	fi
+	%service %{name}-light restart
 fi
 echo "Notice: deamon is now using \"/etc/nginx/nginx-light.conf\" file"
 
@@ -481,11 +473,7 @@ for a in access.log error.log; do
 done
 if [ "$1" = "1" ]; then
 	/sbin/chkconfig --add %{name}-perl
-	if [ -f /var/lock/subsys/%{name}-perl ]; then
-		%service %{name}-perl restart 1>&2
-	else
-		echo "Run \"/etc/rc.d/init.d/nginx-perl start\" to start nginx daemon."
-	fi
+	%service %{name}-perl restart
 fi
 echo "Notice: deamon is now using \"/etc/nginx/nginx-perl.conf\" file"
 
@@ -499,43 +487,31 @@ for a in access.log error.log; do
 done
 if [ "$1" = "1" ]; then
 	/sbin/chkconfig --add %{name}-mail
-	if [ -f /var/lock/subsys/%{name}-mail ]; then
-		%service %{name}-mail restart 1>&2
-	else
-		echo "Run \"/etc/rc.d/init.d/nginx-mail start\" to start nginx daemon."
-	fi
+	%service %{name}-mail restart
 fi
 echo "Notice: deamon is now using \"/etc/nginx/nginx-mail.conf\" file"
 
 %preun standard
 if [ "$1" = "0" ];then
-	if [ -f /var/lock/subsys/%{name}-standard ]; then
-		%service -q %{name}-standard stop
-	fi
+	%service %{name}-standard stop
 	/sbin/chkconfig --del %{name}-standard
 fi
 
 %preun light
 if [ "$1" = "0" ]; then
-	if [ -f /var/lock/subsys/%{name}-light ]; then
-		%service -q %{name}-light stop
-	fi
+	%service %{name}-light stop
 	/sbin/chkconfig --del %{name}-light
 fi
 
 %preun perl
 if [ "$1" = "0" ]; then
-	if [ -f /var/lock/subsys/%{name}-perl ]; then
-		%service -q %{name}-perl stop
-	fi
+	%service %{name}-perl stop
 	/sbin/chkconfig --del %{name}-perl
 fi
 
 %preun mail
 if [ "$1" = "0" ]; then
-	if [ -f /var/lock/subsys/%{name}-mail ]; then
-		%service -q %{name}-mail stop
-	fi
+	%service %{name}-mail stop
 	/sbin/chkconfig --del %{name}-mail
 fi
 
