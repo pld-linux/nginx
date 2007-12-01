@@ -443,11 +443,9 @@ for a in access.log error.log; do
 		chmod 644 /var/log/%{name}/nginx-standard_$a
 	fi
 done
-if [ "$1" = "1" ]; then
-	/sbin/chkconfig --add %{name}-standard
-	%service %{name}-standard restart
-fi
-echo "Notice: deamon is now using \"/etc/nginx/nginx-standard.conf\" file"
+/sbin/chkconfig --add %{name}-standard
+%service %{name}-standard restart
+echo 'NOTE: daemon is now using "/etc/nginx/nginx-standard.conf" as config.'
 
 %post light
 for a in access.log error.log; do
@@ -457,11 +455,9 @@ for a in access.log error.log; do
 		chmod 644 /var/log/%{name}/nginx-light_$a
 	fi
 done
-if [ "$1" = "1" ]; then
-	/sbin/chkconfig --add %{name}-light
-	%service %{name}-light restart
-fi
-echo "Notice: deamon is now using \"/etc/nginx/nginx-light.conf\" file"
+/sbin/chkconfig --add %{name}-light
+%service %{name}-light restart
+echo 'NOTE: daemon is now using "/etc/nginx/nginx-light.conf" file'
 
 %post perl
 for a in access.log error.log; do
@@ -471,11 +467,9 @@ for a in access.log error.log; do
 		chmod 644 /var/log/%{name}/nginx-perl_$a
 	fi
 done
-if [ "$1" = "1" ]; then
-	/sbin/chkconfig --add %{name}-perl
-	%service %{name}-perl restart
-fi
-echo "Notice: deamon is now using \"/etc/nginx/nginx-perl.conf\" file"
+/sbin/chkconfig --add %{name}-perl
+%service %{name}-perl restart
+echo 'NOTE: daemon is now using "/etc/nginx/nginx-perl.conf" file'
 
 %post mail
 for a in access.log error.log; do
@@ -485,11 +479,9 @@ for a in access.log error.log; do
 		chmod 644 /var/log/%{name}/nginx-mail_$a
 	fi
 done
-if [ "$1" = "1" ]; then
-	/sbin/chkconfig --add %{name}-mail
-	%service %{name}-mail restart
-fi
-echo "Notice: deamon is now using \"/etc/nginx/nginx-mail.conf\" file"
+/sbin/chkconfig --add %{name}-mail
+%service %{name}-mail restart
+echo 'NOTE: daemon is now using "/etc/nginx/nginx-mail.conf" file'
 
 %preun standard
 if [ "$1" = "0" ];then
