@@ -1,8 +1,8 @@
 # TODO
 # - /etc/sysconfig/nginx file
 # - missing perl build/install requires
-# - prepare pld style like nginx.conf
-# - maybe -with-cpu-opt=CPU (pentium, pentiumpro, pentium3, pentium4, athlon, opteron, amd64, sparc32, sparc64, ppc64)
+# - maybe -with-cpu-opt=CPU (pentium, pentiumpro, pentium3, pentium4, athlon, opteron, amd64, sparc32, sparc64, ppc64) ?
+# - nginx should have own group (and work with it) or use http group ?
 #
 # Conditional build for nginx:
 %bcond_without	light		# don't build light version
@@ -188,6 +188,9 @@ Requires(post,preun):	/sbin/chkconfig
 Requires(postun):	/usr/sbin/groupdel
 Requires(postun):	/usr/sbin/userdel
 Requires:	%{name} = %{version}-%{release}
+Requires:	openssl
+Provides:	group(http)
+Provides:	group(nginx)
 Provides:	nginx-daemon
 Conflicts:	logrotate < 3.7-4
 
@@ -225,10 +228,10 @@ Requires:	%{name} = %{version}-%{release}
 Requires:	monit
 
 %description -n monit-rc-nginx
-monitrc file for monitoring Nginx webserver server.
+monitrc file for monitoring nginx webserver server.
 
 %description -n monit-rc-nginx -l pl.UTF-8
-Plik monitrc do monitorowania serwera WWW Nginx.
+Plik monitrc do monitorowania serwera WWW nginx.
 
 %prep
 %setup -q
@@ -448,6 +451,7 @@ if [ "$1" = "1" ]; then
 		echo "Run \"/etc/rc.d/init.d/nginx-standard start\" to start nginx daemon."
 	fi
 fi
+echo "Notice now deamon is usign \"/etc/nginx/nginx-standard.conf\" file"
 
 %post light
 for a in access.log error.log; do
@@ -465,6 +469,7 @@ if [ "$1" = "1" ]; then
 		echo "Run \"/etc/rc.d/init.d/nginx-light start\" to start nginx daemon."
 	fi
 fi
+echo "Notice now deamon is usign \"/etc/nginx/nginx-light.conf\" file"
 
 %post perl
 for a in access.log error.log; do
@@ -482,6 +487,7 @@ if [ "$1" = "1" ]; then
 		echo "Run \"/etc/rc.d/init.d/nginx-perl start\" to start nginx daemon."
 	fi
 fi
+echo "Notice now deamon is usign \"/etc/nginx/nginx-perl.conf\" file"
 
 %post mail
 for a in access.log error.log; do
@@ -499,6 +505,7 @@ if [ "$1" = "1" ]; then
 		echo "Run \"/etc/rc.d/init.d/nginx-mail start\" to start nginx daemon."
 	fi
 fi
+echo "Notice now deamon is usign \"/etc/nginx/nginx-mail.conf\" file"
 
 %preun standard
 if [ "$1" = "0" ];then
