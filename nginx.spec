@@ -173,7 +173,7 @@ nginx ze wsparciem tylko dla modułów poczty.
 
 %package standard
 Summary:	High perfomance HTTP and reverse proxy server
-Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajno�~[ci
+Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 Group:		Networking/Daemons
 Requires(post,preun):	/sbin/chkconfig
 Requires(postun):	/usr/sbin/groupdel
