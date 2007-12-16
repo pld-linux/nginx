@@ -506,7 +506,7 @@ fi
 # XXX: duplicates, don't use such glob here
 #%attr(640,root,root) %{_sysconfdir}/*[_-]*
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/proxy.conf
-attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/fastcgi.params
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/fastcgi.params
 %attr(640,root,root) %{_sysconfdir}/mime.types
 %attr(640,root,root) %{_sysconfdir}/koi-utf
 %attr(640,root,root) %{_sysconfdir}/koi-win
