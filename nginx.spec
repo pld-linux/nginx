@@ -22,12 +22,12 @@
 Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 Name:		nginx
-Version:	0.5.34
-Release:	0.3
+Version:	0.5.35
+Release:	0.1
 License:	BSD-like
 Group:		Networking/Daemons
 Source0:	http://sysoev.ru/nginx/%{name}-%{version}.tar.gz
-# Source0-md5:	8f7d3efcd7caaf1f06e4d95dfaeac238
+# Source0-md5:	1100d8a2f811777f38eff44fe6548d7e
 Source1:	http://www.nginx.eu/favicon.ico
 # Source1-md5:	2aaf2115c752cbdbfb8a2f0b3c3189ab
 Source2:	http://www.nginx.eu/download/proxy.conf
