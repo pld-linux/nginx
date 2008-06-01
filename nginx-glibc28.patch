@@ -1,0 +1,12 @@
+Index: src/os/unix/ngx_linux_config.h
+===================================================================
+--- src/os/unix/ngx_linux_config.h	(revision 1337)
++++ src/os/unix/ngx_linux_config.h	(working copy)
+@@ -47,6 +47,7 @@
+ 
+ #include <time.h>               /* tzset() */
+ #include <malloc.h>             /* memalign() */
++#include <limits.h>             /* IOV_MAX */
+ #include <sys/ioctl.h>
+ #include <sys/sysctl.h>
+ #include <crypt.h> 
