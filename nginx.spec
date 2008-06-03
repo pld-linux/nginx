@@ -55,6 +55,7 @@ BuildRequires:	openssl-devel
 BuildRequires:	pcre-devel
 %{?with_perl:BuildRequires: perl-CGI}
 %{?with_perl:BuildRequires: perl-devel}
+%{?with_perl:BuildRequires: python}
 %{?with_perl:BuildRequires: rpm-perlprov}
 BuildRequires:	rpmbuild(macros) >= 1.268
 BuildRequires:	zlib-devel
