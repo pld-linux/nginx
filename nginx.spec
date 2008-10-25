@@ -25,7 +25,7 @@ Name:		nginx
 Version:	0.6.32
 Release:	0.1
 License:	BSD-like
-Group:		Networking/Daemons
+Group:		Networking/Daemons/HTTP
 Source0:	http://sysoev.ru/nginx/%{name}-%{version}.tar.gz
 # Source0-md5:	c09a2ace3c91f45dabbb608b11e48ed1
 Source1:	http://www.nginx.eu/favicon.ico
@@ -105,7 +105,7 @@ Niezbędne pliki dla nginx.
 %package light
 Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
-Group:		Networking/Daemons
+Group:		Networking/Daemons/HTTP
 Requires(post,preun):	/sbin/chkconfig
 Requires(postun):	/usr/sbin/groupdel
 Requires(postun):	/usr/sbin/userdel
@@ -130,7 +130,7 @@ FLV oraz IMAP, POP3, SMTP proxy.
 %package perl
 Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
-Group:		Networking/Daemons
+Group:		Networking/Daemons/HTTP
 Requires(post,preun):	/sbin/chkconfig
 Requires(postun):	/usr/sbin/groupdel
 Requires(postun):	/usr/sbin/userdel
@@ -151,7 +151,7 @@ nginx z obsługą Perla. Bez wsparcia dla modułów poczty.
 %package mail
 Summary:	High perfomance IMAP, POP3, SMTP proxy server
 Summary(pl.UTF-8):	IMAP, POP3, SMTP proxy o wysokiej wydajności
-Group:		Networking/Daemons
+Group:		Networking/Daemons/HTTP
 Requires(post,preun):	/sbin/chkconfig
 Requires(postun):	/usr/sbin/groupdel
 Requires(postun):	/usr/sbin/userdel
@@ -174,7 +174,7 @@ nginx ze wsparciem tylko dla modułów poczty.
 %package standard
 Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
-Group:		Networking/Daemons
+Group:		Networking/Daemons/HTTP
 Requires(post,preun):	/sbin/chkconfig
 Requires(postun):	/usr/sbin/groupdel
 Requires(postun):	/usr/sbin/userdel
