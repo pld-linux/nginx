@@ -42,7 +42,7 @@ start() {
 	# Check if the service is already running?
 	if [ ! -f /var/lock/subsys/nginx ]; then
 		msg_starting nginx
-		daemon nginx $CFG $HTTPD_OPTS
+		daemon /usr/sbin/nginx $CFG $HTTPD_OPTS
 		RETVAL=$?
 		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/nginx
 	else
