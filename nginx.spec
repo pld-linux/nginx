@@ -22,12 +22,12 @@
 Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 Name:		nginx
-Version:	0.7.61
+Version:	0.7.64
 Release:	1
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	http://sysoev.ru/nginx/%{name}-%{version}.tar.gz
-# Source0-md5:	6ebf89b9b00a3b82734e93c32da7df07
+# Source0-md5:	cfa97c0f784532820110b5eee57fef6d
 Source1:	http://www.nginx.eu/favicon.ico
 # Source1-md5:	2aaf2115c752cbdbfb8a2f0b3c3189ab
 Source2:	http://www.nginx.eu/download/proxy.conf
@@ -47,7 +47,6 @@ Source14:	%{name}-standard.conf
 Source15:	%{name}-standard.monitrc
 Source16:	%{name}-standard.init
 Source17:	%{name}-mime.types.sh
-Patch0:		%{name}-uname.patch
 URL:		http://nginx.net/
 BuildRequires:	mailcap
 BuildRequires:	openssl-devel
@@ -210,7 +209,6 @@ Plik monitrc do monitorowania serwera WWW nginx.
 
 %prep
 %setup -q
-%patch0 -p1
 
 # build mime.types.conf
 #sh %{SOURCE17} /etc/mime.types
