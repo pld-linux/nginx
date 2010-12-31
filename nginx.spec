@@ -273,6 +273,7 @@ mv -f objs/src/http/modules/perl/nginx.pm contrib/nginx.pm
 	--with-mail \
 	--with-mail_ssl_module \
 	--without-http \
+	%{?with_ipv6:--with-ipv6} \
 	%{?with_poll:--with-poll_module} \
 	%{?with_rtsig:--with-rtsig_module} \
 	%{?with_select:--with-select_module} \
@@ -298,6 +299,7 @@ mv -f objs/nginx contrib/nginx-mail
 	--lock-path=%{_localstatedir}/lock/subsys/%{name}-light \
 	--user=nginx \
 	--group=nginx \
+	%{?with_ipv6:--with-ipv6} \
 	%{?with_poll:--with-poll_module} \
 	%{?with_realip:--with-http_realip_module} \
 	%{?with_rtsig:--with-rtsig_module} \
@@ -332,6 +334,7 @@ mv -f objs/nginx contrib/nginx-light
 	%{?with_addition:--with-http_addition_module} \
 	%{?with_dav:--with-http_dav_module} \
 	%{?with_flv:--with-http_flv_module} \
+	%{?with_ipv6:--with-ipv6} \
 	%{?with_sub:--with-http_sub_module} \
 	%{?with_poll:--with-poll_module} \
 	%{?with_realip:--with-http_realip_module} \
