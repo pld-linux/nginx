@@ -10,6 +10,7 @@
 %bcond_without	addition	# adds module
 %bcond_without	dav		# WebDAV
 %bcond_without	flv		# FLV stream
+%bcond_without	ipv6		# build without ipv6 support
 %bcond_without	sub		# ngx_http_sub_module
 %bcond_without	poll		# poll
 %bcond_without	realip		# real ip (behind proxy)
@@ -235,6 +236,7 @@ cp -f configure auto/
 	%{?with_addition:--with-http_addition_module} \
 	%{?with_dav:--with-http_dav_module} \
 	%{?with_flv:--with-http_flv_module} \
+	%{?with_ipv6:--with-ipv6} \
 	%{?with_sub:--with-http_sub_module} \
 	%{?with_poll:--with-poll_module} \
 	%{?with_realip:--with-http_realip_module} \
