@@ -23,16 +23,15 @@
 Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 Name:		nginx
-Version:	1.0.5
+Version:	1.0.6
 Release:	1
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
-Source0:	http://sysoev.ru/nginx/%{name}-%{version}.tar.gz
-# Source0-md5:	373c7761a7c682b92b164c8ee3d6d243
-Source1:	http://www.nginx.eu/favicon.ico
+Source0:	http://nginx.org/download/%{name}-%{version}.tar.gz
+# Source0-md5:	bc98bac3f0b85da1045bc02e6d8fc80d
+Source1:	http://nginx.net/favicon.ico
 # Source1-md5:	2aaf2115c752cbdbfb8a2f0b3c3189ab
-Source2:	http://www.nginx.eu/download/proxy.conf
-# Source2-md5:	f5263ae01c2edb18f46d5d1df2d3a5cd
+Source2:	proxy.conf
 Source3:	%{name}.logrotate
 Source4:	%{name}.mime
 Source5:	%{name}-light.conf
@@ -48,7 +47,6 @@ Source14:	%{name}-standard.conf
 Source15:	%{name}-standard.monitrc
 Source16:	%{name}-standard.init
 Source17:	%{name}-mime.types.sh
-Patch0:		%{name}-gcc46-build.patch
 URL:		http://nginx.net/
 BuildRequires:	mailcap
 BuildRequires:	openssl-devel
@@ -211,7 +209,6 @@ Plik monitrc do monitorowania serwera WWW nginx.
 
 %prep
 %setup -q
-%patch0 -p1
 
 # build mime.types.conf
 #sh %{SOURCE17} /etc/mime.types
