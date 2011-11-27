@@ -3,6 +3,11 @@
 	create 644 nginx nginx
 	sharedscripts
 	postrotate
-		/sbin/service nginx graceful > /dev/null
+		if [ -x /etc/rc.d/init.d/nginx-light ] ; then
+			/sbin/service nginx-light graceful > /dev/null
+		fi
+		if [ -x /etc/rc.d/init.d/nginx-standard ] ; then
+			/sbin/service nginx-standard graceful > /dev/null
+		fi
 	endscript
 }
