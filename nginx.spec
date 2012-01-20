@@ -24,7 +24,7 @@ Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 Name:		nginx
 Version:	1.0.11
-Release:	1
+Release:	2
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	http://nginx.org/download/%{name}-%{version}.tar.gz
@@ -74,7 +74,7 @@ Provides:	group(http)
 Provides:	group(nginx)
 Provides:	user(nginx)
 Provides:	webserver
-Conflicts:	logrotate < 3.7-4
+Conflicts:	logrotate < 3.8.0
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sysconfdir	/etc/%{name}

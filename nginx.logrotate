@@ -1,4 +1,5 @@
 /var/log/nginx/*.log {
+	su nginx nginx
 	olddir /var/log/archive/nginx
 	create 644 nginx nginx
 	sharedscripts
