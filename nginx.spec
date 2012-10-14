@@ -210,7 +210,7 @@ Plik monitrc do monitorowania serwera WWW nginx.
 
 %prep
 %setup -q
-%patch0 -p1
+%patch0 -p0
 
 # build mime.types.conf
 #sh %{SOURCE17} /etc/mime.types
