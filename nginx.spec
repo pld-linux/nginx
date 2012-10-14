@@ -47,6 +47,7 @@ Source14:	%{name}-standard.conf
 Source15:	%{name}-standard.monitrc
 Source16:	%{name}-standard.init
 Source17:	%{name}-mime.types.sh
+Patch0:		nginx-no-Werror.patch
 URL:		http://nginx.net/
 BuildRequires:	mailcap
 BuildRequires:	openssl-devel
@@ -209,6 +210,7 @@ Plik monitrc do monitorowania serwera WWW nginx.
 
 %prep
 %setup -q
+%patch0 -p1
 
 # build mime.types.conf
 #sh %{SOURCE17} /etc/mime.types
