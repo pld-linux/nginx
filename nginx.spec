@@ -19,7 +19,9 @@
 %bcond_without	status		# stats module
 %bcond_without	ssl		# ssl support
 %bcond_with	http_browser	# header "User-agent" parser
+%bcond_with	rtmp		# rtmp support
 #
+%define		rtmp_githash	a3cffbb
 Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 Name:		nginx
@@ -30,7 +32,7 @@ Group:		Networking/Daemons/HTTP
 Source0:	http://nginx.org/download/%{name}-%{version}.tar.gz
 # Source0-md5:	fea7dfab995545ce27fe4c49dc21a972
 Source1:	http://nginx.net/favicon.ico
-# Source1-md5:	2aaf2115c752cbdbfb8a2f0b3c3189ab
+# Source1-md5:	14054e0d276e25545c9f801c91164f69
 Source2:	proxy.conf
 Source3:	%{name}.logrotate
 Source4:	%{name}.mime
@@ -47,6 +49,8 @@ Source14:	%{name}-standard.conf
 Source15:	%{name}-standard.monitrc
 Source16:	%{name}-standard.init
 Source17:	%{name}-mime.types.sh
+Source101:	https://github.com/arut/nginx-rtmp-module/tarball/master/nginx-rtmp-module.tar.gz
+# Source101-md5:	66a01b57858a3ae66e803652caa17bc7
 Patch0:		nginx-no-Werror.patch
 URL:		http://nginx.net/
 BuildRequires:	mailcap
@@ -209,7 +213,7 @@ monitrc file for monitoring nginx webserver.
 Plik monitrc do monitorowania serwera WWW nginx.
 
 %prep
-%setup -q
+%setup -q %{?with_rtmp:-a101}
 %patch0 -p0
 
 # build mime.types.conf
@@ -246,6 +250,7 @@ cp -f configure auto/
 	%{?with_status:--with-http_stub_status_module} \
 	%{?with_ssl:--with-http_ssl_module} \
 	%{!?with_http_browser:--without-http_browser_module} \
+	%{?with_rtmp:--add-module=./arut-nginx-rtmp-module-%{rtmp_githash}} \
 	--http-client-body-temp-path=%{_localstatedir}/cache/%{name}-perl/client_body_temp \
 	--http-proxy-temp-path=%{_localstatedir}/cache/%{name}-perl/proxy_temp \
 	--http-fastcgi-temp-path=%{_localstatedir}/cache/%{name}-perl/fastcgi_temp \
@@ -307,6 +312,7 @@ mv -f objs/nginx contrib/nginx-mail
 	%{?with_select:--with-select_module} \
 	%{?with_status:--with-http_stub_status_module} \
 	%{?with_ssl:--with-http_ssl_module} \
+	%{?with_rtmp:--add-module=./arut-nginx-rtmp-module-%{rtmp_githash}} \
 	--without-http_browser_module \
 	--without-mail_pop3_module \
 	--without-mail_imap_module \
@@ -344,6 +350,7 @@ mv -f objs/nginx contrib/nginx-light
 	%{?with_status:--with-http_stub_status_module} \
 	%{?with_ssl:--with-http_ssl_module} \
 	%{!?with_http_browser:--without-http_browser_module} \
+	%{?with_rtmp:--add-module=./arut-nginx-rtmp-module-%{rtmp_githash}} \
 	--http-client-body-temp-path=%{_localstatedir}/cache/%{name}-standard/client_body_temp \
 	--http-proxy-temp-path=%{_localstatedir}/cache/%{name}-standard/proxy_temp \
 	--http-fastcgi-temp-path=%{_localstatedir}/cache/%{name}-standard/fastcgi_temp \
