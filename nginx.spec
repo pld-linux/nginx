@@ -378,7 +378,7 @@ install -d $RPM_BUILD_ROOT/etc/rc.d/init.d \
 	$RPM_BUILD_ROOT%{_localstatedir}/log/{%{name},archive/%{name}} \
 	$RPM_BUILD_ROOT%{_localstatedir}/cache/{%{name}-standard,%{name}-perl,%{name}-mail,%{name}-light} \
 	$RPM_BUILD_ROOT%{_localstatedir}/lock/subsys/{%{name}-standard,%{name}-perl,%{name}-mail,%{name}-light} \
-	$RPM_BUILD_ROOT{%{_sbindir},%{_sysconfdir}} \
+	$RPM_BUILD_ROOT{%{_sbindir},%{_sysconfdir}/{vhosts,webapps}.d} \
 	$RPM_BUILD_ROOT/etc/{logrotate.d,monit} \
 	$RPM_BUILD_ROOT{%{systemdunitdir},/etc/systemd/system}
 
@@ -578,6 +578,8 @@ fi
 %attr(640,root,root) %{_sysconfdir}/koi-utf
 %attr(640,root,root) %{_sysconfdir}/koi-win
 %attr(640,root,root) %{_sysconfdir}/win-utf
+%dir %{_sysconfdir}/webapps.d
+%dir %{_sysconfdir}/vhosts.d
 %attr(750,nginx,logs) %dir /var/log/archive/%{name}
 %attr(750,nginx,logs) /var/log/%{name}
 %config(noreplace,missingok) %verify(not md5 mtime size) %{_nginxdir}/html/*
