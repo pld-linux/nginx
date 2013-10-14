@@ -451,7 +451,7 @@ done
 /sbin/chkconfig --add %{name}-standard
 %systemd_post %{name}-standard.service
 %service %{name}-standard restart
-echo 'NOTE: daemon is now using "/etc/nginx/nginx-standard.conf" as config.'
+echo 'NOTE: this nginx daemon is using "/etc/nginx/nginx-standard.conf" as config.'
 if ! [ -L /etc/systemd/system/nginx.service ] ; then
 	ln -s %{systemdunitdir}/%{name}-standard.service /etc/systemd/system/nginx.service || :
 fi
@@ -468,7 +468,7 @@ done
 /sbin/chkconfig --add %{name}-light
 %systemd_post %{name}-light.service
 %service %{name}-light restart
-echo 'NOTE: daemon is now using "/etc/nginx/nginx-light.conf" as config'
+echo 'NOTE: this nginx daemon is using "/etc/nginx/nginx-light.conf" as config'
 
 %post perl
 for a in access.log error.log; do
@@ -482,7 +482,7 @@ done
 /sbin/chkconfig --add %{name}-perl
 %systemd_post %{name}-perl.service
 %service %{name}-perl restart
-echo 'NOTE: daemon is now using "/etc/nginx/nginx-perl.conf" as config'
+echo 'NOTE: this nginx daemon is using "/etc/nginx/nginx-perl.conf" as config'
 
 %post mail
 for a in access.log error.log; do
@@ -496,7 +496,7 @@ done
 /sbin/chkconfig --add %{name}-mail
 %systemd_post %{name}-mail.service
 %service %{name}-mail restart
-echo 'NOTE: daemon is now using "/etc/nginx/nginx-mail.conf" as config'
+echo 'NOTE: this nginx daemon is using "/etc/nginx/nginx-mail.conf" as config'
 
 %preun standard
 if [ "$1" = "0" ];then
