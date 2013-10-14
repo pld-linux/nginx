@@ -380,7 +380,7 @@ install -d $RPM_BUILD_ROOT/etc/rc.d/init.d \
 	$RPM_BUILD_ROOT%{_localstatedir}/lock/subsys/{%{name}-standard,%{name}-perl,%{name}-mail,%{name}-light} \
 	$RPM_BUILD_ROOT{%{_sbindir},%{_sysconfdir}} \
 	$RPM_BUILD_ROOT/etc/{logrotate.d,monit} \
-	$RPM_BUILD_ROOT%{systemdunitdir}
+	$RPM_BUILD_ROOT{%{systemdunitdir},/etc/systemd/system}
 
 install conf/fastcgi_params $RPM_BUILD_ROOT%{_sysconfdir}/fastcgi.params
 install conf/koi-utf $RPM_BUILD_ROOT%{_sysconfdir}/koi-utf
@@ -397,6 +397,7 @@ install %{SOURCE15} $RPM_BUILD_ROOT/etc/monit/%{name}-standard.monitrc
 install %{SOURCE16} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}-standard
 install %{SOURCE18} $RPM_BUILD_ROOT%{systemdunitdir}/%{name}-standard.service
 install objs/%{name} $RPM_BUILD_ROOT%{_sbindir}/%{name}-standard
+ln -sf %{systemdunitdir}/%{name}-standard.service $RPM_BUILD_ROOT/etc/systemd/system/nginx.service
 
 %if %{with light}
 install %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}-light.conf
@@ -451,6 +452,9 @@ done
 %systemd_post %{name}-standard.service
 %service %{name}-standard restart
 echo 'NOTE: daemon is now using "/etc/nginx/nginx-standard.conf" as config.'
+if ! [ -L /etc/systemd/system/nginx.service ] ; then
+	ln -s %{systemdunitdir}/%{name}-standard.service /etc/systemd/system/nginx.service || :
+fi
 
 %post light
 for a in access.log error.log; do
@@ -574,6 +578,7 @@ fi
 %attr(750,nginx,logs) /var/log/%{name}
 %config(noreplace,missingok) %verify(not md5 mtime size) %{_nginxdir}/html/*
 %config(noreplace,missingok) %verify(not md5 mtime size) %{_nginxdir}/errors/*
+%ghost /etc/systemd/system/nginx.service
 
 %files standard
 %defattr(644,root,root,755)
