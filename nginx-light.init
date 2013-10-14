@@ -29,20 +29,11 @@ else
 	exit 0
 fi
 
-if [ -d "${HTTPD_CONF:-'/etc/nginx/nginx-light.conf'}" ]; then
-	CFG="-f ${HTTPD_CONF:-'/etc/nginx/nginx-light.conf'}"
-elif [ -n "$HTTPD_CONF" ]; then
-	echo "error: HTTPD_CONF='$HTTPD_CONF': not a file, not a directory"
-	exit 1
-else
-	CFG=""
-fi
-
 start() {
 	# Check if the service is already running?
 	if [ ! -f /var/lock/subsys/nginx-light ]; then
 		msg_starting nginx-light
-		daemon nginx-light $CFG $HTTPD_OPTS
+		daemon nginx-light
 		RETVAL=$?
 		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/nginx-light
 	else
@@ -54,7 +45,7 @@ stop() {
 	# Stop daemons.
 	if [ -f /var/lock/subsys/nginx-light ]; then
 		msg_stopping nginx-light
-		killproc --waitforname nginx-light --waitfortime 60 nginx-light $CFG
+		killproc --waitforname nginx-light --waitfortime 60 nginx-light
 		# Delete pidfile only when nginx was called successfully
 		if [ $? -eq 0 ]; then
 			rm -f /var/lock/subsys/nginx-light /var/run/nginx-light.pid >/dev/null 2>&1

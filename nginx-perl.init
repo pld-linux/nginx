@@ -29,20 +29,11 @@ else
 	exit 0
 fi
 
-if [ -d "${HTTPD_CONF:-'/etc/nginx/nginx-perl.conf'}" ]; then
-	CFG="-f ${HTTPD_CONF:-'/etc/nginx/nginx-perl.conf'}"
-elif [ -n "$HTTPD_CONF" ]; then
-	echo "error: HTTPD_CONF='$HTTPD_CONF': not a file, not a directory"
-	exit 1
-else
-	CFG=""
-fi
-
 start() {
 	# Check if the service is already running?
 	if [ ! -f /var/lock/subsys/nginx-perl ]; then
 		msg_starting nginx-perl
-		daemon /usr/sbin/nginx-perl $CFG $HTTPD_OPTS
+		daemon /usr/sbin/nginx-perl
 		RETVAL=$?
 		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/nginx-perl
 	else
@@ -54,7 +45,7 @@ stop() {
 	# Stop daemons.
 	if [ -f /var/lock/subsys/nginx-perl ]; then
 		msg_stopping nginx-perl
-		killproc --waitforname nginx-perl --waitfortime 60 nginx-perl $CFG
+		killproc --waitforname nginx-perl --waitfortime 60 nginx-perl
 		# Delete pidfile only when nginx was called successfully
 		if [ $? -eq 0 ]; then
 			rm -f /var/lock/subsys/nginx-perl /var/run/nginx-perl.pid >/dev/null 2>&1

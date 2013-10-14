@@ -29,20 +29,11 @@ else
 	exit 0
 fi
 
-if [ -d "${HTTPD_CONF:-'/etc/nginx/nginx-standard.conf'}" ]; then
-	CFG="-f ${HTTPD_CONF:-'/etc/nginx/nginx-standard.conf'}"
-elif [ -n "$HTTPD_CONF" ]; then
-	echo "error: HTTPD_CONF='$HTTPD_CONF': not a file, not a directory"
-	exit 1
-else
-	CFG=""
-fi
-
 start() {
 	# Check if the service is already running?
 	if [ ! -f /var/lock/subsys/nginx-standard ]; then
 		msg_starting nginx-standard
-		daemon /usr/sbin/nginx-standard $CFG $HTTPD_OPTS
+		daemon /usr/sbin/nginx-standard
 		RETVAL=$?
 		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/nginx-standard
 	else
@@ -54,7 +45,7 @@ stop() {
 	# Stop daemons.
 	if [ -f /var/lock/subsys/nginx-standard ]; then
 		msg_stopping nginx-standard
-		killproc --waitforname nginx-standard --waitfortime 60 nginx-standard $CFG
+		killproc --waitforname nginx-standard --waitfortime 60 nginx-standard
 		# Delete pidfile only when nginx was called successfully
 		if [ $? -eq 0 ]; then
 			rm -f /var/lock/subsys/nginx-standard /var/run/nginx-standard.pid >/dev/null 2>&1
