@@ -1,0 +1,14 @@
+[Unit]
+Description=Nginx Web Server (light version)
+After=syslog.target network.target remote-fs.target nss-lookup.target
+
+[Service]
+Type=forking
+PIDFile=/var/run/nginx-light.pid
+ExecStartPre=/usr/sbin/nginx-light -c /etc/nginx/nginx-light.conf -t
+ExecStart=/usr/sbin/nginx-light -c /etc/nginx/nginx-light.conf
+ExecReload=/usr/sbin/nginx-light -c /etc/nginx/nginx-light.conf -s reload
+ExecStop=/usr/sbin/nginx-light -c /etc/nginx/nginx-light.conf -s stop
+
+[Install]
+WantedBy=multi-user.target

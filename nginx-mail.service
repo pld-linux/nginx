@@ -1,0 +1,14 @@
+[Unit]
+Description=Nginx Web Server (mail version)
+After=syslog.target network.target remote-fs.target nss-lookup.target
+
+[Service]
+Type=forking
+PIDFile=/var/run/nginx-mail.pid
+ExecStartPre=/usr/sbin/nginx-mail -c /etc/nginx/nginx-mail.conf -t
+ExecStart=/usr/sbin/nginx-mail -c /etc/nginx/nginx-mail.conf
+ExecReload=/usr/sbin/nginx-mail -c /etc/nginx/nginx-mail.conf -s reload
+ExecStop=/usr/sbin/nginx-mail -c /etc/nginx/nginx-mail.conf -s stop
+
+[Install]
+WantedBy=multi-user.target

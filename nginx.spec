@@ -26,7 +26,7 @@ Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 Name:		nginx
 Version:	1.4.1
-Release:	3
+Release:	4
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	http://nginx.org/download/%{name}-%{version}.tar.gz
@@ -49,6 +49,10 @@ Source14:	%{name}-standard.conf
 Source15:	%{name}-standard.monitrc
 Source16:	%{name}-standard.init
 Source17:	%{name}-mime.types.sh
+Source18:	%{name}-standard.service
+Source19:	%{name}-light.service
+Source20:	%{name}-perl.service
+Source21:	%{name}-mail.service
 Source101:	https://github.com/arut/nginx-rtmp-module/archive/v%{rtmp_version}.tar.gz
 # Source101-md5:	989659b13382e4ee3649fcaa6573c08e
 Patch0:		nginx-no-Werror.patch
@@ -60,7 +64,7 @@ BuildRequires:	pcre-devel
 %{?with_perl:BuildRequires: perl-devel}
 %{?with_perl:BuildRequires: python}
 %{?with_perl:BuildRequires: rpm-perlprov}
-BuildRequires:	rpmbuild(macros) >= 1.268
+BuildRequires:	rpmbuild(macros) >= 1.644
 BuildRequires:	zlib-devel
 Requires(post,preun):	/sbin/chkconfig
 Requires(postun):	/usr/sbin/groupdel
@@ -69,10 +73,12 @@ Requires(pre):	/bin/id
 Requires(pre):	/usr/bin/getgid
 Requires(pre):	/usr/sbin/groupadd
 Requires(pre):	/usr/sbin/useradd
+Requires(post,preun,postun):	systemd-units >= 38
 #Requires:	nginx-daemon
 Requires:	openssl
 Requires:	pcre
 Requires:	rc-scripts >= 0.2.0
+Requires:	systemd-units >= 38
 Requires:	zlib
 Suggests:	nginx-standard
 Provides:	group(http)
@@ -373,7 +379,8 @@ install -d $RPM_BUILD_ROOT/etc/rc.d/init.d \
 	$RPM_BUILD_ROOT%{_localstatedir}/cache/{%{name}-standard,%{name}-perl,%{name}-mail,%{name}-light} \
 	$RPM_BUILD_ROOT%{_localstatedir}/lock/subsys/{%{name}-standard,%{name}-perl,%{name}-mail,%{name}-light} \
 	$RPM_BUILD_ROOT{%{_sbindir},%{_sysconfdir}} \
-	$RPM_BUILD_ROOT/etc/{logrotate.d,monit}
+	$RPM_BUILD_ROOT/etc/{logrotate.d,monit} \
+	$RPM_BUILD_ROOT%{systemdunitdir}
 
 install conf/fastcgi_params $RPM_BUILD_ROOT%{_sysconfdir}/fastcgi.params
 install conf/koi-utf $RPM_BUILD_ROOT%{_sysconfdir}/koi-utf
@@ -388,12 +395,14 @@ install %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/mime.types
 install %{SOURCE14} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}-standard.conf
 install %{SOURCE15} $RPM_BUILD_ROOT/etc/monit/%{name}-standard.monitrc
 install %{SOURCE16} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}-standard
+install %{SOURCE18} $RPM_BUILD_ROOT%{systemdunitdir}/%{name}-standard.service
 install objs/%{name} $RPM_BUILD_ROOT%{_sbindir}/%{name}-standard
 
 %if %{with light}
 install %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}-light.conf
 install %{SOURCE6} $RPM_BUILD_ROOT/etc/monit/%{name}-light.monitrc
 install %{SOURCE7} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}-light
+install %{SOURCE19} $RPM_BUILD_ROOT%{systemdunitdir}/%{name}-light.service
 install contrib/nginx-light $RPM_BUILD_ROOT%{_sbindir}/%{name}-light
 %endif
 
@@ -401,6 +410,7 @@ install contrib/nginx-light $RPM_BUILD_ROOT%{_sbindir}/%{name}-light
 install %{SOURCE8} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}-mail.conf
 install %{SOURCE9} $RPM_BUILD_ROOT/etc/monit/%{name}-mail.monitrc
 install %{SOURCE10} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}-mail
+install %{SOURCE21} $RPM_BUILD_ROOT%{systemdunitdir}/%{name}-mail.service
 install contrib/nginx-mail $RPM_BUILD_ROOT%{_sbindir}/%{name}-mail
 %endif
 
@@ -409,6 +419,7 @@ install -d $RPM_BUILD_ROOT{%{perl_vendorarch},%{perl_vendorarch}/auto/%{name}}
 install %{SOURCE11} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}-perl.conf
 install %{SOURCE12} $RPM_BUILD_ROOT/etc/monit/%{name}-perl.monitrc
 install %{SOURCE13} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}-perl
+install %{SOURCE20} $RPM_BUILD_ROOT%{systemdunitdir}/%{name}-perl.service
 install contrib/nginx.pm $RPM_BUILD_ROOT%{perl_vendorarch}/%{name}.pm
 install contrib/nginx.so $RPM_BUILD_ROOT%{perl_vendorarch}/auto/%{name}/%{name}.so
 install contrib/nginx.bs $RPM_BUILD_ROOT%{perl_vendorarch}/auto/%{name}/%{name}.bs
@@ -437,6 +448,7 @@ for a in access.log error.log; do
 	fi
 done
 /sbin/chkconfig --add %{name}-standard
+%systemd_post %{name}-standard.service
 %service %{name}-standard restart
 echo 'NOTE: daemon is now using "/etc/nginx/nginx-standard.conf" as config.'
 
@@ -450,6 +462,7 @@ for a in access.log error.log; do
 	fi
 done
 /sbin/chkconfig --add %{name}-light
+%systemd_post %{name}-light.service
 %service %{name}-light restart
 echo 'NOTE: daemon is now using "/etc/nginx/nginx-light.conf" as config'
 
@@ -463,6 +476,7 @@ for a in access.log error.log; do
 	fi
 done
 /sbin/chkconfig --add %{name}-perl
+%systemd_post %{name}-perl.service
 %service %{name}-perl restart
 echo 'NOTE: daemon is now using "/etc/nginx/nginx-perl.conf" as config'
 
@@ -476,6 +490,7 @@ for a in access.log error.log; do
 	fi
 done
 /sbin/chkconfig --add %{name}-mail
+%systemd_post %{name}-mail.service
 %service %{name}-mail restart
 echo 'NOTE: daemon is now using "/etc/nginx/nginx-mail.conf" as config'
 
@@ -484,30 +499,58 @@ if [ "$1" = "0" ];then
 	%service %{name}-standard stop
 	/sbin/chkconfig --del %{name}-standard
 fi
+%systemd_preun %{name}-standard.service
 
 %preun light
 if [ "$1" = "0" ]; then
 	%service %{name}-light stop
 	/sbin/chkconfig --del %{name}-light
 fi
+%systemd_preun %{name}-light.service
 
 %preun perl
 if [ "$1" = "0" ]; then
 	%service %{name}-perl stop
 	/sbin/chkconfig --del %{name}-perl
 fi
+%systemd_preun %{name}-perl.service
 
 %preun mail
 if [ "$1" = "0" ]; then
 	%service %{name}-mail stop
 	/sbin/chkconfig --del %{name}-mail
 fi
+%systemd_preun %{name}-mail.service
 
 %postun
 if [ "$1" = "0" ]; then
 	%userremove %{name}
 	%groupremove %{name}
 fi
+
+%postun standard
+%systemd_reload
+
+%postun light
+%systemd_reload
+
+%postun perl
+%systemd_reload
+
+%postun mail
+%systemd_reload
+
+%triggerpostun -- %{name}-standard < 1.4.1-4
+%systemd_trigger %{name}-standard.service
+
+%triggerpostun -- %{name}-light < 1.4.1-4
+%systemd_trigger %{name}-light.service
+
+%triggerpostun -- %{name}-perl < 1.4.1-4
+%systemd_trigger %{name}-perl.service
+
+%triggerpostun -- %{name}-mail < 1.4.1-4
+%systemd_trigger %{name}-mail.service
 
 %files
 %defattr(644,root,root,755)
@@ -538,6 +581,7 @@ fi
 %attr(770,root,%{name}) /var/cache/%{name}-standard
 %attr(754,root,root) /etc/rc.d/init.d/%{name}-standard
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}-standard.conf
+%{systemdunitdir}/%{name}-standard.service
 
 %if %{with mail}
 %files mail
@@ -546,6 +590,7 @@ fi
 %attr(770,root,%{name}) /var/cache/%{name}-mail
 %attr(754,root,root) /etc/rc.d/init.d/%{name}-mail
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}-mail.conf
+%{systemdunitdir}/%{name}-mail.service
 %endif
 
 %if %{with light}
@@ -555,6 +600,7 @@ fi
 %attr(770,root,%{name}) /var/cache/%{name}-light
 %attr(754,root,root) /etc/rc.d/init.d/%{name}-light
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}-light.conf
+%{systemdunitdir}/%{name}-light.service
 %endif
 
 %if %{with perl}
@@ -568,6 +614,7 @@ fi
 %attr(755,root,root) %{perl_vendorarch}/auto/%{name}/%{name}.so
 %{perl_vendorarch}/auto/%{name}/%{name}.bs
 %{perl_vendorarch}/%{name}.pm
+%{systemdunitdir}/%{name}-perl.service
 %endif
 
 %files -n monit-rc-nginx

@@ -1,0 +1,14 @@
+[Unit]
+Description=Nginx Web Server (perl version)
+After=syslog.target network.target remote-fs.target nss-lookup.target
+
+[Service]
+Type=forking
+PIDFile=/var/run/nginx-perl.pid
+ExecStartPre=/usr/sbin/nginx-perl -c /etc/nginx/nginx-perl.conf -t
+ExecStart=/usr/sbin/nginx-perl -c /etc/nginx/nginx-perl.conf
+ExecReload=/usr/sbin/nginx-perl -c /etc/nginx/nginx-perl.conf -s reload
+ExecStop=/usr/sbin/nginx-perl -c /etc/nginx/nginx-perl.conf -s stop
+
+[Install]
+WantedBy=multi-user.target
