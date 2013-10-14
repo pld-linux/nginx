@@ -383,6 +383,8 @@ install -d $RPM_BUILD_ROOT/etc/rc.d/init.d \
 	$RPM_BUILD_ROOT{%{systemdunitdir},/etc/systemd/system}
 
 install conf/fastcgi_params $RPM_BUILD_ROOT%{_sysconfdir}/fastcgi.params
+install conf/scgi_params $RPM_BUILD_ROOT%{_sysconfdir}/scgi.params
+install conf/uwsgi_params $RPM_BUILD_ROOT%{_sysconfdir}/uwsgi.params
 install conf/koi-utf $RPM_BUILD_ROOT%{_sysconfdir}/koi-utf
 install conf/koi-win $RPM_BUILD_ROOT%{_sysconfdir}/koi-win
 install conf/win-utf $RPM_BUILD_ROOT%{_sysconfdir}/win-utf
@@ -570,6 +572,8 @@ fi
 #%attr(640,root,root) %{_sysconfdir}/*[_-]*
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/proxy.conf
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/fastcgi.params
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/scgi.params
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/uwsgi.params
 %attr(640,root,root) %{_sysconfdir}/mime.types
 %attr(640,root,root) %{_sysconfdir}/koi-utf
 %attr(640,root,root) %{_sysconfdir}/koi-win
