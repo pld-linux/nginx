@@ -24,14 +24,14 @@
 Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 Name:		nginx
-Version:	1.4.1
-Release:	5
+Version:	1.4.4
+Release:	1
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	http://nginx.org/download/%{name}-%{version}.tar.gz
-# Source0-md5:	fea7dfab995545ce27fe4c49dc21a972
+# Source0-md5:	5dfaba1cbeae9087f3949860a02caa9f
 Source1:	http://nginx.net/favicon.ico
-# Source1-md5:	14054e0d276e25545c9f801c91164f69
+# Source1-md5:	2aaf2115c752cbdbfb8a2f0b3c3189ab
 Source2:	proxy.conf
 Source3:	%{name}.logrotate
 Source4:	%{name}.mime
