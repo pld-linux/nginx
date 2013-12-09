@@ -2,6 +2,7 @@
 # - /etc/sysconfig/nginx file
 # - missing perl build/install requires
 # - mod_spdy build http://mailman.nginx.org/pipermail/nginx-devel/2012-June/002343.html patch from http://nginx.org/patches/attic/spdy/
+#   http://nginx.org/en/docs/http/ngx_http_spdy_module.html
 #
 # Conditional build for nginx:
 %bcond_without	light		# don't build light version
