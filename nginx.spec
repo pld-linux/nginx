@@ -322,6 +322,7 @@ cp -f configure auto/
 	%{?with_ssl:--with-http_ssl_module} \
 	%{!?with_http_browser:--without-http_browser_module} \
 	%{?with_rtmp:--add-module=./nginx-rtmp-module} \
+	--with-http_secure_link_module \
 	--http-client-body-temp-path=%{_localstatedir}/cache/%{name}-perl/client_body_temp \
 	--http-proxy-temp-path=%{_localstatedir}/cache/%{name}-perl/proxy_temp \
 	--http-fastcgi-temp-path=%{_localstatedir}/cache/%{name}-perl/fastcgi_temp \
@@ -388,6 +389,7 @@ mv -f objs/nginx contrib/nginx-mail
 	--without-mail_pop3_module \
 	--without-mail_imap_module \
 	--without-mail_smtp_module \
+	--with-http_secure_link_module \
 	--http-client-body-temp-path=%{_localstatedir}/cache/%{name}-light/client_body_temp \
 	--http-proxy-temp-path=%{_localstatedir}/cache/%{name}-light/proxy_temp \
 	--http-fastcgi-temp-path=%{_localstatedir}/cache/%{name}-light/fastcgi_temp \
@@ -422,6 +424,7 @@ mv -f objs/nginx contrib/nginx-light
 	%{?with_ssl:--with-http_ssl_module} \
 	%{!?with_http_browser:--without-http_browser_module} \
 	%{?with_rtmp:--add-module=./nginx-rtmp-module} \
+	--with-http_secure_link_module \
 	--http-client-body-temp-path=%{_localstatedir}/cache/%{name}-standard/client_body_temp \
 	--http-proxy-temp-path=%{_localstatedir}/cache/%{name}-standard/proxy_temp \
 	--http-fastcgi-temp-path=%{_localstatedir}/cache/%{name}-standard/fastcgi_temp \
