@@ -22,16 +22,19 @@
 %bcond_with	http_browser	# header "User-agent" parser
 %bcond_without	rtmp		# rtmp support
 
-%define		rtmp_version	1.0.2
+%define		rtmp_version	1.1.3
 Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
+# nginx lines:
+# - stable: production quality with stable API
+# - mainline: production quality but API can change
 Name:		nginx
-Version:	1.4.4
+Version:	1.5.12
 Release:	1
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	http://nginx.org/download/%{name}-%{version}.tar.gz
-# Source0-md5:	5dfaba1cbeae9087f3949860a02caa9f
+# Source0-md5:	c21589daaec0743d6d4cdf41503ffd53
 Source1:	http://nginx.net/favicon.ico
 # Source1-md5:	2aaf2115c752cbdbfb8a2f0b3c3189ab
 Source2:	proxy.conf
@@ -55,7 +58,7 @@ Source19:	%{name}-light.service
 Source20:	%{name}-perl.service
 Source21:	%{name}-mail.service
 Source101:	https://github.com/arut/nginx-rtmp-module/archive/v%{rtmp_version}.tar.gz
-# Source101-md5:	989659b13382e4ee3649fcaa6573c08e
+# Source101-md5:	66ee2b74799e03a25a9e3aaadd874436
 Patch0:		nginx-no-Werror.patch
 URL:		http://nginx.net/
 BuildRequires:	mailcap
