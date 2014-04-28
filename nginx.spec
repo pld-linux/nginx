@@ -21,6 +21,7 @@
 %bcond_without	ssl		# ssl support
 %bcond_with	http_browser	# header "User-agent" parser
 %bcond_without	rtmp		# rtmp support
+%bcond_without	auth_request	# auth_request module
 
 %define		rtmp_version	1.1.3
 Summary:	High perfomance HTTP and reverse proxy server
@@ -30,7 +31,7 @@ Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # - mainline: production quality but API can change
 Name:		nginx
 Version:	1.7.0
-Release:	1
+Release:	2
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	http://nginx.org/download/%{name}-%{version}.tar.gz
@@ -325,6 +326,7 @@ cp -f configure auto/
 	%{?with_ssl:--with-http_ssl_module} \
 	%{!?with_http_browser:--without-http_browser_module} \
 	%{?with_rtmp:--add-module=./nginx-rtmp-module} \
+	%{?with_auth_request:--with-http_auth_request_module} \
 	--with-http_secure_link_module \
 	--http-client-body-temp-path=%{_localstatedir}/cache/%{name}-perl/client_body_temp \
 	--http-proxy-temp-path=%{_localstatedir}/cache/%{name}-perl/proxy_temp \
@@ -388,6 +390,7 @@ mv -f objs/nginx contrib/nginx-mail
 	%{?with_status:--with-http_stub_status_module} \
 	%{?with_ssl:--with-http_ssl_module} \
 	%{?with_rtmp:--add-module=./nginx-rtmp-module} \
+	%{?with_auth_request:--with-http_auth_request_module} \
 	--without-http_browser_module \
 	--without-mail_pop3_module \
 	--without-mail_imap_module \
@@ -427,6 +430,7 @@ mv -f objs/nginx contrib/nginx-light
 	%{?with_ssl:--with-http_ssl_module} \
 	%{!?with_http_browser:--without-http_browser_module} \
 	%{?with_rtmp:--add-module=./nginx-rtmp-module} \
+	%{?with_auth_request:--with-http_auth_request_module} \
 	--with-http_secure_link_module \
 	--http-client-body-temp-path=%{_localstatedir}/cache/%{name}-standard/client_body_temp \
 	--http-proxy-temp-path=%{_localstatedir}/cache/%{name}-standard/proxy_temp \
