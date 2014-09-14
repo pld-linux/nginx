@@ -496,7 +496,6 @@ install %{SOURCE13} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}-perl
 install %{SOURCE20} $RPM_BUILD_ROOT%{systemdunitdir}/%{name}-perl.service
 install contrib/nginx.pm $RPM_BUILD_ROOT%{perl_vendorarch}/%{name}.pm
 install contrib/nginx.so $RPM_BUILD_ROOT%{perl_vendorarch}/auto/%{name}/%{name}.so
-install contrib/nginx.bs $RPM_BUILD_ROOT%{perl_vendorarch}/auto/%{name}/%{name}.bs
 install contrib/nginx-perl $RPM_BUILD_ROOT%{_sbindir}/%{name}-perl
 %endif
 
@@ -694,7 +693,6 @@ fi
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}-perl.conf
 %dir %{perl_vendorarch}/auto/%{name}
 %attr(755,root,root) %{perl_vendorarch}/auto/%{name}/%{name}.so
-%{perl_vendorarch}/auto/%{name}/%{name}.bs
 %{perl_vendorarch}/%{name}.pm
 %{systemdunitdir}/%{name}-perl.service
 %endif
