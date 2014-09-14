@@ -336,7 +336,6 @@ cp -f configure auto/
 	--with-ld-opt="%{rpmldflags}"
 %{__make}
 mv -f objs/nginx contrib/nginx-perl
-mv -f objs/src/http/modules/perl/blib/arch/auto/nginx/nginx.bs contrib/nginx.bs
 mv -f objs/src/http/modules/perl/blib/arch/auto/nginx/nginx.so contrib/nginx.so
 mv -f objs/src/http/modules/perl/nginx.pm contrib/nginx.pm
 %endif
