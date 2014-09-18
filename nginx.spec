@@ -58,9 +58,11 @@ Source18:	%{name}-standard.service
 Source19:	%{name}-light.service
 Source20:	%{name}-perl.service
 Source21:	%{name}-mail.service
+# when updating rtmp version, use this url:
+#Source101:	https://github.com/arut/nginx-rtmp-module/archive/v%{rtmp_version}/nginx-rtmp-module-%{rtmp_version}.tar.gz
 Source101:	https://github.com/arut/nginx-rtmp-module/archive/v%{rtmp_version}.tar.gz
 # Source101-md5:	a85f8201c01b7c229b01a5e0fc87b374
-Patch0:		nginx-no-Werror.patch
+Patch0:		%{name}-no-Werror.patch
 URL:		http://nginx.net/
 BuildRequires:	mailcap
 BuildRequires:	openssl-devel
@@ -87,11 +89,11 @@ configuration, and low resource consumption.
 
 %description -l pl.UTF-8
 nginx ("engine x") jest wysokowydajnym serwerem HTTP, odwrotnym proxy
-a także IMAP/POP3 proxy. nginx został napisany przez Igora Sysoeva
-na potrzeby serwisu Rambler.ru. Jest to drugi pod względem ilości
+a także IMAP/POP3 proxy. nginx został napisany przez Igora Sysoeva na
+potrzeby serwisu Rambler.ru. Jest to drugi pod względem ilości
 odwiedzin serwis w Rosji i działa od ponad dwóch i pół roku. Igor
-opublikował źródła na licencji BSD. Mimo, że projekt jest ciągle
-w fazie beta, już zasłynął dzięki stabilności, bogactwu dodatków,
+opublikował źródła na licencji BSD. Mimo, że projekt jest ciągle w
+fazie beta, już zasłynął dzięki stabilności, bogactwu dodatków,
 prostej konfiguracji oraz małej "zasobożerności".
 
 %package common
@@ -113,8 +115,8 @@ Provides:	group(http)
 Provides:	group(nginx)
 Provides:	user(nginx)
 Provides:	webserver
+Obsoletes:	nginx < 1.4.1-4.1
 Conflicts:	logrotate < 3.8.0
-Obsoletes:	%{name} < 1.4.1-4.1
 
 %description common
 Common files for the nginx daemon.
@@ -149,11 +151,11 @@ modules, no Perl, no DAV, no FLV, no IMAP, POP3, SMTP proxy.
 
 %description light -l pl.UTF-8
 nginx ("engine x") jest wysokowydajnym serwerem HTTP, odwrotnym proxy
-a także IMAP/POP3 proxy. nginx został napisany przez Igora Sysoeva
-na potrzeby serwisu Rambler.ru. Jest to drugi pod względem ilości
+a także IMAP/POP3 proxy. nginx został napisany przez Igora Sysoeva na
+potrzeby serwisu Rambler.ru. Jest to drugi pod względem ilości
 odwiedzin serwis w Rosji i działa od ponad dwóch i pół roku. Igor
-opublikował źródła na licencji BSD. Mimo, że projekt jest ciągle
-w fazie beta, już zasłynął dzięki stabilności, bogactwu dodatków,
+opublikował źródła na licencji BSD. Mimo, że projekt jest ciągle w
+fazie beta, już zasłynął dzięki stabilności, bogactwu dodatków,
 prostej konfiguracji oraz małej "zasobożerności".
 
 Najmniejsza i najszybsza wersja nginx. Bez wsparcia dla Perla, DAV,
@@ -183,11 +185,11 @@ nginx with Perl support. Mail modules not included.
 
 %description perl -l pl.UTF-8
 nginx ("engine x") jest wysokowydajnym serwerem HTTP, odwrotnym proxy
-a także IMAP/POP3 proxy. nginx został napisany przez Igora Sysoeva
-na potrzeby serwisu Rambler.ru. Jest to drugi pod względem ilości
+a także IMAP/POP3 proxy. nginx został napisany przez Igora Sysoeva na
+potrzeby serwisu Rambler.ru. Jest to drugi pod względem ilości
 odwiedzin serwis w Rosji i działa od ponad dwóch i pół roku. Igor
-opublikował źródła na licencji BSD. Mimo, że projekt jest ciągle
-w fazie beta, już zasłynął dzięki stabilności, bogactwu dodatków,
+opublikował źródła na licencji BSD. Mimo, że projekt jest ciągle w
+fazie beta, już zasłynął dzięki stabilności, bogactwu dodatków,
 prostej konfiguracji oraz małej "zasobożerności".
 
 nginx z obsługą Perla. Bez wsparcia dla modułów poczty.
@@ -217,11 +219,11 @@ nginx with mail support. Only mail modules included.
 
 %description mail -l pl.UTF-8
 nginx ("engine x") jest wysokowydajnym serwerem HTTP, odwrotnym proxy
-a także IMAP/POP3 proxy. nginx został napisany przez Igora Sysoeva
-na potrzeby serwisu Rambler.ru. Jest to drugi pod względem ilości
+a także IMAP/POP3 proxy. nginx został napisany przez Igora Sysoeva na
+potrzeby serwisu Rambler.ru. Jest to drugi pod względem ilości
 odwiedzin serwis w Rosji i działa od ponad dwóch i pół roku. Igor
-opublikował źródła na licencji BSD. Mimo, że projekt jest ciągle
-w fazie beta, już zasłynął dzięki stabilności, bogactwu dodatków,
+opublikował źródła na licencji BSD. Mimo, że projekt jest ciągle w
+fazie beta, już zasłynął dzięki stabilności, bogactwu dodatków,
 prostej konfiguracji oraz małej "zasobożerności".
 
 nginx ze wsparciem tylko dla modułów poczty.
@@ -248,23 +250,23 @@ beta, nginx is known for its stability, rich feature set, simple
 configuration, and low resource consumption.
 
 This is standard nginx version, without Perl support and IMAP, POP3,
-SMTP proxy. 
+SMTP proxy.
 
 %description standard -l pl.UTF-8
 nginx ("engine x") jest wysokowydajnym serwerem HTTP, odwrotnym proxy
-a także IMAP/POP3 proxy. nginx został napisany przez Igora Sysoeva
-na potrzeby serwisu Rambler.ru. Jest to drugi pod względem ilości
+a także IMAP/POP3 proxy. nginx został napisany przez Igora Sysoeva na
+potrzeby serwisu Rambler.ru. Jest to drugi pod względem ilości
 odwiedzin serwis w Rosji i działa od ponad dwóch i pół roku. Igor
-opublikował źródła na licencji BSD. Mimo, że projekt jest ciągle
-w fazie beta, już zasłynął dzięki stabilności, bogactwu dodatków,
-prostej konfiguracji oraz małej "zasobożerności".
-ginx ("engine x") jest wysokowydajnym serwerem HTTP, odwrotnym proxy
-a także IMAP/POP3 proxy. nginx został napisany przez Igora Sysoeva
-na potrzeby serwisu Rambler.ru. Jest to drugi pod względem ilości
-odwiedzin serwis w Rosji i działa od ponad dwóch i pół roku. Igor
-opublikował źródła na licencji BSD. Mimo, że projekt jest ciągle
-w fazie beta, już zasłynął dzięki stabilności, bogactwu dodatków,
-prostej konfiguracji oraz małej "zasobożerności".
+opublikował źródła na licencji BSD. Mimo, że projekt jest ciągle w
+fazie beta, już zasłynął dzięki stabilności, bogactwu dodatków,
+prostej konfiguracji oraz małej "zasobożerności". ginx ("engine x")
+jest wysokowydajnym serwerem HTTP, odwrotnym proxy a także IMAP/POP3
+proxy. nginx został napisany przez Igora Sysoeva na potrzeby serwisu
+Rambler.ru. Jest to drugi pod względem ilości odwiedzin serwis w Rosji
+i działa od ponad dwóch i pół roku. Igor opublikował źródła na
+licencji BSD. Mimo, że projekt jest ciągle w fazie beta, już zasłynął
+dzięki stabilności, bogactwu dodatków, prostej konfiguracji oraz małej
+"zasobożerności".
 
 To jest standardowa wersja nginx, bez obsługi Perla oraz proxy dla
 IMAP, POP3, SMTP.
@@ -452,50 +454,50 @@ install -d $RPM_BUILD_ROOT/etc/rc.d/init.d \
 	$RPM_BUILD_ROOT/etc/{logrotate.d,monit} \
 	$RPM_BUILD_ROOT{%{systemdunitdir},/etc/systemd/system}
 
-install conf/fastcgi_params $RPM_BUILD_ROOT%{_sysconfdir}/fastcgi.params
-install conf/scgi_params $RPM_BUILD_ROOT%{_sysconfdir}/scgi.params
-install conf/uwsgi_params $RPM_BUILD_ROOT%{_sysconfdir}/uwsgi.params
-install conf/koi-utf $RPM_BUILD_ROOT%{_sysconfdir}/koi-utf
-install conf/koi-win $RPM_BUILD_ROOT%{_sysconfdir}/koi-win
-install conf/win-utf $RPM_BUILD_ROOT%{_sysconfdir}/win-utf
-install html/index.html $RPM_BUILD_ROOT%{_nginxdir}/html
-install html/50x.html $RPM_BUILD_ROOT%{_nginxdir}/errors
-install %{SOURCE1} $RPM_BUILD_ROOT%{_nginxdir}/html/favicon.ico
-install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/proxy.conf
-install %{SOURCE3} $RPM_BUILD_ROOT/etc/logrotate.d/%{name}
-install %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/mime.types
-install %{SOURCE14} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}-standard.conf
-install %{SOURCE15} $RPM_BUILD_ROOT/etc/monit/%{name}-standard.monitrc
-install %{SOURCE16} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}-standard
-install %{SOURCE18} $RPM_BUILD_ROOT%{systemdunitdir}/%{name}-standard.service
-install objs/%{name} $RPM_BUILD_ROOT%{_sbindir}/%{name}-standard
+cp -p conf/fastcgi_params $RPM_BUILD_ROOT%{_sysconfdir}/fastcgi.params
+cp -p conf/scgi_params $RPM_BUILD_ROOT%{_sysconfdir}/scgi.params
+cp -p conf/uwsgi_params $RPM_BUILD_ROOT%{_sysconfdir}/uwsgi.params
+cp -p conf/koi-utf $RPM_BUILD_ROOT%{_sysconfdir}/koi-utf
+cp -p conf/koi-win $RPM_BUILD_ROOT%{_sysconfdir}/koi-win
+cp -p conf/win-utf $RPM_BUILD_ROOT%{_sysconfdir}/win-utf
+cp -p html/index.html $RPM_BUILD_ROOT%{_nginxdir}/html
+cp -p html/50x.html $RPM_BUILD_ROOT%{_nginxdir}/errors
+cp -p %{SOURCE1} $RPM_BUILD_ROOT%{_nginxdir}/html/favicon.ico
+cp -p %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/proxy.conf
+cp -p %{SOURCE3} $RPM_BUILD_ROOT/etc/logrotate.d/%{name}
+cp -p %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/mime.types
+cp -p %{SOURCE14} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}-standard.conf
+cp -p %{SOURCE15} $RPM_BUILD_ROOT/etc/monit/%{name}-standard.monitrc
+install -p %{SOURCE16} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}-standard
+cp -p %{SOURCE18} $RPM_BUILD_ROOT%{systemdunitdir}/%{name}-standard.service
+install -p objs/%{name} $RPM_BUILD_ROOT%{_sbindir}/%{name}-standard
 ln -sf %{systemdunitdir}/%{name}-standard.service $RPM_BUILD_ROOT/etc/systemd/system/nginx.service
 
 %if %{with light}
-install %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}-light.conf
-install %{SOURCE6} $RPM_BUILD_ROOT/etc/monit/%{name}-light.monitrc
-install %{SOURCE7} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}-light
-install %{SOURCE19} $RPM_BUILD_ROOT%{systemdunitdir}/%{name}-light.service
-install contrib/nginx-light $RPM_BUILD_ROOT%{_sbindir}/%{name}-light
+cp -p  %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}-light.conf
+cp -p %{SOURCE6} $RPM_BUILD_ROOT/etc/monit/%{name}-light.monitrc
+cp -p %{SOURCE7} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}-light
+cp -p %{SOURCE19} $RPM_BUILD_ROOT%{systemdunitdir}/%{name}-light.service
+install -p contrib/nginx-light $RPM_BUILD_ROOT%{_sbindir}/%{name}-light
 %endif
 
 %if %{with mail}
-install %{SOURCE8} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}-mail.conf
-install %{SOURCE9} $RPM_BUILD_ROOT/etc/monit/%{name}-mail.monitrc
-install %{SOURCE10} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}-mail
-install %{SOURCE21} $RPM_BUILD_ROOT%{systemdunitdir}/%{name}-mail.service
-install contrib/nginx-mail $RPM_BUILD_ROOT%{_sbindir}/%{name}-mail
+cp -p %{SOURCE8} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}-mail.conf
+cp -p %{SOURCE9} $RPM_BUILD_ROOT/etc/monit/%{name}-mail.monitrc
+install -p contrib/nginx-mail $RPM_BUILD_ROOT%{_sbindir}/%{name}-mail
+install -p %{SOURCE10} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}-mail
+cp -p %{SOURCE21} $RPM_BUILD_ROOT%{systemdunitdir}/%{name}-mail.service
 %endif
 
 %if %{with perl}
 install -d $RPM_BUILD_ROOT{%{perl_vendorarch},%{perl_vendorarch}/auto/%{name}}
-install %{SOURCE11} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}-perl.conf
-install %{SOURCE12} $RPM_BUILD_ROOT/etc/monit/%{name}-perl.monitrc
-install %{SOURCE13} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}-perl
-install %{SOURCE20} $RPM_BUILD_ROOT%{systemdunitdir}/%{name}-perl.service
-install contrib/nginx.pm $RPM_BUILD_ROOT%{perl_vendorarch}/%{name}.pm
-install contrib/nginx.so $RPM_BUILD_ROOT%{perl_vendorarch}/auto/%{name}/%{name}.so
-install contrib/nginx-perl $RPM_BUILD_ROOT%{_sbindir}/%{name}-perl
+cp -p %{SOURCE11} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}-perl.conf
+cp -p %{SOURCE12} $RPM_BUILD_ROOT/etc/monit/%{name}-perl.monitrc
+install -p %{SOURCE13} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}-perl
+cp -p %{SOURCE20} $RPM_BUILD_ROOT%{systemdunitdir}/%{name}-perl.service
+cp -p contrib/nginx.pm $RPM_BUILD_ROOT%{perl_vendorarch}/%{name}.pm
+install -p contrib/nginx.so $RPM_BUILD_ROOT%{perl_vendorarch}/auto/%{name}/%{name}.so
+install -p contrib/nginx-perl $RPM_BUILD_ROOT%{_sbindir}/%{name}-perl
 %endif
 
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/*.default
