@@ -23,19 +23,19 @@
 %bcond_without	rtmp		# rtmp support
 %bcond_without	auth_request	# auth_request module
 
-%define		rtmp_version	1.1.3
+%define		rtmp_version	1.1.5
 Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # nginx lines:
 # - stable: production quality with stable API
 # - mainline: production quality but API can change
 Name:		nginx
-Version:	1.7.3
-Release:	2
+Version:	1.7.5
+Release:	0.1
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	http://nginx.org/download/%{name}-%{version}.tar.gz
-# Source0-md5:	2b7f37f86e0af9bbb109c4dc225c6247
+# Source0-md5:	e65aad627acc1cbe26527339a5814d57
 Source1:	http://nginx.net/favicon.ico
 # Source1-md5:	2aaf2115c752cbdbfb8a2f0b3c3189ab
 Source2:	proxy.conf
@@ -59,7 +59,7 @@ Source19:	%{name}-light.service
 Source20:	%{name}-perl.service
 Source21:	%{name}-mail.service
 Source101:	https://github.com/arut/nginx-rtmp-module/archive/v%{rtmp_version}.tar.gz
-# Source101-md5:	66ee2b74799e03a25a9e3aaadd874436
+# Source101-md5:	a85f8201c01b7c229b01a5e0fc87b374
 Patch0:		nginx-no-Werror.patch
 URL:		http://nginx.net/
 BuildRequires:	mailcap
