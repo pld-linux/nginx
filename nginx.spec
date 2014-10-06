@@ -30,12 +30,12 @@ Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # - stable: production quality with stable API
 # - mainline: production quality but API can change
 Name:		nginx
-Version:	1.7.5
-Release:	0.1
+Version:	1.7.6
+Release:	1
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	http://nginx.org/download/%{name}-%{version}.tar.gz
-# Source0-md5:	e65aad627acc1cbe26527339a5814d57
+# Source0-md5:	dd444e5333e0d324bec480e2ff67870a
 Source1:	http://nginx.net/favicon.ico
 # Source1-md5:	2aaf2115c752cbdbfb8a2f0b3c3189ab
 Source2:	proxy.conf
@@ -63,6 +63,7 @@ Source21:	%{name}-mail.service
 Source101:	https://github.com/arut/nginx-rtmp-module/archive/v%{rtmp_version}.tar.gz
 # Source101-md5:	a85f8201c01b7c229b01a5e0fc87b374
 Patch0:		%{name}-no-Werror.patch
+Patch1:		nginx-rtmp-module-build.patch
 URL:		http://nginx.net/
 BuildRequires:	mailcap
 BuildRequires:	openssl-devel
@@ -291,6 +292,9 @@ Plik monitrc do monitorowania serwera WWW nginx.
 
 %if %{with rtmp}
 mv nginx-rtmp-module-%{rtmp_version} nginx-rtmp-module
+cd nginx-rtmp-module
+%patch1 -p1
+cd ..
 %endif
 
 # build mime.types.conf
