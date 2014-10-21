@@ -20,7 +20,7 @@
 %bcond_without	status		# stats module
 %bcond_without	ssl		# ssl support
 %bcond_with	http_browser	# header "User-agent" parser
-%bcond_without	rtmp		# rtmp support
+%bcond_with	rtmp		# rtmp support
 %bcond_without	auth_request	# auth_request module
 
 %define		rtmp_version	1.1.5
@@ -31,7 +31,7 @@ Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # - mainline: production quality but API can change
 Name:		nginx
 Version:	1.7.6
-Release:	1
+Release:	2
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	http://nginx.org/download/%{name}-%{version}.tar.gz
