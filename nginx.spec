@@ -7,7 +7,7 @@
 # Conditional build for nginx:
 %bcond_without	light		# don't build light version
 %bcond_without	mail		# don't build imap/mail proxy
-%bcond_without	perl		# don't build with perl module
+%bcond_with	perl		# don't build with perl module
 %bcond_without	addition	# adds module
 %bcond_without	dav		# WebDAV
 %bcond_without	flv		# FLV stream
