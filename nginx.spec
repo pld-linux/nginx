@@ -30,12 +30,12 @@ Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # - stable: production quality with stable API
 # - mainline: production quality but API can change
 Name:		nginx
-Version:	1.7.9
+Version:	1.7.11
 Release:	1
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	http://nginx.org/download/%{name}-%{version}.tar.gz
-# Source0-md5:	a4debbe0ce0dd12b9c8f520bc3b66355
+# Source0-md5:	22912ba71eebd6987be47eeaff79f0f0
 Source1:	http://nginx.net/favicon.ico
 # Source1-md5:	2aaf2115c752cbdbfb8a2f0b3c3189ab
 Source2:	proxy.conf
