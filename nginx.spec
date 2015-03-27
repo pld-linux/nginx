@@ -23,7 +23,7 @@
 %bcond_with	rtmp		# rtmp support
 %bcond_without	auth_request	# auth_request module
 
-%define		rtmp_version	1.1.5
+%define		rtmp_version	1.1.7
 Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # nginx lines:
@@ -58,12 +58,9 @@ Source18:	%{name}-standard.service
 Source19:	%{name}-light.service
 Source20:	%{name}-perl.service
 Source21:	%{name}-mail.service
-# when updating rtmp version, use this url:
-#Source101:	https://github.com/arut/nginx-rtmp-module/archive/v%{rtmp_version}/nginx-rtmp-module-%{rtmp_version}.tar.gz
-Source101:	https://github.com/arut/nginx-rtmp-module/archive/v%{rtmp_version}.tar.gz
-# Source101-md5:	a85f8201c01b7c229b01a5e0fc87b374
+Source101:	https://github.com/arut/nginx-rtmp-module/archive/v%{rtmp_version}/nginx-rtmp-module-%{rtmp_version}.tar.gz
+# Source101-md5:	8006de2560db3e55bb15d110220076ac
 Patch0:		%{name}-no-Werror.patch
-Patch1:		nginx-rtmp-module-build.patch
 URL:		http://nginx.net/
 BuildRequires:	mailcap
 BuildRequires:	openssl-devel
@@ -292,9 +289,6 @@ Plik monitrc do monitorowania serwera WWW nginx.
 
 %if %{with rtmp}
 mv nginx-rtmp-module-%{rtmp_version} nginx-rtmp-module
-cd nginx-rtmp-module
-%patch1 -p1
-cd ..
 %endif
 
 # build mime.types.conf
@@ -303,7 +297,7 @@ cd ..
 %build
 # NB: not autoconf generated configure
 cp -f configure auto/
-#
+
 %if %{with perl}
 ./configure \
 	--prefix=%{_prefix} \
