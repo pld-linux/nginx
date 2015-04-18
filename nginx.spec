@@ -1,8 +1,6 @@
 # TODO
 # - /etc/sysconfig/nginx file
 # - missing perl build/install requires
-# - mod_spdy build http://mailman.nginx.org/pipermail/nginx-devel/2012-June/002343.html patch from http://nginx.org/patches/attic/spdy/
-#   http://nginx.org/en/docs/http/ngx_http_spdy_module.html
 #
 # Conditional build for nginx:
 %bcond_without	light		# don't build light version
@@ -17,6 +15,7 @@
 %bcond_without	realip		# real ip (behind proxy)
 %bcond_without	rtsig		# rtsig
 %bcond_without	select		# select
+%bcond_without	spdy		# spdy module
 %bcond_without	status		# stats module
 %bcond_without	ssl		# ssl support
 %bcond_with	http_browser	# header "User-agent" parser
@@ -35,12 +34,12 @@ Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # - stable: production quality with stable API
 # - mainline: production quality but API can change
 Name:		nginx
-Version:	1.7.11
-Release:	3
+Version:	1.7.12
+Release:	1
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	http://nginx.org/download/%{name}-%{version}.tar.gz
-# Source0-md5:	22912ba71eebd6987be47eeaff79f0f0
+# Source0-md5:	9120b06539e7acb25712a9c5e4711d22
 Source1:	http://nginx.net/favicon.ico
 # Source1-md5:	2aaf2115c752cbdbfb8a2f0b3c3189ab
 Source2:	proxy.conf
@@ -333,6 +332,7 @@ cp -f configure auto/
 	%{?with_rtmp:--add-module=./nginx-rtmp-module} \
 	%{?with_auth_request:--with-http_auth_request_module} \
 	%{?with_threads:--with-threads} \
+	%{?with_spdy:--with-http_spdy_module} \
 	--with-http_secure_link_module \
 	--http-client-body-temp-path=%{_localstatedir}/cache/%{name}-perl/client_body_temp \
 	--http-proxy-temp-path=%{_localstatedir}/cache/%{name}-perl/proxy_temp \
@@ -397,6 +397,7 @@ mv -f objs/nginx contrib/nginx-mail
 	%{?with_rtmp:--add-module=./nginx-rtmp-module} \
 	%{?with_auth_request:--with-http_auth_request_module} \
 	%{?with_threads:--with-threads} \
+	%{?with_spdy:--with-http_spdy_module} \
 	--without-http_browser_module \
 	--without-mail_pop3_module \
 	--without-mail_imap_module \
