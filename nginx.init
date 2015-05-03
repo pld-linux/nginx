@@ -1,13 +1,13 @@
 #!/bin/sh
 #
-# nginx	Nginx Web Server (@flavor@ version)
+# nginx	Nginx Web Server (@type@ version)
 #
 # chkconfig:	345 85 15
 # description:  Nginx is an HTTP(S) server, HTTP(S) reverse \
 #               proxy and IMAP/POP3 proxy server
-# processname:	nginx-@flavor@
-# pidfile:	/var/run/nginx-@flavor@.pid
-# config:	/etc/nginx/nginx-@flavor@.conf
+# processname:	nginx-@type@
+# pidfile:	/var/run/nginx-@type@.pid
+# config:	/etc/nginx/nginx-@type@.conf
 
 # Source function library
 . /etc/rc.d/init.d/functions
@@ -15,8 +15,8 @@
 # Source networking configuration.
 . /etc/sysconfig/network
 
-nginx="/usr/sbin/nginx-@flavor@"
-svname="nginx (@flavor@)"
+nginx="/usr/sbin/nginx-@type@"
+svname="nginx (@type@)"
 prog=${nginx##*/}
 
 sysconfig="/etc/sysconfig/$prog"

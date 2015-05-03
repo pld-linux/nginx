@@ -408,20 +408,20 @@ cp -p %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/proxy.conf
 cp -p %{SOURCE3} $RPM_BUILD_ROOT/etc/logrotate.d/%{name}
 cp -p %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/mime.types
 cp -p %{SOURCE14} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}-standard.conf
-%{__sed} -i -e 's/@flavor@/standard/g' $RPM_BUILD_ROOT%{_sysconfdir}/%{name}-standard.conf
+%{__sed} -i -e 's/@type@/standard/g' $RPM_BUILD_ROOT%{_sysconfdir}/%{name}-standard.conf
 cp -p %{SOURCE15} $RPM_BUILD_ROOT/etc/monit/%{name}-standard.monitrc
 install -p %{SOURCE7} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}-standard
-%{__sed} -i -e 's/@flavor@/standard/g' $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}-standard
+%{__sed} -i -e 's/@type@/standard/g' $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}-standard
 cp -p %{SOURCE18} $RPM_BUILD_ROOT%{systemdunitdir}/%{name}-standard.service
 install -p bin/nginx-standard $RPM_BUILD_ROOT%{_sbindir}
 ln -sf %{systemdunitdir}/%{name}-standard.service $RPM_BUILD_ROOT/etc/systemd/system/nginx.service
 
 %if %{with light}
 cp -p %{SOURCE14} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}-light.conf
-%{__sed} -i -e 's/@flavor@/light/g' $RPM_BUILD_ROOT%{_sysconfdir}/%{name}-light.conf
+%{__sed} -i -e 's/@type@/light/g' $RPM_BUILD_ROOT%{_sysconfdir}/%{name}-light.conf
 cp -p %{SOURCE6} $RPM_BUILD_ROOT/etc/monit/%{name}-light.monitrc
 cp -p %{SOURCE7} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}-light
-%{__sed} -i -e 's/@flavor@/light/g' $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}-light
+%{__sed} -i -e 's/@type@/light/g' $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}-light
 cp -p %{SOURCE19} $RPM_BUILD_ROOT%{systemdunitdir}/%{name}-light.service
 install -p bin/nginx-light $RPM_BUILD_ROOT%{_sbindir}
 %endif
@@ -431,17 +431,17 @@ cp -p %{SOURCE8} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}-mail.conf
 cp -p %{SOURCE9} $RPM_BUILD_ROOT/etc/monit/%{name}-mail.monitrc
 install -p bin/nginx-mail $RPM_BUILD_ROOT%{_sbindir}
 install -p %{SOURCE7} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}-mail
-%{__sed} -i -e 's/@flavor@/mail/g' $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}-mail
+%{__sed} -i -e 's/@type@/mail/g' $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}-mail
 cp -p %{SOURCE21} $RPM_BUILD_ROOT%{systemdunitdir}/%{name}-mail.service
 %endif
 
 %if %{with perl}
 install -d $RPM_BUILD_ROOT{%{perl_vendorarch},%{perl_vendorarch}/auto/%{name}}
 cp -p %{SOURCE14} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}-perl.conf
-%{__sed} -i -e 's/@flavor@/perl/g' $RPM_BUILD_ROOT%{_sysconfdir}/%{name}-perl.conf
+%{__sed} -i -e 's/@type@/perl/g' $RPM_BUILD_ROOT%{_sysconfdir}/%{name}-perl.conf
 cp -p %{SOURCE12} $RPM_BUILD_ROOT/etc/monit/%{name}-perl.monitrc
 install -p %{SOURCE7} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}-perl
-%{__sed} -i -e 's/@flavor@/perl/g' $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}-perl
+%{__sed} -i -e 's/@type@/perl/g' $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}-perl
 cp -p %{SOURCE20} $RPM_BUILD_ROOT%{systemdunitdir}/%{name}-perl.service
 cp -p bin/nginx.pm $RPM_BUILD_ROOT%{perl_vendorarch}/%{name}.pm
 install -p bin/nginx.so $RPM_BUILD_ROOT%{perl_vendorarch}/auto/%{name}/%{name}.so
