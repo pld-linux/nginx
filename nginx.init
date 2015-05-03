@@ -3,26 +3,35 @@
 # nginx	Nginx Web Server (@flavor@ version)
 #
 # chkconfig:	345 85 15
-# description:	Nginx is a World Wide Web server.  It is used to serve \
-#		HTML files and CGI.
+# description:  Nginx is an HTTP(S) server, HTTP(S) reverse \
+#               proxy and IMAP/POP3 proxy server
 # processname:	nginx-@flavor@
 # pidfile:	/var/run/nginx-@flavor@.pid
 # config:	/etc/nginx/nginx-@flavor@.conf
 
-
 # Source function library
 . /etc/rc.d/init.d/functions
 
-# Get network config
+# Source networking configuration.
 . /etc/sysconfig/network
 
+nginx="/usr/sbin/nginx-@flavor@"
+svname="nginx (@flavor@)"
+prog=${nginx##*/}
+
+sysconfig="/etc/sysconfig/$prog"
+lockfile="/var/lock/subsys/$prog"
+pidfile="/var/run/$prog.pid"
+
+NGINX_CONF_FILE="/etc/nginx/$prog.conf"
+
 # Get service config
-[ -f /etc/sysconfig/nginx ] && . /etc/sysconfig/nginx
+[ -f $sysconfig ] && . $sysconfig
 
 # Check that networking is up.
 if is_yes "${NETWORKING}"; then
 	if [ ! -f /var/lock/subsys/network -a "$1" != stop -a "$1" != status ]; then
-		msg_network_down nginx-@flavor@
+		msg_network_down "$svname"
 		exit 1
 	fi
 else
@@ -31,27 +40,27 @@ fi
 
 start() {
 	# Check if the service is already running?
-	if [ ! -f /var/lock/subsys/nginx-@flavor@ ]; then
-		msg_starting nginx-@flavor@
-		daemon /usr/sbin/nginx-@flavor@
+	if [ ! -f $lockfile ]; then
+		msg_starting "$svname"
+		daemon $nginx -c $NGINX_CONF_FILE
 		RETVAL=$?
-		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/nginx-@flavor@
+		[ $RETVAL -eq 0 ] && touch $lockfile
 	else
-		msg_already_running nginx-@flavor@
+		msg_already_running "$svname"
 	fi
 }
 
 stop() {
 	# Stop daemons.
-	if [ -f /var/lock/subsys/nginx-@flavor@ ]; then
-		msg_stopping nginx-@flavor@
-		killproc --waitforname nginx-@flavor@ --waitfortime 60 nginx-@flavor@
+	if [ -f $lockfile ]; then
+		msg_stopping "$svname"
+		killproc --waitforname $prog --waitfortime 60 $prog
 		# Delete pidfile only when nginx was called successfully
 		if [ $? -eq 0 ]; then
-			rm -f /var/lock/subsys/nginx-@flavor@ /var/run/nginx-@flavor@.pid >/dev/null 2>&1
+			rm -f $lockfile $pidfile >/dev/null 2>&1
 		fi
 	else
-		msg_not_running nginx-@flavor@
+		msg_not_running "$svname"
 	fi
 }
 
@@ -65,7 +74,7 @@ case "$1" in
   	stop
 	;;
   status)
-	status nginx-@flavor@
+	status $prog
 	RETVAL=$?
 	;;
   restart)
@@ -73,12 +82,12 @@ case "$1" in
 	start
 	;;
   reload|force-reload|graceful)
-	if [ -f /var/lock/subsys/nginx-@flavor@ ]; then
-		msg_reloading nginx-@flavor@
-		killproc nginx-@flavor@ -HUP
+	if [ -f $lockfile ]; then
+		msg_reloading "$svname"
+		killproc $prog -HUP
 		RETVAL=$?
 	else
-		msg_not_running nginx-@flavor@
+		msg_not_running "$svname"
 		RETVAL=7
 	fi
 	;;
