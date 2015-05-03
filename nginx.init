@@ -123,6 +123,26 @@ condrestart() {
 	start
 }
 
+# Upgrade the binary with no downtime.
+# http://nginx.org/en/docs/control.html#upgrade
+# TODO: handle revert back on failed upgrade
+upgrade() {
+	local oldbin_pidfile="${pidfile}.oldbin"
+
+	checkconfig
+	show "Upgrading $svname"
+	killproc -p $pidfile $prog -USR2
+	RETVAL=$?
+	sleep 1
+	if [ -f $oldbin_pidfile ] && [ -f $pidfile ]; then
+		show "Upgrade: stopping old process"
+		killproc -p $oldbin_pidfile $prog -QUIT
+		return 0
+	else
+		return 1
+	fi
+}
+
 RETVAL=0
 # See how we were called.
 case "$1" in
@@ -140,8 +160,11 @@ case "$1" in
   try-restart)
 	condrestart 0
 	;;
-  reload|force-reload|graceful)
+  reload|graceful)
 	reload
+	;;
+  force-reload|upgrade) 
+	upgrade
 	;;
   checkconfig|configtest)
 	checkconfig 1
