@@ -91,11 +91,8 @@ stop() {
 	# Stop daemons.
 	if [ -f $lockfile ]; then
 		msg_stopping "$svname"
-		killproc --waitforname $prog --waitfortime 60 $prog
-		# Delete pidfile only when nginx was called successfully
-		if [ $? -eq 0 ]; then
-			rm -f $lockfile $pidfile >/dev/null 2>&1
-		fi
+		killproc $prog
+		rm -f $lockfile $pidfile >/dev/null 2>&1
 	else
 		msg_not_running "$svname"
 	fi
