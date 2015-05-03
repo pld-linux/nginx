@@ -440,9 +440,6 @@ install -p bin/nginx-perl $RPM_BUILD_ROOT%{_sbindir}
 install_build mail
 %endif
 
-rm -f $RPM_BUILD_ROOT%{_sysconfdir}/*.default
-rm -rf $RPM_BUILD_ROOT%{_prefix}/html
-
 # only touch these for ghost packaging
 touch $RPM_BUILD_ROOT%{_sysconfdir}/{fastcgi,scgi,uwsgi}.params
 
