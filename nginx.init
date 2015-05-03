@@ -1,13 +1,13 @@
 #!/bin/sh
 #
-# nginx	Nginx Web Server (standard version)
+# nginx	Nginx Web Server (@flavor@ version)
 #
 # chkconfig:	345 85 15
 # description:	Nginx is a World Wide Web server.  It is used to serve \
 #		HTML files and CGI.
-# processname:	nginx-standard
-# pidfile:	/var/run/nginx-standard.pid
-# config:	/etc/nginx/nginx-standard.conf
+# processname:	nginx-@flavor@
+# pidfile:	/var/run/nginx-@flavor@.pid
+# config:	/etc/nginx/nginx-@flavor@.conf
 
 
 # Source function library
@@ -22,7 +22,7 @@
 # Check that networking is up.
 if is_yes "${NETWORKING}"; then
 	if [ ! -f /var/lock/subsys/network -a "$1" != stop -a "$1" != status ]; then
-		msg_network_down nginx-standard
+		msg_network_down nginx-@flavor@
 		exit 1
 	fi
 else
@@ -31,27 +31,27 @@ fi
 
 start() {
 	# Check if the service is already running?
-	if [ ! -f /var/lock/subsys/nginx-standard ]; then
-		msg_starting nginx-standard
-		daemon /usr/sbin/nginx-standard
+	if [ ! -f /var/lock/subsys/nginx-@flavor@ ]; then
+		msg_starting nginx-@flavor@
+		daemon /usr/sbin/nginx-@flavor@
 		RETVAL=$?
-		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/nginx-standard
+		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/nginx-@flavor@
 	else
-		msg_already_running nginx-standard
+		msg_already_running nginx-@flavor@
 	fi
 }
 
 stop() {
 	# Stop daemons.
-	if [ -f /var/lock/subsys/nginx-standard ]; then
-		msg_stopping nginx-standard
-		killproc --waitforname nginx-standard --waitfortime 60 nginx-standard
+	if [ -f /var/lock/subsys/nginx-@flavor@ ]; then
+		msg_stopping nginx-@flavor@
+		killproc --waitforname nginx-@flavor@ --waitfortime 60 nginx-@flavor@
 		# Delete pidfile only when nginx was called successfully
 		if [ $? -eq 0 ]; then
-			rm -f /var/lock/subsys/nginx-standard /var/run/nginx-standard.pid >/dev/null 2>&1
+			rm -f /var/lock/subsys/nginx-@flavor@ /var/run/nginx-@flavor@.pid >/dev/null 2>&1
 		fi
 	else
-		msg_not_running nginx-standard
+		msg_not_running nginx-@flavor@
 	fi
 }
 
@@ -65,7 +65,7 @@ case "$1" in
   	stop
 	;;
   status)
-	status nginx-standard
+	status nginx-@flavor@
 	RETVAL=$?
 	;;
   restart)
@@ -73,12 +73,12 @@ case "$1" in
 	start
 	;;
   reload|force-reload|graceful)
-	if [ -f /var/lock/subsys/nginx-standard ]; then
-		msg_reloading nginx-standard
-		killproc nginx-standard -HUP
+	if [ -f /var/lock/subsys/nginx-@flavor@ ]; then
+		msg_reloading nginx-@flavor@
+		killproc nginx-@flavor@ -HUP
 		RETVAL=$?
 	else
-		msg_not_running nginx-standard
+		msg_not_running nginx-@flavor@
 		RETVAL=7
 	fi
 	;;
