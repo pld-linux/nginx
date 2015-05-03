@@ -302,7 +302,7 @@ cp -f configure auto/
 
 install -d bin
 
-# build with common options
+# build with default options
 build() {
 	local type=$1; shift
 ./configure \
@@ -318,6 +318,10 @@ build() {
 	--http-proxy-temp-path=%{_localstatedir}/cache/%{name}-$type/proxy_temp \
 	--user=nginx \
 	--group=nginx \
+	%{?with_ipv6:--with-ipv6} \
+	%{?with_select:--with-select_module} \
+	%{?with_poll:--with-poll_module} \
+	%{?with_rtsig:--with-rtsig_module} \
 	--with-cc="%{__cc}" \
 	--with-cc-opt="%{rpmcflags}" \
 	--with-ld-opt="%{rpmldflags}" \
@@ -335,12 +339,8 @@ build perl \
 	%{?with_addition:--with-http_addition_module} \
 	%{?with_dav:--with-http_dav_module} \
 	%{?with_flv:--with-http_flv_module} \
-	%{?with_ipv6:--with-ipv6} \
 	%{?with_sub:--with-http_sub_module} \
-	%{?with_poll:--with-poll_module} \
 	%{?with_realip:--with-http_realip_module} \
-	%{?with_rtsig:--with-rtsig_module} \
-	%{?with_select:--with-select_module} \
 	%{?with_status:--with-http_stub_status_module} \
 	%{?with_ssl:--with-http_ssl_module} \
 	%{!?with_http_browser:--without-http_browser_module} \
@@ -362,10 +362,6 @@ build mail \
 	--with-mail \
 	--with-mail_ssl_module \
 	--without-http \
-	%{?with_ipv6:--with-ipv6} \
-	%{?with_poll:--with-poll_module} \
-	%{?with_rtsig:--with-rtsig_module} \
-	%{?with_select:--with-select_module} \
 	%{nil}
 
 mv -f objs/nginx bin/nginx-mail
@@ -373,11 +369,7 @@ mv -f objs/nginx bin/nginx-mail
 
 %if %{with light}
 build light \
-	%{?with_ipv6:--with-ipv6} \
-	%{?with_poll:--with-poll_module} \
 	%{?with_realip:--with-http_realip_module} \
-	%{?with_rtsig:--with-rtsig_module} \
-	%{?with_select:--with-select_module} \
 	%{?with_status:--with-http_stub_status_module} \
 	%{?with_ssl:--with-http_ssl_module} \
 	%{?with_rtmp:--add-module=./nginx-rtmp-module} \
@@ -398,12 +390,8 @@ build standard \
 	%{?with_addition:--with-http_addition_module} \
 	%{?with_dav:--with-http_dav_module} \
 	%{?with_flv:--with-http_flv_module} \
-	%{?with_ipv6:--with-ipv6} \
 	%{?with_sub:--with-http_sub_module} \
-	%{?with_poll:--with-poll_module} \
 	%{?with_realip:--with-http_realip_module} \
-	%{?with_rtsig:--with-rtsig_module} \
-	%{?with_select:--with-select_module} \
 	%{?with_status:--with-http_stub_status_module} \
 	%{?with_ssl:--with-http_ssl_module} \
 	%{!?with_http_browser:--without-http_browser_module} \
