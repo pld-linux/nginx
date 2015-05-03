@@ -302,17 +302,30 @@ mv nginx-rtmp-module-%{rtmp_version} nginx-rtmp-module
 # NB: not autoconf generated configure
 cp -f configure auto/
 
-%if %{with perl}
+install -d bin
+
+# build with common options
+build() {
 ./configure \
 	--prefix=%{_prefix} \
+	--user=nginx \
+	--group=nginx \
+	--with-cc="%{__cc}" \
+	--with-cc-opt="%{rpmcflags}" \
+	--with-ld-opt="%{rpmldflags}" \
+	%{?debug:--with-debug} \
+	"$@"
+%{__make}
+}
+
+%if %{with perl}
+build \
 	--sbin-path=%{_sbindir}/%{name}-perl \
 	--conf-path=%{_sysconfdir}/%{name}-perl.conf \
 	--error-log-path=%{_localstatedir}/log/%{name}/%{name}-perl_error.log \
 	--http-log-path=%{_localstatedir}/log/%{name}/%{name}-perl_access.log \
 	--pid-path=%{_localstatedir}/run/%{name}-perl.pid \
 	--lock-path=%{_localstatedir}/lock/subsys/%{name}-perl \
-	--user=nginx \
-	--group=nginx \
 	--with-http_perl_module \
 	--without-mail_pop3_module \
 	--without-mail_imap_module \
@@ -337,26 +350,21 @@ cp -f configure auto/
 	--http-client-body-temp-path=%{_localstatedir}/cache/%{name}-perl/client_body_temp \
 	--http-proxy-temp-path=%{_localstatedir}/cache/%{name}-perl/proxy_temp \
 	--http-fastcgi-temp-path=%{_localstatedir}/cache/%{name}-perl/fastcgi_temp \
-	--with-cc="%{__cc}" \
-	--with-cc-opt="%{rpmcflags}" \
-	--with-ld-opt="%{rpmldflags}"
-%{__make}
-mv -f objs/nginx contrib/nginx-perl
-mv -f objs/src/http/modules/perl/blib/arch/auto/nginx/nginx.so contrib/nginx.so
-mv -f objs/src/http/modules/perl/nginx.pm contrib/nginx.pm
+	%{nil}
+
+mv -f objs/nginx bin/nginx-perl
+mv -f objs/src/http/modules/perl/blib/arch/auto/nginx/nginx.so bin/nginx.so
+mv -f objs/src/http/modules/perl/nginx.pm bin/nginx.pm
 %endif
 
 %if %{with mail}
-./configure \
-	--prefix=%{_prefix} \
+build \
 	--sbin-path=%{_sbindir}/%{name}-mail \
 	--conf-path=%{_sysconfdir}/%{name}-mail.conf \
 	--error-log-path=%{_localstatedir}/log/%{name}/%{name}-mail_error.log \
 	--http-log-path=%{_localstatedir}/log/%{name}/%{name}-mail_access.log \
 	--pid-path=%{_localstatedir}/run/%{name}-mail.pid \
 	--lock-path=%{_localstatedir}/lock/subsys/%{name}-mail \
-	--user=nginx \
-	--group=nginx \
 	--with-imap \
 	--with-mail \
 	--with-mail_ssl_module \
@@ -368,25 +376,19 @@ mv -f objs/src/http/modules/perl/nginx.pm contrib/nginx.pm
 	--http-client-body-temp-path=%{_localstatedir}/cache/%{name}-mail/client_body_temp \
 	--http-proxy-temp-path=%{_localstatedir}/cache/%{name}-mail/proxy_temp \
 	--http-fastcgi-temp-path=%{_localstatedir}/cache/%{name}-mail/fastcgi_temp \
-	--with-cc="%{__cc}" \
-	--with-cc-opt="%{rpmcflags}" \
-	--with-ld-opt="%{rpmldflags}" \
-	%{?debug:--with-debug}
-%{__make}
-mv -f objs/nginx contrib/nginx-mail
+	%{nil}
+
+mv -f objs/nginx bin/nginx-mail
 %endif
 
 %if %{with light}
-./configure \
-	--prefix=%{_prefix} \
+build \
 	--sbin-path=%{_sbindir}/%{name}-light \
 	--conf-path=%{_sysconfdir}/%{name}-light.conf \
 	--error-log-path=%{_localstatedir}/log/%{name}/%{name}-light_error.log \
 	--http-log-path=%{_localstatedir}/log/%{name}/%{name}-light_access.log \
 	--pid-path=%{_localstatedir}/run/%{name}-light.pid \
 	--lock-path=%{_localstatedir}/lock/subsys/%{name}-light \
-	--user=nginx \
-	--group=nginx \
 	%{?with_ipv6:--with-ipv6} \
 	%{?with_poll:--with-poll_module} \
 	%{?with_realip:--with-http_realip_module} \
@@ -406,24 +408,18 @@ mv -f objs/nginx contrib/nginx-mail
 	--http-client-body-temp-path=%{_localstatedir}/cache/%{name}-light/client_body_temp \
 	--http-proxy-temp-path=%{_localstatedir}/cache/%{name}-light/proxy_temp \
 	--http-fastcgi-temp-path=%{_localstatedir}/cache/%{name}-light/fastcgi_temp \
-	--with-cc="%{__cc}" \
-	--with-cc-opt="%{rpmcflags}" \
-	--with-ld-opt="%{rpmldflags}" \
-	%{?debug:--with-debug}
-%{__make}
-mv -f objs/nginx contrib/nginx-light
+	%{nil}
+
+mv -f objs/nginx bin/nginx-light
 %endif
 
-./configure \
-	--prefix=%{_prefix} \
+build \
 	--sbin-path=%{_sbindir}/%{name}-standard \
 	--conf-path=%{_sysconfdir}/%{name}-standard.conf \
 	--error-log-path=%{_localstatedir}/log/%{name}/%{name}-standard_error.log \
 	--http-log-path=%{_localstatedir}/log/%{name}/%{name}-standard_access.log \
 	--pid-path=%{_localstatedir}/run/%{name}-standard.pid \
 	--lock-path=%{_localstatedir}/lock/subsys/%{name}-standard \
-	--user=nginx \
-	--group=nginx \
 	%{?with_addition:--with-http_addition_module} \
 	%{?with_dav:--with-http_dav_module} \
 	%{?with_flv:--with-http_flv_module} \
@@ -443,12 +439,9 @@ mv -f objs/nginx contrib/nginx-light
 	--http-client-body-temp-path=%{_localstatedir}/cache/%{name}-standard/client_body_temp \
 	--http-proxy-temp-path=%{_localstatedir}/cache/%{name}-standard/proxy_temp \
 	--http-fastcgi-temp-path=%{_localstatedir}/cache/%{name}-standard/fastcgi_temp \
-	--with-cc="%{__cc}" \
-	--with-cc-opt="%{rpmcflags}" \
-	--with-ld-opt="%{rpmldflags}" \
-	%{?debug:--with-debug}
-%{__make}
+	%{nil}
 
+mv -f objs/%{name} bin/%{name}-standard
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -475,7 +468,7 @@ cp -p %{SOURCE14} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}-standard.conf
 cp -p %{SOURCE15} $RPM_BUILD_ROOT/etc/monit/%{name}-standard.monitrc
 install -p %{SOURCE16} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}-standard
 cp -p %{SOURCE18} $RPM_BUILD_ROOT%{systemdunitdir}/%{name}-standard.service
-install -p objs/%{name} $RPM_BUILD_ROOT%{_sbindir}/%{name}-standard
+install -p bin/nginx-standard $RPM_BUILD_ROOT%{_sbindir}
 ln -sf %{systemdunitdir}/%{name}-standard.service $RPM_BUILD_ROOT/etc/systemd/system/nginx.service
 
 %if %{with light}
@@ -483,13 +476,13 @@ cp -p  %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}-light.conf
 cp -p %{SOURCE6} $RPM_BUILD_ROOT/etc/monit/%{name}-light.monitrc
 cp -p %{SOURCE7} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}-light
 cp -p %{SOURCE19} $RPM_BUILD_ROOT%{systemdunitdir}/%{name}-light.service
-install -p contrib/nginx-light $RPM_BUILD_ROOT%{_sbindir}/%{name}-light
+install -p bin/nginx-light $RPM_BUILD_ROOT%{_sbindir}
 %endif
 
 %if %{with mail}
 cp -p %{SOURCE8} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}-mail.conf
 cp -p %{SOURCE9} $RPM_BUILD_ROOT/etc/monit/%{name}-mail.monitrc
-install -p contrib/nginx-mail $RPM_BUILD_ROOT%{_sbindir}/%{name}-mail
+install -p bin/nginx-mail $RPM_BUILD_ROOT%{_sbindir}
 install -p %{SOURCE10} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}-mail
 cp -p %{SOURCE21} $RPM_BUILD_ROOT%{systemdunitdir}/%{name}-mail.service
 %endif
@@ -500,9 +493,9 @@ cp -p %{SOURCE11} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}-perl.conf
 cp -p %{SOURCE12} $RPM_BUILD_ROOT/etc/monit/%{name}-perl.monitrc
 install -p %{SOURCE13} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}-perl
 cp -p %{SOURCE20} $RPM_BUILD_ROOT%{systemdunitdir}/%{name}-perl.service
-cp -p contrib/nginx.pm $RPM_BUILD_ROOT%{perl_vendorarch}/%{name}.pm
-install -p contrib/nginx.so $RPM_BUILD_ROOT%{perl_vendorarch}/auto/%{name}/%{name}.so
-install -p contrib/nginx-perl $RPM_BUILD_ROOT%{_sbindir}/%{name}-perl
+cp -p bin/nginx.pm $RPM_BUILD_ROOT%{perl_vendorarch}/%{name}.pm
+install -p bin/nginx.so $RPM_BUILD_ROOT%{perl_vendorarch}/auto/%{name}/%{name}.so
+install -p bin/nginx-perl $RPM_BUILD_ROOT%{_sbindir}
 %endif
 
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/*.default
