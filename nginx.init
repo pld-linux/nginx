@@ -143,6 +143,14 @@ upgrade() {
 	fi
 }
 
+# Tell nginx to reopen logs
+# http://nginx.org/en/docs/control.html#logs
+reopen_logs() {
+	checkconfig
+	show "Reopening $svname logs"
+	killproc -p $pidfile $prog -USR1
+}
+
 RETVAL=0
 # See how we were called.
 case "$1" in
@@ -166,6 +174,9 @@ case "$1" in
   force-reload|upgrade) 
 	upgrade
 	;;
+  reopen-logs)
+	reopen_logs
+	;;
   checkconfig|configtest)
 	checkconfig 1
 	;;
@@ -174,7 +185,7 @@ case "$1" in
 	RETVAL=$?
 	;;
   *)
-	msg_usage "$0 {start|stop|restart|try-restart|reload|force-reload|graceful|checkconfig|status}"
+	msg_usage "$0 {start|stop|restart|try-restart|reload|force-reload|graceful|reopen-logs|checkconfig|status}"
 	exit 3
 	;;
 esac

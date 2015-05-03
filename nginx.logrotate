@@ -4,16 +4,16 @@
 	sharedscripts
 	postrotate
 		if [ -x /etc/rc.d/init.d/nginx-light ] ; then
-			/sbin/service nginx-light graceful > /dev/null
+			/sbin/service nginx-light reopen-logs > /dev/null
 		fi
 		if [ -x /etc/rc.d/init.d/nginx-standard ] ; then
-			/sbin/service nginx-standard graceful > /dev/null
+			/sbin/service nginx-standard reopen-logs > /dev/null
 		fi
 		if [ -x /etc/rc.d/init.d/nginx-mail ] ; then
-			/sbin/service nginx-mail graceful > /dev/null
+			/sbin/service nginx-mail reopen-logs > /dev/null
 		fi
 		if [ -x /etc/rc.d/init.d/nginx-perl ] ; then
-			/sbin/service nginx-perl graceful > /dev/null
+			/sbin/service nginx-perl reopen-logs > /dev/null
 		fi
 	endscript
 }
