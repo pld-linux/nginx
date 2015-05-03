@@ -64,24 +64,7 @@ stop() {
 	fi
 }
 
-RETVAL=0
-# See how we were called.
-case "$1" in
-  start)
-  	start
-	;;
-  stop)
-  	stop
-	;;
-  status)
-	status $prog
-	RETVAL=$?
-	;;
-  restart)
-	stop
-	start
-	;;
-  reload|force-reload|graceful)
+reload() {
 	if [ -f $lockfile ]; then
 		msg_reloading "$svname"
 		killproc $prog -HUP
@@ -90,6 +73,41 @@ case "$1" in
 		msg_not_running "$svname"
 		RETVAL=7
 	fi
+}
+
+condrestart() {
+	if [ ! -f $lockfile ]; then
+		msg_not_running "$svname"
+		RETVAL=$1
+		return
+	fi
+
+	stop
+	start
+}
+
+RETVAL=0
+# See how we were called.
+case "$1" in
+  start)
+	start
+	;;
+  stop)
+	stop
+	;;
+  restart)
+	stop
+	start
+	;;
+  try-restart)
+	condrestart 0
+	;;
+  reload|force-reload|graceful)
+	reload
+	;;
+  status)
+	status $prog
+	RETVAL=$?
 	;;
   *)
 	msg_usage "$0 {start|stop|restart|reload|force-reload|graceful|status}"
