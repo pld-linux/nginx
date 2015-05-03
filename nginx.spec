@@ -106,11 +106,8 @@ Requires(pre):	/bin/id
 Requires(pre):	/usr/bin/getgid
 Requires(pre):	/usr/sbin/groupadd
 Requires(pre):	/usr/sbin/useradd
-Requires:	openssl
-Requires:	pcre
 Requires:	rc-scripts >= 0.2.0
 Requires:	systemd-units >= 38
-Requires:	zlib
 Provides:	group(http)
 Provides:	group(nginx)
 Provides:	user(nginx)
@@ -131,9 +128,6 @@ Group:		Networking/Daemons/HTTP
 Requires(post,preun):	/sbin/chkconfig
 Requires(post,preun,postun):	systemd-units >= 38
 Requires:	%{name}-common = %{version}-%{release}
-Requires:	openssl
-Requires:	pcre
-Requires:	zlib
 Provides:	nginx-daemon
 Provides:	webserver
 
@@ -201,9 +195,6 @@ Group:		Networking/Daemons/HTTP
 Requires(post,preun):	/sbin/chkconfig
 Requires(post,preun,postun):	systemd-units >= 38
 Requires:	%{name}-common = %{version}-%{release}
-Requires:	openssl
-Requires:	pcre
-Requires:	zlib
 Provides:	nginx-daemon
 
 %description mail
