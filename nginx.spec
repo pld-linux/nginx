@@ -46,14 +46,12 @@ Source1:	http://nginx.net/favicon.ico
 Source2:	proxy.conf
 Source3:	%{name}.logrotate
 Source4:	%{name}.mime
-Source5:	%{name}-light.conf
 Source6:	%{name}-light.monitrc
 Source7:	%{name}.init
 Source8:	%{name}-mail.conf
 Source9:	%{name}-mail.monitrc
-Source11:	%{name}-perl.conf
 Source12:	%{name}-perl.monitrc
-Source14:	%{name}-standard.conf
+Source14:	%{name}.conf
 Source15:	%{name}-standard.monitrc
 Source17:	%{name}-mime.types.sh
 Source18:	%{name}-standard.service
@@ -410,6 +408,7 @@ cp -p %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/proxy.conf
 cp -p %{SOURCE3} $RPM_BUILD_ROOT/etc/logrotate.d/%{name}
 cp -p %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/mime.types
 cp -p %{SOURCE14} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}-standard.conf
+%{__sed} -i -e 's/@flavor@/standard/g' $RPM_BUILD_ROOT%{_sysconfdir}/%{name}-standard.conf
 cp -p %{SOURCE15} $RPM_BUILD_ROOT/etc/monit/%{name}-standard.monitrc
 install -p %{SOURCE7} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}-standard
 %{__sed} -i -e 's/@flavor@/standard/g' $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}-standard
@@ -418,7 +417,8 @@ install -p bin/nginx-standard $RPM_BUILD_ROOT%{_sbindir}
 ln -sf %{systemdunitdir}/%{name}-standard.service $RPM_BUILD_ROOT/etc/systemd/system/nginx.service
 
 %if %{with light}
-cp -p  %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}-light.conf
+cp -p %{SOURCE14} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}-light.conf
+%{__sed} -i -e 's/@flavor@/light/g' $RPM_BUILD_ROOT%{_sysconfdir}/%{name}-light.conf
 cp -p %{SOURCE6} $RPM_BUILD_ROOT/etc/monit/%{name}-light.monitrc
 cp -p %{SOURCE7} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}-light
 %{__sed} -i -e 's/@flavor@/light/g' $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}-light
@@ -437,7 +437,8 @@ cp -p %{SOURCE21} $RPM_BUILD_ROOT%{systemdunitdir}/%{name}-mail.service
 
 %if %{with perl}
 install -d $RPM_BUILD_ROOT{%{perl_vendorarch},%{perl_vendorarch}/auto/%{name}}
-cp -p %{SOURCE11} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}-perl.conf
+cp -p %{SOURCE14} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}-perl.conf
+%{__sed} -i -e 's/@flavor@/perl/g' $RPM_BUILD_ROOT%{_sysconfdir}/%{name}-perl.conf
 cp -p %{SOURCE12} $RPM_BUILD_ROOT/etc/monit/%{name}-perl.monitrc
 install -p %{SOURCE7} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}-perl
 %{__sed} -i -e 's/@flavor@/perl/g' $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}-perl
