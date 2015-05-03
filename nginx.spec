@@ -16,12 +16,12 @@
 %bcond_without	rtsig		# rtsig
 %bcond_without	select		# select
 %bcond_without	spdy		# spdy module
-%bcond_without	status		# stats module
+%bcond_without	status		# status module
 %bcond_without	ssl		# ssl support
 %bcond_with	http_browser	# header "User-agent" parser
 %bcond_with	rtmp		# rtmp support
 %bcond_with	threads		# thread pool support
-%bcond_with	debug		# build with debug enabled: http://nginx.org/en/docs/debugging_log.html
+%bcond_with	debug		# enable debug logging: http://nginx.org/en/docs/debugging_log.html
 %bcond_without	auth_request	# auth_request module
 
 %ifarch x32
@@ -324,9 +324,6 @@ build() {
 %if %{with perl}
 build perl \
 	--with-http_perl_module \
-	--without-mail_pop3_module \
-	--without-mail_imap_module \
-	--without-mail_smtp_module \
 	%{?with_addition:--with-http_addition_module} \
 	%{?with_dav:--with-http_dav_module} \
 	%{?with_flv:--with-http_flv_module} \
@@ -349,10 +346,10 @@ mv -f objs/src/http/modules/perl/nginx.pm bin/nginx.pm
 
 %if %{with mail}
 build mail \
+	--without-http \
 	--with-imap \
 	--with-mail \
 	--with-mail_ssl_module \
-	--without-http \
 	%{nil}
 
 mv -f objs/nginx bin/nginx-mail
@@ -368,9 +365,6 @@ build light \
 	%{?with_threads:--with-threads} \
 	%{?with_spdy:--with-http_spdy_module} \
 	--without-http_browser_module \
-	--without-mail_pop3_module \
-	--without-mail_imap_module \
-	--without-mail_smtp_module \
 	--with-http_secure_link_module \
 	%{nil}
 
