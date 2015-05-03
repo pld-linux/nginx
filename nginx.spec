@@ -304,8 +304,18 @@ install -d bin
 
 # build with common options
 build() {
+	local type=$1; shift
 ./configure \
 	--prefix=%{_prefix} \
+	--sbin-path=%{_sbindir}/%{name}-$type \
+	--conf-path=%{_sysconfdir}/%{name}-$type.conf \
+	--error-log-path=%{_localstatedir}/log/%{name}/%{name}-${type}_error.log \
+	--http-log-path=%{_localstatedir}/log/%{name}/%{name}-${type}_access.log \
+	--pid-path=%{_localstatedir}/run/%{name}-$type.pid \
+	--lock-path=%{_localstatedir}/lock/subsys/%{name}-$type \
+	--http-client-body-temp-path=%{_localstatedir}/cache/%{name}-$type/client_body_temp \
+	--http-fastcgi-temp-path=%{_localstatedir}/cache/%{name}-$type/fastcgi_temp \
+	--http-proxy-temp-path=%{_localstatedir}/cache/%{name}-$type/proxy_temp \
 	--user=nginx \
 	--group=nginx \
 	--with-cc="%{__cc}" \
@@ -317,13 +327,7 @@ build() {
 }
 
 %if %{with perl}
-build \
-	--sbin-path=%{_sbindir}/%{name}-perl \
-	--conf-path=%{_sysconfdir}/%{name}-perl.conf \
-	--error-log-path=%{_localstatedir}/log/%{name}/%{name}-perl_error.log \
-	--http-log-path=%{_localstatedir}/log/%{name}/%{name}-perl_access.log \
-	--pid-path=%{_localstatedir}/run/%{name}-perl.pid \
-	--lock-path=%{_localstatedir}/lock/subsys/%{name}-perl \
+build perl \
 	--with-http_perl_module \
 	--without-mail_pop3_module \
 	--without-mail_imap_module \
@@ -345,9 +349,6 @@ build \
 	%{?with_threads:--with-threads} \
 	%{?with_spdy:--with-http_spdy_module} \
 	--with-http_secure_link_module \
-	--http-client-body-temp-path=%{_localstatedir}/cache/%{name}-perl/client_body_temp \
-	--http-proxy-temp-path=%{_localstatedir}/cache/%{name}-perl/proxy_temp \
-	--http-fastcgi-temp-path=%{_localstatedir}/cache/%{name}-perl/fastcgi_temp \
 	%{nil}
 
 mv -f objs/nginx bin/nginx-perl
@@ -356,13 +357,7 @@ mv -f objs/src/http/modules/perl/nginx.pm bin/nginx.pm
 %endif
 
 %if %{with mail}
-build \
-	--sbin-path=%{_sbindir}/%{name}-mail \
-	--conf-path=%{_sysconfdir}/%{name}-mail.conf \
-	--error-log-path=%{_localstatedir}/log/%{name}/%{name}-mail_error.log \
-	--http-log-path=%{_localstatedir}/log/%{name}/%{name}-mail_access.log \
-	--pid-path=%{_localstatedir}/run/%{name}-mail.pid \
-	--lock-path=%{_localstatedir}/lock/subsys/%{name}-mail \
+build mail \
 	--with-imap \
 	--with-mail \
 	--with-mail_ssl_module \
@@ -371,22 +366,13 @@ build \
 	%{?with_poll:--with-poll_module} \
 	%{?with_rtsig:--with-rtsig_module} \
 	%{?with_select:--with-select_module} \
-	--http-client-body-temp-path=%{_localstatedir}/cache/%{name}-mail/client_body_temp \
-	--http-proxy-temp-path=%{_localstatedir}/cache/%{name}-mail/proxy_temp \
-	--http-fastcgi-temp-path=%{_localstatedir}/cache/%{name}-mail/fastcgi_temp \
 	%{nil}
 
 mv -f objs/nginx bin/nginx-mail
 %endif
 
 %if %{with light}
-build \
-	--sbin-path=%{_sbindir}/%{name}-light \
-	--conf-path=%{_sysconfdir}/%{name}-light.conf \
-	--error-log-path=%{_localstatedir}/log/%{name}/%{name}-light_error.log \
-	--http-log-path=%{_localstatedir}/log/%{name}/%{name}-light_access.log \
-	--pid-path=%{_localstatedir}/run/%{name}-light.pid \
-	--lock-path=%{_localstatedir}/lock/subsys/%{name}-light \
+build light \
 	%{?with_ipv6:--with-ipv6} \
 	%{?with_poll:--with-poll_module} \
 	%{?with_realip:--with-http_realip_module} \
@@ -403,21 +389,12 @@ build \
 	--without-mail_imap_module \
 	--without-mail_smtp_module \
 	--with-http_secure_link_module \
-	--http-client-body-temp-path=%{_localstatedir}/cache/%{name}-light/client_body_temp \
-	--http-proxy-temp-path=%{_localstatedir}/cache/%{name}-light/proxy_temp \
-	--http-fastcgi-temp-path=%{_localstatedir}/cache/%{name}-light/fastcgi_temp \
 	%{nil}
 
 mv -f objs/nginx bin/nginx-light
 %endif
 
-build \
-	--sbin-path=%{_sbindir}/%{name}-standard \
-	--conf-path=%{_sysconfdir}/%{name}-standard.conf \
-	--error-log-path=%{_localstatedir}/log/%{name}/%{name}-standard_error.log \
-	--http-log-path=%{_localstatedir}/log/%{name}/%{name}-standard_access.log \
-	--pid-path=%{_localstatedir}/run/%{name}-standard.pid \
-	--lock-path=%{_localstatedir}/lock/subsys/%{name}-standard \
+build standard \
 	%{?with_addition:--with-http_addition_module} \
 	%{?with_dav:--with-http_dav_module} \
 	%{?with_flv:--with-http_flv_module} \
@@ -434,9 +411,6 @@ build \
 	%{?with_auth_request:--with-http_auth_request_module} \
 	%{?with_threads:--with-threads} \
 	--with-http_secure_link_module \
-	--http-client-body-temp-path=%{_localstatedir}/cache/%{name}-standard/client_body_temp \
-	--http-proxy-temp-path=%{_localstatedir}/cache/%{name}-standard/proxy_temp \
-	--http-fastcgi-temp-path=%{_localstatedir}/cache/%{name}-standard/fastcgi_temp \
 	%{nil}
 
 mv -f objs/%{name} bin/%{name}-standard
