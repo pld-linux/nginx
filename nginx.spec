@@ -35,7 +35,7 @@ Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # - mainline: production quality but API can change
 Name:		nginx
 Version:	1.8.0
-Release:	1
+Release:	2
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	http://nginx.org/download/%{name}-%{version}.tar.gz
@@ -461,9 +461,7 @@ install -d $RPM_BUILD_ROOT/etc/rc.d/init.d \
 	$RPM_BUILD_ROOT/etc/{logrotate.d,monit} \
 	$RPM_BUILD_ROOT{%{systemdunitdir},/etc/systemd/system}
 
-cp -p conf/fastcgi_params $RPM_BUILD_ROOT%{_sysconfdir}/fastcgi.params
-cp -p conf/scgi_params $RPM_BUILD_ROOT%{_sysconfdir}/scgi.params
-cp -p conf/uwsgi_params $RPM_BUILD_ROOT%{_sysconfdir}/uwsgi.params
+cp -p conf/*_params $RPM_BUILD_ROOT%{_sysconfdir}
 cp -p conf/koi-utf $RPM_BUILD_ROOT%{_sysconfdir}/koi-utf
 cp -p conf/koi-win $RPM_BUILD_ROOT%{_sysconfdir}/koi-win
 cp -p conf/win-utf $RPM_BUILD_ROOT%{_sysconfdir}/win-utf
@@ -509,6 +507,9 @@ install -p contrib/nginx-perl $RPM_BUILD_ROOT%{_sbindir}/%{name}-perl
 
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/*.default
 rm -rf $RPM_BUILD_ROOT%{_prefix}/html
+
+# only touch these for ghost packaging
+touch $RPM_BUILD_ROOT%{_sysconfdir}/{fastcgi,scgi,uwsgi}.params
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -636,6 +637,14 @@ fi
 %triggerpostun -- %{name}-mail < 1.4.1-4
 %systemd_trigger %{name}-mail.service
 
+%triggerpostun common -- %{name}-common < 1.8.0-2
+# skip *this* trigger on downgrade
+[ $1 -le 1 ] && exit 0
+ln -sf fastcgi_params %{_sysconfdir}/fastcgi.params
+ln -sf scgi_params %{_sysconfdir}/scgi.params
+ln -sf uwsgi_params %{_sysconfdir}/uwsgi.params
+exit 0
+
 %files common
 %defattr(644,root,root,755)
 %doc CHANGES LICENSE README html/index.html conf/nginx.conf
@@ -649,9 +658,12 @@ fi
 # XXX: duplicates, don't use such glob here
 #%attr(640,root,root) %{_sysconfdir}/*[_-]*
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/proxy.conf
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/fastcgi.params
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/scgi.params
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/uwsgi.params
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/fastcgi_params
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/scgi_params
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/uwsgi_params
+%ghost %{_sysconfdir}/fastcgi.params
+%ghost %{_sysconfdir}/scgi.params
+%ghost %{_sysconfdir}/uwsgi.params
 %attr(640,root,root) %{_sysconfdir}/mime.types
 %attr(640,root,root) %{_sysconfdir}/koi-utf
 %attr(640,root,root) %{_sysconfdir}/koi-win
