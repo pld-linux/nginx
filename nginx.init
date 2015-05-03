@@ -91,7 +91,8 @@ stop() {
 	# Stop daemons.
 	if [ -f $lockfile ]; then
 		msg_stopping "$svname"
-		killproc $prog
+		killproc -p $pidfile $prog
+		RETVAL=$?
 		rm -f $lockfile $pidfile >/dev/null 2>&1
 	else
 		msg_not_running "$svname"
@@ -102,7 +103,7 @@ reload() {
 	if [ -f $lockfile ]; then
 		checkconfig
 		msg_reloading "$svname"
-		killproc $prog -HUP
+		killproc -p $pidfile $prog -HUP
 		RETVAL=$?
 	else
 		msg_not_running "$svname"
@@ -146,7 +147,7 @@ case "$1" in
 	checkconfig 1
 	;;
   status)
-	status $prog
+	status --pidfile $pidfile $prog
 	RETVAL=$?
 	;;
   *)
