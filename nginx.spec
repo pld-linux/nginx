@@ -21,6 +21,7 @@
 %bcond_with	http_browser	# header "User-agent" parser
 %bcond_with	rtmp		# rtmp support
 %bcond_with	threads		# thread pool support
+%bcond_with	debug		# build with debug enabled: http://nginx.org/en/docs/debugging_log.html
 %bcond_without	auth_request	# auth_request module
 
 %ifarch x32
@@ -313,7 +314,7 @@ build() {
 	--with-cc="%{__cc}" \
 	--with-cc-opt="%{rpmcflags}" \
 	--with-ld-opt="%{rpmldflags}" \
-	%{?debug:--with-debug} \
+	%{?with_debug:--with-debug} \
 	"$@"
 %{__make}
 }
