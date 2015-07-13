@@ -36,7 +36,7 @@ Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # - mainline: production quality but API can change
 Name:		nginx
 Version:	1.8.0
-Release:	2
+Release:	3
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	http://nginx.org/download/%{name}-%{version}.tar.gz
@@ -63,7 +63,7 @@ Source101:	https://github.com/arut/nginx-rtmp-module/archive/v%{rtmp_version}/ng
 Patch0:		%{name}-no-Werror.patch
 URL:		http://nginx.net/
 BuildRequires:	mailcap
-BuildRequires:	openssl-devel
+%{?with_ssl:BuildRequires: openssl-devel >= 1.0.2}
 BuildRequires:	pcre-devel
 %{?with_perl:BuildRequires: perl-CGI}
 %{?with_perl:BuildRequires: perl-devel}
@@ -126,6 +126,7 @@ Group:		Networking/Daemons/HTTP
 Requires(post,preun):	/sbin/chkconfig
 Requires(post,preun,postun):	systemd-units >= 38
 Requires:	%{name}-common = %{version}-%{release}
+%{?with_ssl:Requires: openssl >= 1.0.2}
 Provides:	nginx-daemon
 Provides:	webserver
 
@@ -160,7 +161,7 @@ Group:		Networking/Daemons/HTTP
 Requires(post,preun):	/sbin/chkconfig
 Requires(post,preun,postun):	systemd-units >= 38
 Requires:	%{name}-common = %{version}-%{release}
-Requires:	openssl
+%{?with_ssl:Requires: openssl >= 1.0.2}
 Provides:	nginx-daemon
 Provides:	webserver
 
@@ -224,7 +225,7 @@ Group:		Networking/Daemons/HTTP
 Requires(post,preun):	/sbin/chkconfig
 Requires(post,preun,postun):	systemd-units >= 38
 Requires:	%{name}-common = %{version}-%{release}
-Requires:	openssl
+%{?with_ssl:Requires: openssl >= 1.0.2}
 Provides:	nginx
 Provides:	nginx-daemon
 Conflicts:	logrotate < 3.7-4
