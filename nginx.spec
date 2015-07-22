@@ -582,7 +582,7 @@ exit 0
 %defattr(644,root,root,755)
 %doc CHANGES LICENSE README html/index.html conf/nginx.conf
 %doc %lang(ru) CHANGES.ru
-%dir %attr(754,root,root) %{_sysconfdir}
+%dir %attr(750,root,nginx) %{_sysconfdir}
 %dir %{_nginxdir}
 %dir %{_nginxdir}/cgi-bin
 %dir %{_nginxdir}/html
