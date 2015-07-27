@@ -23,12 +23,14 @@
 %bcond_with	threads		# thread pool support
 %bcond_with	debug		# enable debug logging: http://nginx.org/en/docs/debugging_log.html
 %bcond_without	auth_request	# auth_request module
+%bcond_with	modsecurity	# modsecurity module
 
 %ifarch x32
 %undefine	with_rtsig
 %endif
 
 %define		rtmp_version	1.1.7
+%define		modsecurity_version	2.9.0
 Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # nginx lines:
@@ -36,7 +38,7 @@ Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # - mainline: production quality but API can change
 Name:		nginx
 Version:	1.8.0
-Release:	3
+Release:	4
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	http://nginx.org/download/%{name}-%{version}.tar.gz
@@ -58,10 +60,13 @@ Source18:	%{name}-standard.service
 Source19:	%{name}-light.service
 Source20:	%{name}-perl.service
 Source21:	%{name}-mail.service
+Source22:	http://www.modsecurity.org/tarball/%{modsecurity_version}/modsecurity-%{modsecurity_version}.tar.gz
+# Source22-md5:	ecf42d21f26338443d7111891851628c
 Source101:	https://github.com/arut/nginx-rtmp-module/archive/v%{rtmp_version}/nginx-rtmp-module-%{rtmp_version}.tar.gz
 # Source101-md5:	8006de2560db3e55bb15d110220076ac
 Patch0:		%{name}-no-Werror.patch
 URL:		http://nginx.net/
+%{?with_modsecurity:BuildRequires: lua-devel}
 BuildRequires:	mailcap
 %{?with_ssl:BuildRequires: openssl-devel >= 1.0.2}
 BuildRequires:	pcre-devel
@@ -276,7 +281,7 @@ monitrc file for monitoring nginx webserver.
 Plik monitrc do monitorowania serwera WWW nginx.
 
 %prep
-%setup -q %{?with_rtmp:-a101}
+%setup -q %{?with_rtmp:-a101} %{?with_modsecurity:-a22}
 %patch0 -p0
 
 %if %{with rtmp}
@@ -319,6 +324,18 @@ build() {
 	"$@"
 %{__make}
 }
+
+%if %{with modsecurity}
+cd modsecurity-%{modsecurity_version}
+./autogen.sh
+%configure \
+	--enable-standalone-module \
+	--disable-mlogc \
+	--enable-alp2 \
+	--with-lua=/usr
+%{__make}
+cd ..
+%endif
 
 %if %{with perl}
 build perl \
@@ -363,6 +380,7 @@ build light \
 	%{?with_auth_request:--with-http_auth_request_module} \
 	%{?with_threads:--with-threads} \
 	%{?with_spdy:--with-http_spdy_module} \
+	%{?with_modsecurity:--add-module=modsecurity-%{modsecurity_version}/nginx/modsecurity} \
 	--without-http_browser_module \
 	--with-http_secure_link_module \
 	%{nil}
@@ -382,6 +400,7 @@ build standard \
 	%{?with_rtmp:--add-module=./nginx-rtmp-module} \
 	%{?with_auth_request:--with-http_auth_request_module} \
 	%{?with_threads:--with-threads} \
+	%{?with_modsecurity:--add-module=modsecurity-%{modsecurity_version}/nginx/modsecurity} \
 	--with-http_secure_link_module \
 	%{nil}
 
