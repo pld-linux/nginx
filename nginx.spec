@@ -385,7 +385,7 @@ build standard \
 	--with-http_secure_link_module \
 	%{nil}
 
-mv -f objs/%{name} bin/%{name}-standard
+mv -f objs/nginx bin/nginx-standard
 
 %install
 rm -rf $RPM_BUILD_ROOT
