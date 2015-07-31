@@ -65,6 +65,7 @@ Source22:	http://www.modsecurity.org/tarball/%{modsecurity_version}/modsecurity-
 Source101:	https://github.com/arut/nginx-rtmp-module/archive/v%{rtmp_version}/nginx-rtmp-module-%{rtmp_version}.tar.gz
 # Source101-md5:	8006de2560db3e55bb15d110220076ac
 Patch0:		%{name}-no-Werror.patch
+Patch1:		%{name}-modsecurity-xheaders.patch
 URL:		http://nginx.net/
 %{?with_modsecurity:BuildRequires: lua-devel}
 BuildRequires:	mailcap
@@ -283,6 +284,7 @@ Plik monitrc do monitorowania serwera WWW nginx.
 %prep
 %setup -q %{?with_rtmp:-a101} %{?with_modsecurity:-a22}
 %patch0 -p0
+%{?with_modsecurity:%patch1 -p0}
 
 %if %{with rtmp}
 mv nginx-rtmp-module-%{rtmp_version} nginx-rtmp-module
