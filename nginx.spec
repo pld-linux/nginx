@@ -38,7 +38,7 @@ Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # - mainline: production quality but API can change
 Name:		nginx
 Version:	1.8.0
-Release:	5
+Release:	6
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	http://nginx.org/download/%{name}-%{version}.tar.gz
@@ -432,11 +432,11 @@ cp -p %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/mime.types
 
 install_build() {
 	local type=$1
-	%{__sed} -e 's/@type@/standard/g' %{_sourcedir}/%{name}.conf \
+	%{__sed} -e "s/@type@/${type}/g" %{_sourcedir}/%{name}.conf \
 		> $RPM_BUILD_ROOT%{_sysconfdir}/%{name}-$type.conf
 
 	install -p %{SOURCE7} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}-$type
-	%{__sed} -i -e 's/@type@/standard/g' $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}-$type
+	%{__sed} -i -e "s/@type@/${type}/g" $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}-$type
 
 	cp -p %{_sourcedir}/%{name}-$type.service $RPM_BUILD_ROOT%{systemdunitdir}
 	cp -p %{_sourcedir}/%{name}-$type.monitrc $RPM_BUILD_ROOT/etc/monit
