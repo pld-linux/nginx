@@ -18,9 +18,9 @@
 %bcond_without	spdy		# spdy module
 %bcond_without	status		# status module
 %bcond_without	ssl		# ssl support
+%bcond_without	threads		# thread pool support
 %bcond_with	http_browser	# header "User-agent" parser
 %bcond_with	rtmp		# rtmp support
-%bcond_with	threads		# thread pool support
 %bcond_with	debug		# enable debug logging: http://nginx.org/en/docs/debugging_log.html
 %bcond_without	auth_request	# auth_request module
 %bcond_with	modsecurity	# modsecurity module
@@ -38,7 +38,7 @@ Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # - mainline: production quality but API can change
 Name:		nginx
 Version:	1.8.0
-Release:	6
+Release:	7
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	http://nginx.org/download/%{name}-%{version}.tar.gz
