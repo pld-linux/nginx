@@ -13,9 +13,8 @@
 %bcond_without	sub		# ngx_http_sub_module
 %bcond_without	poll		# poll
 %bcond_without	realip		# real ip (behind proxy)
-%bcond_without	rtsig		# rtsig
 %bcond_without	select		# select
-%bcond_without	spdy		# spdy module
+%bcond_without	http2		# HTTP/2 module
 %bcond_without	status		# status module
 %bcond_without	ssl		# ssl support
 %bcond_without	threads		# thread pool support
@@ -37,12 +36,12 @@ Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # - stable: production quality with stable API
 # - mainline: production quality but API can change
 Name:		nginx
-Version:	1.8.0
-Release:	8
+Version:	1.9.9
+Release:	1
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	http://nginx.org/download/%{name}-%{version}.tar.gz
-# Source0-md5:	3ca4a37931e9fa301964b8ce889da8cb
+# Source0-md5:	50fdfa08e93ead7a111cba5a5f5735af
 Source1:	http://nginx.net/favicon.ico
 # Source1-md5:	2aaf2115c752cbdbfb8a2f0b3c3189ab
 Source2:	proxy.conf
@@ -353,7 +352,7 @@ build perl \
 	%{?with_rtmp:--add-module=./nginx-rtmp-module} \
 	%{?with_auth_request:--with-http_auth_request_module} \
 	%{?with_threads:--with-threads} \
-	%{?with_spdy:--with-http_spdy_module} \
+	%{?with_http2:--with-http_v2_module} \
 	--with-http_secure_link_module \
 	%{nil}
 
@@ -381,7 +380,7 @@ build light \
 	%{?with_rtmp:--add-module=./nginx-rtmp-module} \
 	%{?with_auth_request:--with-http_auth_request_module} \
 	%{?with_threads:--with-threads} \
-	%{?with_spdy:--with-http_spdy_module} \
+	%{?with_http2:--with-http_v2_module} \
 	%{?with_modsecurity:--add-module=modsecurity-%{modsecurity_version}/nginx/modsecurity} \
 	--without-http_browser_module \
 	--with-http_secure_link_module \
