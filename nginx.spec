@@ -37,7 +37,7 @@ Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # - mainline: production quality but API can change
 Name:		nginx
 Version:	1.9.10
-Release:	1
+Release:	2
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	http://nginx.org/download/%{name}-%{version}.tar.gz
@@ -401,6 +401,7 @@ build standard \
 	%{?with_rtmp:--add-module=./nginx-rtmp-module} \
 	%{?with_auth_request:--with-http_auth_request_module} \
 	%{?with_threads:--with-threads} \
+	%{?with_http2:--with-http_v2_module} \
 	%{?with_modsecurity:--add-module=modsecurity-%{modsecurity_version}/nginx/modsecurity} \
 	--with-http_secure_link_module \
 	%{nil}
