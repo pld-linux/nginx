@@ -111,6 +111,7 @@ Requires(pre):	/usr/sbin/groupadd
 Requires(pre):	/usr/sbin/useradd
 Requires:	rc-scripts >= 0.2.0
 Requires:	systemd-units >= 38
+Suggests:	vim-syntax-nginx
 Provides:	group(http)
 Provides:	group(nginx)
 Provides:	user(nginx)
