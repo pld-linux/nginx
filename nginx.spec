@@ -28,6 +28,7 @@
 %undefine	with_rtsig
 %endif
 
+%define		ssl_version	1.0.2
 %define		rtmp_version	1.1.7
 %define		modsecurity_version	2.9.0
 Summary:	High perfomance HTTP and reverse proxy server
@@ -68,7 +69,7 @@ Patch1:		%{name}-modsecurity-xheaders.patch
 URL:		http://nginx.net/
 %{?with_modsecurity:BuildRequires: lua-devel}
 BuildRequires:	mailcap
-%{?with_ssl:BuildRequires: openssl-devel >= 1.0.2}
+%{?with_ssl:BuildRequires: openssl-devel >= %{ssl_version}}
 BuildRequires:	pcre-devel
 %{?with_perl:BuildRequires: perl-CGI}
 %{?with_perl:BuildRequires: perl-devel}
@@ -132,7 +133,7 @@ Group:		Networking/Daemons/HTTP
 Requires(post,preun):	/sbin/chkconfig
 Requires(post,preun,postun):	systemd-units >= 38
 Requires:	%{name}-common = %{version}-%{release}
-%{?with_ssl:Requires: openssl >= 1.0.2}
+%{?with_ssl:Requires: openssl >= %{ssl_version}}
 Provides:	nginx-daemon
 Provides:	webserver
 
@@ -167,7 +168,7 @@ Group:		Networking/Daemons/HTTP
 Requires(post,preun):	/sbin/chkconfig
 Requires(post,preun,postun):	systemd-units >= 38
 Requires:	%{name}-common = %{version}-%{release}
-%{?with_ssl:Requires: openssl >= 1.0.2}
+%{?with_ssl:Requires: openssl >= %{ssl_version}}
 Provides:	nginx-daemon
 Provides:	webserver
 
@@ -231,7 +232,7 @@ Group:		Networking/Daemons/HTTP
 Requires(post,preun):	/sbin/chkconfig
 Requires(post,preun,postun):	systemd-units >= 38
 Requires:	%{name}-common = %{version}-%{release}
-%{?with_ssl:Requires: openssl >= 1.0.2}
+%{?with_ssl:Requires: openssl >= %{ssl_version}}
 Provides:	nginx
 Provides:	nginx-daemon
 Conflicts:	logrotate < 3.7-4
