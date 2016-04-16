@@ -170,7 +170,7 @@ case "$1" in
   reload|graceful)
 	reload
 	;;
-  force-reload|upgrade) 
+  force-reload|upgrade)
 	upgrade
 	;;
   reopen-logs)
