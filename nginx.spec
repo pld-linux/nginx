@@ -116,7 +116,6 @@ Suggests:	vim-syntax-nginx
 Provides:	group(http)
 Provides:	group(nginx)
 Provides:	user(nginx)
-Provides:	webserver
 Provides:	webserver(access)
 Provides:	webserver(alias)
 Provides:	webserver(auth)
@@ -147,17 +146,6 @@ Requires:	%{name}-common = %{version}-%{release}
 %{?with_ssl:Requires: openssl >= %{ssl_version}}
 Provides:	nginx-daemon
 Provides:	webserver
-Provides:	webserver(access)
-Provides:	webserver(alias)
-Provides:	webserver(auth)
-Provides:	webserver(expires)
-Provides:	webserver(headers)
-Provides:	webserver(indexfile)
-Provides:	webserver(log)
-Provides:	webserver(mime)
-Provides:	webserver(reqtimeout)
-Provides:	webserver(rewrite)
-Provides:	webserver(setenv)
 
 %description light
 nginx ("engine x") is a high-performance HTTP server and reverse
@@ -193,17 +181,6 @@ Requires:	%{name}-common = %{version}-%{release}
 %{?with_ssl:Requires: openssl >= %{ssl_version}}
 Provides:	nginx-daemon
 Provides:	webserver
-Provides:	webserver(access)
-Provides:	webserver(alias)
-Provides:	webserver(auth)
-Provides:	webserver(expires)
-Provides:	webserver(headers)
-Provides:	webserver(indexfile)
-Provides:	webserver(log)
-Provides:	webserver(mime)
-Provides:	webserver(reqtimeout)
-Provides:	webserver(rewrite)
-Provides:	webserver(setenv)
 
 %description perl
 nginx ("engine x") is a high-performance HTTP server and reverse
@@ -268,6 +245,7 @@ Requires:	%{name}-common = %{version}-%{release}
 %{?with_ssl:Requires: openssl >= %{ssl_version}}
 Provides:	nginx
 Provides:	nginx-daemon
+Provides:	webserver
 Conflicts:	logrotate < 3.7-4
 
 %description standard
