@@ -119,7 +119,15 @@ Provides:	user(nginx)
 Provides:	webserver
 Provides:	webserver(access)
 Provides:	webserver(alias)
+Provides:	webserver(auth)
+Provides:	webserver(expires)
+Provides:	webserver(headers)
 Provides:	webserver(indexfile)
+Provides:	webserver(log)
+Provides:	webserver(mime)
+Provides:	webserver(reqtimeout)
+Provides:	webserver(rewrite)
+Provides:	webserver(setenv)
 Obsoletes:	nginx < 1.4.1-4.1
 Conflicts:	logrotate < 3.8.0
 
@@ -141,7 +149,15 @@ Provides:	nginx-daemon
 Provides:	webserver
 Provides:	webserver(access)
 Provides:	webserver(alias)
+Provides:	webserver(auth)
+Provides:	webserver(expires)
+Provides:	webserver(headers)
 Provides:	webserver(indexfile)
+Provides:	webserver(log)
+Provides:	webserver(mime)
+Provides:	webserver(reqtimeout)
+Provides:	webserver(rewrite)
+Provides:	webserver(setenv)
 
 %description light
 nginx ("engine x") is a high-performance HTTP server and reverse
@@ -179,7 +195,15 @@ Provides:	nginx-daemon
 Provides:	webserver
 Provides:	webserver(access)
 Provides:	webserver(alias)
+Provides:	webserver(auth)
+Provides:	webserver(expires)
+Provides:	webserver(headers)
 Provides:	webserver(indexfile)
+Provides:	webserver(log)
+Provides:	webserver(mime)
+Provides:	webserver(reqtimeout)
+Provides:	webserver(rewrite)
+Provides:	webserver(setenv)
 
 %description perl
 nginx ("engine x") is a high-performance HTTP server and reverse
