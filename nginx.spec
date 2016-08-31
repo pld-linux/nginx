@@ -119,6 +119,7 @@ Provides:	user(nginx)
 Provides:	webserver
 Provides:	webserver(access)
 Provides:	webserver(alias)
+Provides:	webserver(indexfile)
 Obsoletes:	nginx < 1.4.1-4.1
 Conflicts:	logrotate < 3.8.0
 
@@ -138,6 +139,9 @@ Requires:	%{name}-common = %{version}-%{release}
 %{?with_ssl:Requires: openssl >= %{ssl_version}}
 Provides:	nginx-daemon
 Provides:	webserver
+Provides:	webserver(access)
+Provides:	webserver(alias)
+Provides:	webserver(indexfile)
 
 %description light
 nginx ("engine x") is a high-performance HTTP server and reverse
@@ -173,6 +177,9 @@ Requires:	%{name}-common = %{version}-%{release}
 %{?with_ssl:Requires: openssl >= %{ssl_version}}
 Provides:	nginx-daemon
 Provides:	webserver
+Provides:	webserver(access)
+Provides:	webserver(alias)
+Provides:	webserver(indexfile)
 
 %description perl
 nginx ("engine x") is a high-performance HTTP server and reverse
