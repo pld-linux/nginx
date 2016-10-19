@@ -3,28 +3,30 @@
 # - missing perl build/install requires
 #
 # Conditional build for nginx:
-%bcond_without	mail		# don't build imap/mail proxy
-%bcond_without	perl		# don't build with perl module
-%bcond_without	addition	# adds module
-%bcond_without	dav		# WebDAV
-%bcond_without	flv		# FLV stream
-%bcond_without	sub		# ngx_http_sub_module
-%bcond_without	poll		# poll
-%bcond_without	realip		# real ip (behind proxy)
-%bcond_without	select		# select
-%bcond_without	http2		# HTTP/2 module
-%bcond_without	status		# status module
-%bcond_without	ssl		# ssl support
+# Features
+%bcond_with	debug		# enable debug logging: http://nginx.org/en/docs/debugging_log.html
 %bcond_without	threads		# thread pool support
+# Modules
+%bcond_without	addition	# http addition module
+%bcond_without	auth_request	# auth_request module
+%bcond_without	dav		# WebDAV
+%bcond_without	flv		# http FLV module
 %bcond_without	gd		# without http image filter module
 %bcond_without	geoip		# without http geoip module
+%bcond_without	http2		# HTTP/2 module
+%bcond_without	mail		# don't build imap/mail proxy
+%bcond_without	perl		# don't build with perl module
+%bcond_without	poll		# poll module
+%bcond_without	realip		# real ip (behind proxy)
+%bcond_without	select		# select module
+%bcond_without	ssl		# ssl support and http ssl module
+%bcond_without	stream		# TCP/UDP proxy module
+%bcond_without	stub_status	# http stub status module
+%bcond_without	sub		# ngx_http_sub_module
 %bcond_without	xslt		# without http xslt module
-%bcond_without	stream		# without stream module
-%bcond_with	http_browser	# header "User-agent" parser
-%bcond_with	rtmp		# rtmp support
-%bcond_with	debug		# enable debug logging: http://nginx.org/en/docs/debugging_log.html
-%bcond_without	auth_request	# auth_request module
+%bcond_with	http_browser	# http browser module (header "User-agent" parser)
 %bcond_with	modsecurity	# modsecurity module
+%bcond_with	rtmp		# rtmp support
 
 %ifarch x32
 %undefine	with_rtsig
@@ -254,7 +256,7 @@ cp -f configure auto/
 	%{?with_flv:--with-http_flv_module} \
 	%{?with_sub:--with-http_sub_module} \
 	%{?with_realip:--with-http_realip_module} \
-	%{?with_status:--with-http_stub_status_module} \
+	%{?with_stub_status:--with-http_stub_status_module} \
 	%{?with_ssl:--with-http_ssl_module} \
 	%{!?with_http_browser:--without-http_browser_module} \
 	%{?with_rtmp:--add-module=./nginx-rtmp-module} \
