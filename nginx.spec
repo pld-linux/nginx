@@ -298,7 +298,7 @@ install -d $RPM_BUILD_ROOT/etc/rc.d/init.d \
 	$RPM_BUILD_ROOT%{_localstatedir}/log/{%{name},archive/%{name}} \
 	$RPM_BUILD_ROOT%{_localstatedir}/cache/%{name} \
 	$RPM_BUILD_ROOT%{_localstatedir}/lock/subsys/%{name} \
-	$RPM_BUILD_ROOT{%{_sbindir},%{_sysconfdir}/{vhosts,webapps}.d} \
+	$RPM_BUILD_ROOT{%{_sbindir},%{_sysconfdir}/{conf,vhosts,webapps}.d} \
 	$RPM_BUILD_ROOT/etc/{logrotate.d,monit} \
 	$RPM_BUILD_ROOT{%{systemdunitdir},/etc/systemd/system}
 
@@ -321,9 +321,32 @@ cp -p html/index.html $RPM_BUILD_ROOT%{_nginxdir}/html
 cp -p html/50x.html $RPM_BUILD_ROOT%{_nginxdir}/errors
 cp -p %{SOURCE1} $RPM_BUILD_ROOT%{_nginxdir}/html/favicon.ico
 
+load_module() {
+	local module=ngx_${1}_module.so conffile=mod_$1.conf
+	echo 'load_module "%{_libdir}/%{name}/modules/$module";' \
+		> $RPM_BUILD_ROOT%{_sysconfdir}/conf.d/$conffile
+}
+
 %if %{with perl}
 %{__rm} $RPM_BUILD_ROOT%{perl_archlib}/perllocal.pod
 %{__rm} $RPM_BUILD_ROOT%{perl_vendorarch}/auto/nginx/.packlist
+load_module http_perl
+%endif
+
+%if %{with geoip}
+load_module http_geoip
+%endif
+%if %{with gd}
+load_module http_image_filter
+%endif
+%if %{with xslt}
+load_module http_xslt_filter
+%endif
+%if %{with mail}
+load_module mail
+%endif
+%if %{with stream}
+load_module stream
 %endif
 
 # only touch these for ghost packaging
@@ -417,18 +440,21 @@ exit 0
 
 %files mod_stream_geoip
 %defattr(644,root,root,755)
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/conf.d/mod_http_geoip.conf
 %attr(755,root,root) %{_libdir}/%{name}/modules/ngx_stream_geoip_module.so
 %endif
 
 %if %{with gd}
 %files mod_http_image_filter
 %defattr(644,root,root,755)
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/conf.d/mod_http_image_filter.conf
 %attr(755,root,root) %{_libdir}/%{name}/modules/ngx_http_image_filter_module.so
 %endif
 
 %if %{with perl}
 %files mod_http_perl
 %defattr(644,root,root,755)
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/conf.d/mod_http_perl.conf
 %attr(755,root,root) %{_libdir}/%{name}/modules/ngx_http_perl_module.so
 %dir %{perl_vendorarch}/auto/%{name}
 %attr(755,root,root) %{perl_vendorarch}/auto/%{name}/%{name}.so
@@ -439,18 +465,21 @@ exit 0
 %if %{with xslt}
 %files mod_http_xslt_filter
 %defattr(644,root,root,755)
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/conf.d/mod_http_xslt_filter.conf
 %attr(755,root,root) %{_libdir}/%{name}/modules/ngx_http_xslt_filter_module.so
 %endif
 
 %if %{with mail}
 %files mod_mail
 %defattr(644,root,root,755)
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/conf.d/mod_mail.conf
 %attr(755,root,root) %{_libdir}/%{name}/modules/ngx_mail_module.so
 %endif
 
 %if %{with stream}
 %files mod_stream
 %defattr(644,root,root,755)
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/conf.d/mod_stream.conf
 %attr(755,root,root) %{_libdir}/%{name}/modules/ngx_stream_module.so
 %endif
 
