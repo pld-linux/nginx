@@ -390,36 +390,36 @@ fi
 %defattr(644,root,root,755)
 %doc CHANGES LICENSE README html/index.html conf/nginx.conf
 %doc %lang(ru) CHANGES.ru
-%dir %attr(750,root,nginx) %{_sysconfdir}
-%dir %{_nginxdir}
-%dir %{_nginxdir}/cgi-bin
-%dir %{_nginxdir}/html
-%dir %{_nginxdir}/errors
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/logrotate.d/%{name}
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/proxy.conf
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/fastcgi_params
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/scgi_params
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/uwsgi_params
+%attr(754,root,root) /etc/rc.d/init.d/%{name}
+%dir %attr(750,root,nginx) %{_sysconfdir}
 %dir %{_sysconfdir}/conf.d
+%dir %{_sysconfdir}/vhosts.d
+%dir %{_sysconfdir}/webapps.d
 %attr(640,root,root) %{_sysconfdir}/mime.types
 %attr(640,root,root) %{_sysconfdir}/koi-utf
 %attr(640,root,root) %{_sysconfdir}/koi-win
 %attr(640,root,root) %{_sysconfdir}/win-utf
-%dir %{_sysconfdir}/webapps.d
-%dir %{_sysconfdir}/vhosts.d
-%attr(750,nginx,logs) %dir /var/log/archive/%{name}
-%attr(750,nginx,logs) /var/log/%{name}
-%config(noreplace,missingok) %verify(not md5 mtime size) %{_nginxdir}/html/*
-%config(noreplace,missingok) %verify(not md5 mtime size) %{_nginxdir}/errors/*
-
-%defattr(644,root,root,755)
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/nginx.conf
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/proxy.conf
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/fastcgi_params
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/scgi_params
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/uwsgi_params
 %attr(755,root,root) %{_sbindir}/%{name}
-%attr(770,root,%{name}) /var/cache/%{name}
-%attr(754,root,root) /etc/rc.d/init.d/%{name}
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}.conf
 %dir %{_libdir}/%{name}
 %dir %{_libdir}/%{name}/modules
 %{systemdunitdir}/%{name}.service
+
+%attr(750,nginx,logs) %dir /var/log/archive/%{name}
+%attr(750,nginx,logs) /var/log/%{name}
+%attr(770,root,nginx) /var/cache/%{name}
+
+%dir %{_nginxdir}
+%dir %{_nginxdir}/cgi-bin
+%dir %{_nginxdir}/html
+%dir %{_nginxdir}/errors
+%config(noreplace,missingok) %verify(not md5 mtime size) %{_nginxdir}/html/*
+%config(noreplace,missingok) %verify(not md5 mtime size) %{_nginxdir}/errors/*
 
 %if %{with geoip}
 %files mod_http_geoip
