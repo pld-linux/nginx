@@ -56,10 +56,7 @@ Source12:	%{name}-perl.monitrc
 Source14:	%{name}.conf
 Source15:	%{name}-standard.monitrc
 Source17:	%{name}-mime.types.sh
-Source18:	%{name}-standard.service
-Source19:	%{name}-light.service
-Source20:	%{name}-perl.service
-Source21:	%{name}-mail.service
+Source18:	%{name}.service
 Source22:	http://www.modsecurity.org/tarball/%{modsecurity_version}/modsecurity-%{modsecurity_version}.tar.gz
 # Source22-md5:	0fa92b852abc857a20b9e24f83f814cf
 Source101:	https://github.com/arut/nginx-rtmp-module/archive/v%{rtmp_version}/nginx-rtmp-module-%{rtmp_version}.tar.gz
@@ -445,7 +442,7 @@ install -d $RPM_BUILD_ROOT/etc/rc.d/init.d \
 %{__rm} $RPM_BUILD_ROOT%{_sysconfdir}/*.default
 
 cp -p %{_sourcedir}/%{name}.conf $RPM_BUILD_ROOT%{_sysconfdir}/%{name}.conf
-cp -p %{_sourcedir}/%{name}-standard.service $RPM_BUILD_ROOT%{systemdunitdir}/%{name}.service
+cp -p %{_sourcedir}/%{name}.service $RPM_BUILD_ROOT%{systemdunitdir}/%{name}.service
 cp -p %{_sourcedir}/%{name}-standard.monitrc $RPM_BUILD_ROOT/etc/monit/%{name}.monitrc
 install -p %{SOURCE7} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
 
