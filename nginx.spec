@@ -70,6 +70,34 @@ BuildRequires:	pcre-devel
 %{?with_perl:BuildRequires: rpm-perlprov}
 BuildRequires:	rpmbuild(macros) >= 1.644
 BuildRequires:	zlib-devel
+%{?with_ssl:Requires:	openssl >= %{ssl_version}}
+Provides:	group(http)
+Provides:	group(nginx)
+Provides:	user(nginx)
+Provides:	webserver
+Provides:	webserver(access)
+Provides:	webserver(alias)
+Provides:	webserver(auth)
+Provides:	webserver(expires)
+Provides:	webserver(headers)
+Provides:	webserver(indexfile)
+Provides:	webserver(log)
+Provides:	webserver(mime)
+Provides:	webserver(reqtimeout)
+Provides:	webserver(rewrite)
+Provides:	webserver(setenv)
+Conflicts:	logrotate < 3.8.0
+Requires(post,preun):	/sbin/chkconfig
+Requires(post,preun,postun):	systemd-units >= 38
+Requires(postun):	/usr/sbin/groupdel
+Requires(postun):	/usr/sbin/userdel
+Requires(pre):	/bin/id
+Requires(pre):	/usr/bin/getgid
+Requires(pre):	/usr/sbin/groupadd
+Requires(pre):	/usr/sbin/useradd
+Requires:	rc-scripts >= 0.2.0
+Requires:	systemd-units >= 38
+Suggests:	vim-syntax-nginx
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sysconfdir	/etc/%{name}
@@ -93,87 +121,11 @@ opublikował źródła na licencji BSD. Mimo, że projekt jest ciągle w
 fazie beta, już zasłynął dzięki stabilności, bogactwu dodatków,
 prostej konfiguracji oraz małej "zasobożerności".
 
-%package common
-Summary:	nginx - common files
-Summary(pl.UTF-8):	nginx - pliki wspólne
-Group:		Networking/Daemons/HTTP
-Requires(postun):	/usr/sbin/groupdel
-Requires(postun):	/usr/sbin/userdel
-Requires(pre):	/bin/id
-Requires(pre):	/usr/bin/getgid
-Requires(pre):	/usr/sbin/groupadd
-Requires(pre):	/usr/sbin/useradd
-Requires:	rc-scripts >= 0.2.0
-Requires:	systemd-units >= 38
-Suggests:	vim-syntax-nginx
-Provides:	group(http)
-Provides:	group(nginx)
-Provides:	user(nginx)
-Provides:	webserver(access)
-Provides:	webserver(alias)
-Provides:	webserver(auth)
-Provides:	webserver(expires)
-Provides:	webserver(headers)
-Provides:	webserver(indexfile)
-Provides:	webserver(log)
-Provides:	webserver(mime)
-Provides:	webserver(reqtimeout)
-Provides:	webserver(rewrite)
-Provides:	webserver(setenv)
-Obsoletes:	nginx < 1.4.1-4.1
-Conflicts:	logrotate < 3.8.0
-
-%description common
-Common files for the nginx daemon.
-
-%description common -l pl.UTF-8
-Niezbędne pliki dla nginx.
-
-%package light
-Summary:	High perfomance HTTP and reverse proxy server
-Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
-Group:		Networking/Daemons/HTTP
-Requires(post,preun):	/sbin/chkconfig
-Requires(post,preun,postun):	systemd-units >= 38
-Requires:	%{name}-common = %{version}-%{release}
-%{?with_ssl:Requires: openssl >= %{ssl_version}}
-Provides:	nginx-daemon
-Provides:	webserver
-
-%description light
-nginx ("engine x") is a high-performance HTTP server and reverse
-proxy, as well as an IMAP/POP3 proxy server. nginx was written by Igor
-Sysoev for Rambler.ru, Russia's second-most visited website, where it
-has been running in production for over two and a half years. Igor has
-released the source code under a BSD-like license. Although still in
-beta, nginx is known for its stability, rich feature set, simple
-configuration, and low resource consumption.
-
-The smallest, but also the fastest nginx edition. No additional
-modules, no Perl, no DAV, no FLV, no IMAP, POP3, SMTP proxy.
-
-%description light -l pl.UTF-8
-nginx ("engine x") jest wysokowydajnym serwerem HTTP, odwrotnym proxy
-a także IMAP/POP3 proxy. nginx został napisany przez Igora Sysoeva na
-potrzeby serwisu Rambler.ru. Jest to drugi pod względem ilości
-odwiedzin serwis w Rosji i działa od ponad dwóch i pół roku. Igor
-opublikował źródła na licencji BSD. Mimo, że projekt jest ciągle w
-fazie beta, już zasłynął dzięki stabilności, bogactwu dodatków,
-prostej konfiguracji oraz małej "zasobożerności".
-
-Najmniejsza i najszybsza wersja nginx. Bez wsparcia dla Perla, DAV,
-FLV oraz IMAP, POP3, SMTP proxy.
-
 %package perl
 Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 Group:		Networking/Daemons/HTTP
-Requires(post,preun):	/sbin/chkconfig
-Requires(post,preun,postun):	systemd-units >= 38
-Requires:	%{name}-common = %{version}-%{release}
-%{?with_ssl:Requires: openssl >= %{ssl_version}}
-Provides:	nginx-daemon
-Provides:	webserver
+Requires:	%{name} = %{version}-%{release}
 
 %description perl
 nginx ("engine x") is a high-performance HTTP server and reverse
@@ -201,10 +153,7 @@ nginx z obsługą Perla. Bez wsparcia dla modułów poczty.
 Summary:	High perfomance IMAP, POP3, SMTP proxy server
 Summary(pl.UTF-8):	IMAP, POP3, SMTP proxy o wysokiej wydajności
 Group:		Networking/Daemons/HTTP
-Requires(post,preun):	/sbin/chkconfig
-Requires(post,preun,postun):	systemd-units >= 38
-Requires:	%{name}-common = %{version}-%{release}
-Provides:	nginx-daemon
+Requires:	%{name} = %{version}-%{release}
 
 %description mail
 nginx ("engine x") is a high-performance HTTP server and reverse
@@ -228,56 +177,11 @@ prostej konfiguracji oraz małej "zasobożerności".
 
 nginx ze wsparciem tylko dla modułów poczty.
 
-%package standard
-Summary:	High perfomance HTTP and reverse proxy server
-Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
-Group:		Networking/Daemons/HTTP
-Requires(post,preun):	/sbin/chkconfig
-Requires(post,preun,postun):	systemd-units >= 38
-Requires:	%{name}-common = %{version}-%{release}
-%{?with_ssl:Requires: openssl >= %{ssl_version}}
-Provides:	nginx
-Provides:	nginx-daemon
-Provides:	webserver
-Conflicts:	logrotate < 3.7-4
-
-%description standard
-nginx ("engine x") is a high-performance HTTP server and reverse
-proxy, as well as an IMAP/POP3 proxy server. nginx was written by Igor
-Sysoev for Rambler.ru, Russia's second-most visited website, where it
-has been running in production for over two and a half years. Igor has
-released the source code under a BSD-like license. Although still in
-beta, nginx is known for its stability, rich feature set, simple
-configuration, and low resource consumption.
-
-This is standard nginx version, without Perl support and IMAP, POP3,
-SMTP proxy.
-
-%description standard -l pl.UTF-8
-nginx ("engine x") jest wysokowydajnym serwerem HTTP, odwrotnym proxy
-a także IMAP/POP3 proxy. nginx został napisany przez Igora Sysoeva na
-potrzeby serwisu Rambler.ru. Jest to drugi pod względem ilości
-odwiedzin serwis w Rosji i działa od ponad dwóch i pół roku. Igor
-opublikował źródła na licencji BSD. Mimo, że projekt jest ciągle w
-fazie beta, już zasłynął dzięki stabilności, bogactwu dodatków,
-prostej konfiguracji oraz małej "zasobożerności". ginx ("engine x")
-jest wysokowydajnym serwerem HTTP, odwrotnym proxy a także IMAP/POP3
-proxy. nginx został napisany przez Igora Sysoeva na potrzeby serwisu
-Rambler.ru. Jest to drugi pod względem ilości odwiedzin serwis w Rosji
-i działa od ponad dwóch i pół roku. Igor opublikował źródła na
-licencji BSD. Mimo, że projekt jest ciągle w fazie beta, już zasłynął
-dzięki stabilności, bogactwu dodatków, prostej konfiguracji oraz małej
-"zasobożerności".
-
-To jest standardowa wersja nginx, bez obsługi Perla oraz proxy dla
-IMAP, POP3, SMTP.
-
 %package -n monit-rc-nginx
 Summary:	nginx support for monit
 Summary(pl.UTF-8):	Wsparcie nginx dla monit
 Group:		Applications/System
-URL:		http://nginx.eu/
-Requires:	%{name}-common = %{version}-%{release}
+Requires:	%{name} = %{version}-%{release}
 Requires:	monit
 
 %description -n monit-rc-nginx
@@ -506,7 +410,7 @@ fi
 %triggerpostun -- %{name}-mail < 1.4.1-4
 %systemd_trigger %{name}-mail.service
 
-%triggerpostun common -- %{name}-common < 1.8.0-2
+%triggerpostun -- %{name} < 1.8.0-2
 # skip *this* trigger on downgrade
 [ $1 -le 1 ] && exit 0
 ln -sf fastcgi_params %{_sysconfdir}/fastcgi.params
@@ -553,11 +457,6 @@ exit 0
 %files mail
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/%{name}/modules/ngx_mail_module.so
-%endif
-
-%if %{with light}
-%files light
-%defattr(644,root,root,755)
 %endif
 
 %if %{with perl}
