@@ -50,7 +50,6 @@ Source3:	%{name}.logrotate
 Source4:	%{name}.mime
 Source6:	%{name}.monitrc
 Source7:	%{name}.init
-Source8:	%{name}-mail.conf
 Source14:	%{name}.conf
 Source17:	%{name}-mime.types.sh
 Source18:	%{name}.service
