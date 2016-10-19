@@ -5,7 +5,7 @@
 # Conditional build for nginx:
 %bcond_with	light		# don't build light version
 %bcond_with	mail		# don't build imap/mail proxy
-%bcond_with	perl		# don't build with perl module
+%bcond_without	perl		# don't build with perl module
 %bcond_without	addition	# adds module
 %bcond_without	dav		# WebDAV
 %bcond_without	flv		# FLV stream
@@ -316,6 +316,7 @@ build() {
 	local type=$1; shift
 ./configure \
 	--prefix=%{_prefix} \
+	--modules-path=%{_libdir}/%{name}/modules \
 	--sbin-path=%{_sbindir}/%{name} \
 	--conf-path=%{_sysconfdir}/%{name}.conf \
 	--error-log-path=%{_localstatedir}/log/%{name}/error.log \
@@ -331,6 +332,7 @@ build() {
 	%{?with_select:--with-select_module} \
 	%{?with_poll:--with-poll_module} \
 	%{?with_rtsig:--with-rtsig_module} \
+	--with-http_perl_module=dynamic \
 	--with-cc="%{__cc}" \
 	--with-cc-opt="%{rpmcflags}" \
 	--with-ld-opt="%{rpmldflags}" \
@@ -351,7 +353,7 @@ cd modsecurity-%{modsecurity_version}
 cd ..
 %endif
 
-%if %{with perl}
+%if %{with perl} && 0
 build perl \
 	--with-http_perl_module \
 	%{?with_addition:--with-http_addition_module} \
@@ -432,15 +434,23 @@ install -d $RPM_BUILD_ROOT/etc/rc.d/init.d \
 	$RPM_BUILD_ROOT/etc/{logrotate.d,monit} \
 	$RPM_BUILD_ROOT{%{systemdunitdir},/etc/systemd/system}
 
+%{__make} install \
+	INSTALLDIRS=vendor \
+	DESTDIR=$RPM_BUILD_ROOT
+
+%{__rm} $RPM_BUILD_ROOT%{_sysconfdir}/*.default
+
+cp -p %{SOURCE3} $RPM_BUILD_ROOT/etc/logrotate.d/%{name}
+cp -p %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/proxy.conf
+rm -r $RPM_BUILD_ROOT%{_prefix}/html
+cp -p html/index.html $RPM_BUILD_ROOT%{_nginxdir}/html
+cp -p html/50x.html $RPM_BUILD_ROOT%{_nginxdir}/errors
+%if 0
 cp -p conf/*_params $RPM_BUILD_ROOT%{_sysconfdir}
 cp -p conf/koi-utf $RPM_BUILD_ROOT%{_sysconfdir}/koi-utf
 cp -p conf/koi-win $RPM_BUILD_ROOT%{_sysconfdir}/koi-win
 cp -p conf/win-utf $RPM_BUILD_ROOT%{_sysconfdir}/win-utf
-cp -p html/index.html $RPM_BUILD_ROOT%{_nginxdir}/html
-cp -p html/50x.html $RPM_BUILD_ROOT%{_nginxdir}/errors
 cp -p %{SOURCE1} $RPM_BUILD_ROOT%{_nginxdir}/html/favicon.ico
-cp -p %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/proxy.conf
-cp -p %{SOURCE3} $RPM_BUILD_ROOT/etc/logrotate.d/%{name}
 cp -p %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/mime.types
 
 install_build() {
@@ -462,17 +472,23 @@ ln -sf %{systemdunitdir}/%{name}-standard.service $RPM_BUILD_ROOT/etc/systemd/sy
 %if %{with light}
 install_build light
 %endif
+%endif
 
 %if %{with perl}
+%{__rm} $RPM_BUILD_ROOT%{perl_archlib}/perllocal.pod
+%{__rm} $RPM_BUILD_ROOT%{perl_vendorarch}/auto/nginx/.packlist
+%endif
+%if 0
 install -d $RPM_BUILD_ROOT{%{perl_vendorarch},%{perl_vendorarch}/auto/%{name}}
 install_build perl
 cp -p bin/nginx.pm $RPM_BUILD_ROOT%{perl_vendorarch}/%{name}.pm
 install -p bin/nginx.so $RPM_BUILD_ROOT%{perl_vendorarch}/auto/%{name}/%{name}.so
 install -p bin/nginx-perl $RPM_BUILD_ROOT%{_sbindir}
-%endif
 
 %if %{with mail}
 install_build mail
+%endif
+
 %endif
 
 # only touch these for ghost packaging
@@ -641,15 +657,19 @@ exit 0
 %attr(750,nginx,logs) /var/log/%{name}
 %config(noreplace,missingok) %verify(not md5 mtime size) %{_nginxdir}/html/*
 %config(noreplace,missingok) %verify(not md5 mtime size) %{_nginxdir}/errors/*
+%if 0
 %ghost /etc/systemd/system/nginx.service
 
 %files standard
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_sbindir}/%{name}-standard
+%endif
+%attr(755,root,root) %{_sbindir}/%{name}
+%if 0
 %attr(770,root,%{name}) /var/cache/%{name}-standard
 %attr(754,root,root) /etc/rc.d/init.d/%{name}-standard
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}-standard.conf
 %{systemdunitdir}/%{name}-standard.service
+%endif
 
 %if %{with mail}
 %files mail
@@ -674,16 +694,23 @@ exit 0
 %if %{with perl}
 %files perl
 %defattr(644,root,root,755)
+%{_libdir}/%{name}/modules/ngx_http_perl_module.so
+%if 0
 %attr(755,root,root) %{_sbindir}/%{name}-perl
 %attr(754,root,root) /etc/rc.d/init.d/%{name}-perl
 %attr(770,root,%{name}) /var/cache/%{name}-perl
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}-perl.conf
+%endif
 %dir %{perl_vendorarch}/auto/%{name}
 %attr(755,root,root) %{perl_vendorarch}/auto/%{name}/%{name}.so
 %{perl_vendorarch}/%{name}.pm
+%{_mandir}/man3/nginx.3pm*
+%if 0
 %{systemdunitdir}/%{name}-perl.service
 %endif
+%endif
 
+%if 0
 %files -n monit-rc-nginx
 %defattr(644,root,root,755)
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/monit/%{name}-standard.monitrc
@@ -695,4 +722,5 @@ exit 0
 %endif
 %if %{with mail}
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/monit/%{name}-mail.monitrc
+%endif
 %endif
