@@ -3,7 +3,6 @@
 # - missing perl build/install requires
 #
 # Conditional build for nginx:
-%bcond_with	light		# don't build light version
 %bcond_without	mail		# don't build imap/mail proxy
 %bcond_without	perl		# don't build with perl module
 %bcond_without	addition	# adds module
@@ -166,11 +165,6 @@ mv nginx-rtmp-module-%{rtmp_version} nginx-rtmp-module
 # NB: not autoconf generated configure
 cp -f configure auto/
 
-install -d bin
-
-# build with default options
-build() {
-	local type=$1; shift
 ./configure \
 	--prefix=%{_prefix} \
 	--modules-path=%{_libdir}/%{name}/modules \
@@ -200,9 +194,23 @@ build() {
 	--with-cc-opt="%{rpmcflags}" \
 	--with-ld-opt="%{rpmldflags}" \
 	%{?with_debug:--with-debug} \
-	"$@"
+	%{?with_addition:--with-http_addition_module} \
+	%{?with_dav:--with-http_dav_module} \
+	%{?with_flv:--with-http_flv_module} \
+	%{?with_sub:--with-http_sub_module} \
+	%{?with_realip:--with-http_realip_module} \
+	%{?with_status:--with-http_stub_status_module} \
+	%{?with_ssl:--with-http_ssl_module} \
+	%{!?with_http_browser:--without-http_browser_module} \
+	%{?with_rtmp:--add-module=./nginx-rtmp-module} \
+	%{?with_auth_request:--with-http_auth_request_module} \
+	%{?with_threads:--with-threads} \
+	%{?with_http2:--with-http_v2_module} \
+	%{?with_modsecurity:--add-module=modsecurity-%{modsecurity_version}/nginx/modsecurity} \
+	--with-http_secure_link_module \
+	%{nil}
+
 %{__make}
-}
 
 %if %{with modsecurity}
 cd modsecurity-%{modsecurity_version}
@@ -215,74 +223,6 @@ cd modsecurity-%{modsecurity_version}
 %{__make}
 cd ..
 %endif
-
-%if %{with perl} && 0
-build perl \
-	--with-http_perl_module \
-	%{?with_addition:--with-http_addition_module} \
-	%{?with_dav:--with-http_dav_module} \
-	%{?with_flv:--with-http_flv_module} \
-	%{?with_sub:--with-http_sub_module} \
-	%{?with_realip:--with-http_realip_module} \
-	%{?with_status:--with-http_stub_status_module} \
-	%{?with_ssl:--with-http_ssl_module} \
-	%{!?with_http_browser:--without-http_browser_module} \
-	%{?with_rtmp:--add-module=./nginx-rtmp-module} \
-	%{?with_auth_request:--with-http_auth_request_module} \
-	%{?with_threads:--with-threads} \
-	%{?with_http2:--with-http_v2_module} \
-	--with-http_secure_link_module \
-	%{nil}
-
-mv -f objs/nginx bin/nginx-perl
-mv -f objs/src/http/modules/perl/blib/arch/auto/nginx/nginx.so bin/nginx.so
-mv -f objs/src/http/modules/perl/nginx.pm bin/nginx.pm
-%endif
-
-%if %{with mail} && 0
-build mail \
-	--without-http \
-	--with-imap \
-	--with-mail \
-	--with-mail_ssl_module \
-	%{nil}
-
-mv -f objs/nginx bin/nginx-mail
-%endif
-
-%if %{with light}
-build light \
-	%{?with_realip:--with-http_realip_module} \
-	%{?with_status:--with-http_stub_status_module} \
-	%{?with_ssl:--with-http_ssl_module} \
-	%{?with_rtmp:--add-module=./nginx-rtmp-module} \
-	%{?with_auth_request:--with-http_auth_request_module} \
-	%{?with_threads:--with-threads} \
-	%{?with_http2:--with-http_v2_module} \
-	%{?with_modsecurity:--add-module=modsecurity-%{modsecurity_version}/nginx/modsecurity} \
-	--without-http_browser_module \
-	--with-http_secure_link_module \
-	%{nil}
-
-mv -f objs/nginx bin/nginx-light
-%endif
-
-build standard \
-	%{?with_addition:--with-http_addition_module} \
-	%{?with_dav:--with-http_dav_module} \
-	%{?with_flv:--with-http_flv_module} \
-	%{?with_sub:--with-http_sub_module} \
-	%{?with_realip:--with-http_realip_module} \
-	%{?with_status:--with-http_stub_status_module} \
-	%{?with_ssl:--with-http_ssl_module} \
-	%{!?with_http_browser:--without-http_browser_module} \
-	%{?with_rtmp:--add-module=./nginx-rtmp-module} \
-	%{?with_auth_request:--with-http_auth_request_module} \
-	%{?with_threads:--with-threads} \
-	%{?with_http2:--with-http_v2_module} \
-	%{?with_modsecurity:--add-module=modsecurity-%{modsecurity_version}/nginx/modsecurity} \
-	--with-http_secure_link_module \
-	%{nil}
 
 %install
 rm -rf $RPM_BUILD_ROOT
