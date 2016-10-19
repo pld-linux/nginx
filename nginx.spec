@@ -3,9 +3,9 @@
 # - missing perl build/install requires
 #
 # Conditional build for nginx:
-%bcond_without	light		# don't build light version
-%bcond_without	mail		# don't build imap/mail proxy
-%bcond_without	perl		# don't build with perl module
+%bcond_with	light		# don't build light version
+%bcond_with	mail		# don't build imap/mail proxy
+%bcond_with	perl		# don't build with perl module
 %bcond_without	addition	# adds module
 %bcond_without	dav		# WebDAV
 %bcond_without	flv		# FLV stream
@@ -38,7 +38,7 @@ Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # - mainline: production quality but API can change
 Name:		nginx
 Version:	1.11.5
-Release:	1
+Release:	0.1
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	http://nginx.org/download/%{name}-%{version}.tar.gz
@@ -316,15 +316,15 @@ build() {
 	local type=$1; shift
 ./configure \
 	--prefix=%{_prefix} \
-	--sbin-path=%{_sbindir}/%{name}-$type \
-	--conf-path=%{_sysconfdir}/%{name}-$type.conf \
-	--error-log-path=%{_localstatedir}/log/%{name}/%{name}-${type}_error.log \
-	--http-log-path=%{_localstatedir}/log/%{name}/%{name}-${type}_access.log \
-	--pid-path=%{_localstatedir}/run/%{name}-$type.pid \
-	--lock-path=%{_localstatedir}/lock/subsys/%{name}-$type \
-	--http-client-body-temp-path=%{_localstatedir}/cache/%{name}-$type/client_body_temp \
-	--http-fastcgi-temp-path=%{_localstatedir}/cache/%{name}-$type/fastcgi_temp \
-	--http-proxy-temp-path=%{_localstatedir}/cache/%{name}-$type/proxy_temp \
+	--sbin-path=%{_sbindir}/%{name} \
+	--conf-path=%{_sysconfdir}/%{name}.conf \
+	--error-log-path=%{_localstatedir}/log/%{name}/error.log \
+	--http-log-path=%{_localstatedir}/log/%{name}/access.log \
+	--pid-path=%{_localstatedir}/run/%{name}.pid \
+	--lock-path=%{_localstatedir}/lock/subsys/%{name} \
+	--http-client-body-temp-path=%{_localstatedir}/cache/%{name}/client_body_temp \
+	--http-fastcgi-temp-path=%{_localstatedir}/cache/%{name}/fastcgi_temp \
+	--http-proxy-temp-path=%{_localstatedir}/cache/%{name}/proxy_temp \
 	--user=nginx \
 	--group=nginx \
 	%{?with_ipv6:--with-ipv6} \
