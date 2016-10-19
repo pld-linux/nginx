@@ -48,13 +48,10 @@ Source1:	http://nginx.net/favicon.ico
 Source2:	proxy.conf
 Source3:	%{name}.logrotate
 Source4:	%{name}.mime
-Source6:	%{name}-light.monitrc
+Source6:	%{name}.monitrc
 Source7:	%{name}.init
 Source8:	%{name}-mail.conf
-Source9:	%{name}-mail.monitrc
-Source12:	%{name}-perl.monitrc
 Source14:	%{name}.conf
-Source15:	%{name}-standard.monitrc
 Source17:	%{name}-mime.types.sh
 Source18:	%{name}.service
 Source22:	http://www.modsecurity.org/tarball/%{modsecurity_version}/modsecurity-%{modsecurity_version}.tar.gz
@@ -441,9 +438,9 @@ install -d $RPM_BUILD_ROOT/etc/rc.d/init.d \
 
 %{__rm} $RPM_BUILD_ROOT%{_sysconfdir}/*.default
 
-cp -p %{_sourcedir}/%{name}.conf $RPM_BUILD_ROOT%{_sysconfdir}/%{name}.conf
-cp -p %{_sourcedir}/%{name}.service $RPM_BUILD_ROOT%{systemdunitdir}/%{name}.service
-cp -p %{_sourcedir}/%{name}-standard.monitrc $RPM_BUILD_ROOT/etc/monit/%{name}.monitrc
+cp -p %{_sourcedir}/%{name}.conf $RPM_BUILD_ROOT%{_sysconfdir}
+cp -p %{_sourcedir}/%{name}.service $RPM_BUILD_ROOT%{systemdunitdir}
+cp -p %{_sourcedir}/%{name}.monitrc $RPM_BUILD_ROOT/etc/monit
 install -p %{SOURCE7} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
 
 cp -p %{SOURCE3} $RPM_BUILD_ROOT/etc/logrotate.d/%{name}
