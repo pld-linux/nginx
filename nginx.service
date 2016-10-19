@@ -4,11 +4,11 @@ After=syslog.target network.target remote-fs.target nss-lookup.target
 
 [Service]
 Type=forking
-PIDFile=/var/run/nginx-standard.pid
-ExecStartPre=/usr/sbin/nginx-standard -c /etc/nginx/nginx-standard.conf -t
-ExecStart=/usr/sbin/nginx-standard -c /etc/nginx/nginx-standard.conf
-ExecReload=/usr/sbin/nginx-standard -c /etc/nginx/nginx-standard.conf -s reload
-ExecStop=/usr/sbin/nginx-standard -c /etc/nginx/nginx-standard.conf -s stop
+PIDFile=/var/run/nginx.pid
+ExecStartPre=/usr/sbin/nginx -c /etc/nginx/nginx.conf -t
+ExecStart=/usr/sbin/nginx -c /etc/nginx/nginx.conf
+ExecReload=/usr/sbin/nginx -c /etc/nginx/nginx.conf -s reload
+ExecStop=/usr/sbin/nginx -c /etc/nginx/nginx.conf -s stop
 
 [Install]
 WantedBy=multi-user.target
