@@ -448,53 +448,15 @@ install -d $RPM_BUILD_ROOT/etc/rc.d/init.d \
 
 cp -p %{SOURCE3} $RPM_BUILD_ROOT/etc/logrotate.d/%{name}
 cp -p %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/proxy.conf
+cp -p %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/mime.types
 rm -r $RPM_BUILD_ROOT%{_prefix}/html
 cp -p html/index.html $RPM_BUILD_ROOT%{_nginxdir}/html
 cp -p html/50x.html $RPM_BUILD_ROOT%{_nginxdir}/errors
-%if 0
-cp -p conf/*_params $RPM_BUILD_ROOT%{_sysconfdir}
-cp -p conf/koi-utf $RPM_BUILD_ROOT%{_sysconfdir}/koi-utf
-cp -p conf/koi-win $RPM_BUILD_ROOT%{_sysconfdir}/koi-win
-cp -p conf/win-utf $RPM_BUILD_ROOT%{_sysconfdir}/win-utf
 cp -p %{SOURCE1} $RPM_BUILD_ROOT%{_nginxdir}/html/favicon.ico
-cp -p %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/mime.types
-
-install_build() {
-	local type=$1
-	%{__sed} -e "s/@type@/${type}/g" %{_sourcedir}/%{name}.conf \
-		> $RPM_BUILD_ROOT%{_sysconfdir}/%{name}-$type.conf
-
-	install -p %{SOURCE7} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}-$type
-	%{__sed} -i -e "s/@type@/${type}/g" $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}-$type
-
-	cp -p %{_sourcedir}/%{name}-$type.service $RPM_BUILD_ROOT%{systemdunitdir}
-	cp -p %{_sourcedir}/%{name}-$type.monitrc $RPM_BUILD_ROOT/etc/monit
-	install -p bin/%{name}-$type $RPM_BUILD_ROOT%{_sbindir}
-}
-
-install_build standard
-ln -sf %{systemdunitdir}/%{name}-standard.service $RPM_BUILD_ROOT/etc/systemd/system/nginx.service
-
-%if %{with light}
-install_build light
-%endif
-%endif
 
 %if %{with perl}
 %{__rm} $RPM_BUILD_ROOT%{perl_archlib}/perllocal.pod
 %{__rm} $RPM_BUILD_ROOT%{perl_vendorarch}/auto/nginx/.packlist
-%endif
-%if 0
-install -d $RPM_BUILD_ROOT{%{perl_vendorarch},%{perl_vendorarch}/auto/%{name}}
-install_build perl
-cp -p bin/nginx.pm $RPM_BUILD_ROOT%{perl_vendorarch}/%{name}.pm
-install -p bin/nginx.so $RPM_BUILD_ROOT%{perl_vendorarch}/auto/%{name}/%{name}.so
-install -p bin/nginx-perl $RPM_BUILD_ROOT%{_sbindir}
-
-%if %{with mail} && 0
-install_build mail
-%endif
-
 %endif
 
 # only touch these for ghost packaging
