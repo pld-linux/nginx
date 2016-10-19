@@ -121,61 +121,21 @@ opublikował źródła na licencji BSD. Mimo, że projekt jest ciągle w
 fazie beta, już zasłynął dzięki stabilności, bogactwu dodatków,
 prostej konfiguracji oraz małej "zasobożerności".
 
-%package perl
-Summary:	High perfomance HTTP and reverse proxy server
-Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
+%package mod_http_perl
+Summary:	Nginx HTTP Perl module
 Group:		Networking/Daemons/HTTP
 Requires:	%{name} = %{version}-%{release}
 
-%description perl
-nginx ("engine x") is a high-performance HTTP server and reverse
-proxy, as well as an IMAP/POP3 proxy server. nginx was written by Igor
-Sysoev for Rambler.ru, Russia's second-most visited website, where it
-has been running in production for over two and a half years. Igor has
-released the source code under a BSD-like license. Although still in
-beta, nginx is known for its stability, rich feature set, simple
-configuration, and low resource consumption.
+%description mod_http_perl
+Nginx HTTP Perl module.
 
-nginx with Perl support. Mail modules not included.
-
-%description perl -l pl.UTF-8
-nginx ("engine x") jest wysokowydajnym serwerem HTTP, odwrotnym proxy
-a także IMAP/POP3 proxy. nginx został napisany przez Igora Sysoeva na
-potrzeby serwisu Rambler.ru. Jest to drugi pod względem ilości
-odwiedzin serwis w Rosji i działa od ponad dwóch i pół roku. Igor
-opublikował źródła na licencji BSD. Mimo, że projekt jest ciągle w
-fazie beta, już zasłynął dzięki stabilności, bogactwu dodatków,
-prostej konfiguracji oraz małej "zasobożerności".
-
-nginx z obsługą Perla. Bez wsparcia dla modułów poczty.
-
-%package mail
-Summary:	High perfomance IMAP, POP3, SMTP proxy server
-Summary(pl.UTF-8):	IMAP, POP3, SMTP proxy o wysokiej wydajności
+%package mod_mail
+Summary:	Nginx mail module
 Group:		Networking/Daemons/HTTP
 Requires:	%{name} = %{version}-%{release}
 
-%description mail
-nginx ("engine x") is a high-performance HTTP server and reverse
-proxy, as well as an IMAP/POP3 proxy server. nginx was written by Igor
-Sysoev for Rambler.ru, Russia's second-most visited website, where it
-has been running in production for over two and a half years. Igor has
-released the source code under a BSD-like license. Although still in
-beta, nginx is known for its stability, rich feature set, simple
-configuration, and low resource consumption.
-
-nginx with mail support. Only mail modules included.
-
-%description mail -l pl.UTF-8
-nginx ("engine x") jest wysokowydajnym serwerem HTTP, odwrotnym proxy
-a także IMAP/POP3 proxy. nginx został napisany przez Igora Sysoeva na
-potrzeby serwisu Rambler.ru. Jest to drugi pod względem ilości
-odwiedzin serwis w Rosji i działa od ponad dwóch i pół roku. Igor
-opublikował źródła na licencji BSD. Mimo, że projekt jest ciągle w
-fazie beta, już zasłynął dzięki stabilności, bogactwu dodatków,
-prostej konfiguracji oraz małej "zasobożerności".
-
-nginx ze wsparciem tylko dla modułów poczty.
+%description mod_mail
+Nginx mail module.
 
 %package -n monit-rc-nginx
 Summary:	nginx support for monit
@@ -442,13 +402,13 @@ exit 0
 %{systemdunitdir}/%{name}.service
 
 %if %{with mail}
-%files mail
+%files mod_mail
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/%{name}/modules/ngx_mail_module.so
 %endif
 
 %if %{with perl}
-%files perl
+%files mod_http_perl
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/%{name}/modules/ngx_http_perl_module.so
 %dir %{perl_vendorarch}/auto/%{name}
