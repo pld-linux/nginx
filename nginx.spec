@@ -8,7 +8,6 @@
 %bcond_without	addition	# adds module
 %bcond_without	dav		# WebDAV
 %bcond_without	flv		# FLV stream
-%bcond_without	ipv6		# build without ipv6 support
 %bcond_without	sub		# ngx_http_sub_module
 %bcond_without	poll		# poll
 %bcond_without	realip		# real ip (behind proxy)
@@ -231,7 +230,6 @@ cp -f configure auto/
 	--http-proxy-temp-path=%{_localstatedir}/cache/%{name}/proxy_temp \
 	--user=nginx \
 	--group=nginx \
-	%{?with_ipv6:--with-ipv6} \
 	%{?with_select:--with-select_module} \
 	%{?with_poll:--with-poll_module} \
 	%{?with_rtsig:--with-rtsig_module} \
