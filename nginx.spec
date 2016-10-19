@@ -350,9 +350,6 @@ load_module mail
 load_module stream
 %endif
 
-# only touch these for ghost packaging
-touch $RPM_BUILD_ROOT%{_sysconfdir}/{fastcgi,scgi,uwsgi}.params
-
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -389,14 +386,6 @@ if [ "$1" = "0" ]; then
 fi
 %systemd_reload
 
-%triggerpostun -- %{name} < 1.8.0-2
-# skip *this* trigger on downgrade
-[ $1 -le 1 ] && exit 0
-ln -sf fastcgi_params %{_sysconfdir}/fastcgi.params
-ln -sf scgi_params %{_sysconfdir}/scgi.params
-ln -sf uwsgi_params %{_sysconfdir}/uwsgi.params
-exit 0
-
 %files
 %defattr(644,root,root,755)
 %doc CHANGES LICENSE README html/index.html conf/nginx.conf
@@ -411,9 +400,6 @@ exit 0
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/fastcgi_params
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/scgi_params
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/uwsgi_params
-%ghost %{_sysconfdir}/fastcgi.params
-%ghost %{_sysconfdir}/scgi.params
-%ghost %{_sysconfdir}/uwsgi.params
 %dir %{_sysconfdir}/conf.d
 %attr(640,root,root) %{_sysconfdir}/mime.types
 %attr(640,root,root) %{_sysconfdir}/koi-utf
