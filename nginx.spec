@@ -398,18 +398,6 @@ if [ "$1" = "0" ]; then
 fi
 %systemd_reload
 
-%triggerpostun -- %{name}-standard < 1.4.1-4
-%systemd_trigger %{name}-standard.service
-
-%triggerpostun -- %{name}-light < 1.4.1-4
-%systemd_trigger %{name}-light.service
-
-%triggerpostun -- %{name}-perl < 1.4.1-4
-%systemd_trigger %{name}-perl.service
-
-%triggerpostun -- %{name}-mail < 1.4.1-4
-%systemd_trigger %{name}-mail.service
-
 %triggerpostun -- %{name} < 1.8.0-2
 # skip *this* trigger on downgrade
 [ $1 -le 1 ] && exit 0
