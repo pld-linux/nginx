@@ -42,7 +42,7 @@ Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # - mainline: production quality but API can change
 Name:		nginx
 Version:	1.11.5
-Release:	0.5
+Release:	0.6
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	http://nginx.org/download/%{name}-%{version}.tar.gz
@@ -117,10 +117,47 @@ Requires(pre):	/usr/sbin/useradd
 Requires:	rc-scripts >= 0.2.0
 Requires:	systemd-units >= 38
 Suggests:	vim-syntax-nginx
+Conflicts:	rpm < 4.4.2-0.2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sysconfdir	/etc/%{name}
 %define		_nginxdir	/home/services/%{name}
+
+# minimizing restarts logics. we restart webserver:
+#
+# 1. at the end of transaction. (posttrans, feature from rpm 4.4.2)
+# 2. first install of module (post: $1 = 1)
+# 2. uninstall of module (postun: $1 == 0)
+#
+# the strict internal deps between modules and
+# main package are very important for all this to work.
+
+# restart webserver at the end of transaction
+
+%define	restart_webserver \
+	%systemd_post %{name}.service \
+	%service %{name} force-reload \
+	%{nil}
+
+# macro called at module post scriptlet
+%define	module_post \
+if [ "$1" = "1" ]; then \
+	%restart_webserver \
+fi
+
+# macro called at module postun scriptlet
+%define	module_postun \
+if [ "$1" = "0" ]; then \
+	%restart_webserver \
+fi
+
+# it's sooo annoying to write them
+%define	module_scripts() \
+%post %1 \
+%module_post \
+\
+%postun %1 \
+%module_postun
 
 %description
 nginx ("engine x") is a high-performance HTTP server and reverse
@@ -370,8 +407,9 @@ for a in access.log error.log; do
 	fi
 done
 /sbin/chkconfig --add %{name}
-%systemd_post %{name}.service
-%service %{name} force-reload
+
+%posttrans
+%restart_webserver
 
 %preun
 if [ "$1" = "0" ];then
@@ -386,6 +424,14 @@ if [ "$1" = "0" ]; then
 	%groupremove %{name}
 fi
 %systemd_reload
+
+%module_scripts mod_http_geoip
+%module_scripts mod_http_image_filter
+%module_scripts mod_http_perl
+%module_scripts mod_http_xslt_filter
+%module_scripts mod_mail
+%module_scripts mod_stream
+%module_scripts mod_stream_geoip
 
 %files
 %defattr(644,root,root,755)
