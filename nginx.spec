@@ -42,7 +42,7 @@ Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # - mainline: production quality but API can change
 Name:		nginx
 Version:	1.11.5
-Release:	0.1
+Release:	0.2
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	http://nginx.org/download/%{name}-%{version}.tar.gz
@@ -414,6 +414,7 @@ exit 0
 %ghost %{_sysconfdir}/fastcgi.params
 %ghost %{_sysconfdir}/scgi.params
 %ghost %{_sysconfdir}/uwsgi.params
+%dir %{_sysconfdir}/conf.d
 %attr(640,root,root) %{_sysconfdir}/mime.types
 %attr(640,root,root) %{_sysconfdir}/koi-utf
 %attr(640,root,root) %{_sysconfdir}/koi-win
