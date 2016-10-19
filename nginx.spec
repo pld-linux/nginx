@@ -323,7 +323,7 @@ cp -p %{SOURCE1} $RPM_BUILD_ROOT%{_nginxdir}/html/favicon.ico
 
 load_module() {
 	local module=ngx_${1}_module.so conffile=mod_$1.conf
-	echo 'load_module "%{_libdir}/%{name}/modules/$module";' \
+	printf 'load_module "%{_libdir}/%{name}/modules/%s";' "$module" \
 		> $RPM_BUILD_ROOT%{_sysconfdir}/conf.d/$conffile
 }
 
