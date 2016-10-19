@@ -4,7 +4,7 @@
 #
 # Conditional build for nginx:
 %bcond_with	light		# don't build light version
-%bcond_with	mail		# don't build imap/mail proxy
+%bcond_without	mail		# don't build imap/mail proxy
 %bcond_without	perl		# don't build with perl module
 %bcond_without	addition	# adds module
 %bcond_without	dav		# WebDAV
@@ -332,7 +332,13 @@ build() {
 	%{?with_select:--with-select_module} \
 	%{?with_poll:--with-poll_module} \
 	%{?with_rtsig:--with-rtsig_module} \
+%if %{with perl}
 	--with-http_perl_module=dynamic \
+%endif
+%if %{with mail}
+	--with-mail=dynamic \
+	--with-mail_ssl_module \
+%endif
 	--with-cc="%{__cc}" \
 	--with-cc-opt="%{rpmcflags}" \
 	--with-ld-opt="%{rpmldflags}" \
@@ -376,7 +382,7 @@ mv -f objs/src/http/modules/perl/blib/arch/auto/nginx/nginx.so bin/nginx.so
 mv -f objs/src/http/modules/perl/nginx.pm bin/nginx.pm
 %endif
 
-%if %{with mail}
+%if %{with mail} && 0
 build mail \
 	--without-http \
 	--with-imap \
@@ -485,7 +491,7 @@ cp -p bin/nginx.pm $RPM_BUILD_ROOT%{perl_vendorarch}/%{name}.pm
 install -p bin/nginx.so $RPM_BUILD_ROOT%{perl_vendorarch}/auto/%{name}/%{name}.so
 install -p bin/nginx-perl $RPM_BUILD_ROOT%{_sbindir}
 
-%if %{with mail}
+%if %{with mail} && 0
 install_build mail
 %endif
 
@@ -674,6 +680,9 @@ exit 0
 %if %{with mail}
 %files mail
 %defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/%{name}/modules/ngx_mail_module.so
+%endif
+%if 0
 %attr(755,root,root) %{_sbindir}/%{name}-mail
 %attr(770,root,%{name}) /var/cache/%{name}-mail
 %attr(754,root,root) /etc/rc.d/init.d/%{name}-mail
@@ -694,7 +703,7 @@ exit 0
 %if %{with perl}
 %files perl
 %defattr(644,root,root,755)
-%{_libdir}/%{name}/modules/ngx_http_perl_module.so
+%attr(755,root,root) %{_libdir}/%{name}/modules/ngx_http_perl_module.so
 %if 0
 %attr(755,root,root) %{_sbindir}/%{name}-perl
 %attr(754,root,root) /etc/rc.d/init.d/%{name}-perl
