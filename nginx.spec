@@ -17,6 +17,10 @@
 %bcond_without	status		# status module
 %bcond_without	ssl		# ssl support
 %bcond_without	threads		# thread pool support
+%bcond_without	gd		# without http image filter module
+%bcond_without	geoip		# without http geoip module
+%bcond_without	xslt		# without http xslt module
+%bcond_without	stream		# without stream module
 %bcond_with	http_browser	# header "User-agent" parser
 %bcond_with	rtmp		# rtmp support
 %bcond_with	debug		# enable debug logging: http://nginx.org/en/docs/debugging_log.html
@@ -54,22 +58,37 @@ Source17:	%{name}-mime.types.sh
 Source18:	%{name}.service
 Source22:	http://www.modsecurity.org/tarball/%{modsecurity_version}/modsecurity-%{modsecurity_version}.tar.gz
 # Source22-md5:	0fa92b852abc857a20b9e24f83f814cf
-Source101:	https://github.com/arut/nginx-rtmp-module/archive/v%{rtmp_version}/nginx-rtmp-module-%{rtmp_version}.tar.gz
+Source101:	https://github.com/arut/nginx-rtmp-module/archive/v%{rtmp_version}/%{name}-rtmp-module-%{rtmp_version}.tar.gz
 # Source101-md5:	8006de2560db3e55bb15d110220076ac
 Patch0:		%{name}-no-Werror.patch
 Patch1:		%{name}-modsecurity-xheaders.patch
 URL:		http://nginx.net/
-%{?with_modsecurity:BuildRequires: lua-devel}
 BuildRequires:	mailcap
-%{?with_ssl:BuildRequires: openssl-devel >= %{ssl_version}}
 BuildRequires:	pcre-devel
-%{?with_perl:BuildRequires: perl-CGI}
-%{?with_perl:BuildRequires: perl-devel}
-%{?with_perl:BuildRequires: python}
-%{?with_perl:BuildRequires: rpm-perlprov}
 BuildRequires:	rpmbuild(macros) >= 1.644
 BuildRequires:	zlib-devel
-%{?with_ssl:Requires:	openssl >= %{ssl_version}}
+%if %{with geoip}
+BuildRequires:	GeoIP-devel
+%endif
+%if %{with gd}
+BuildRequires:	gd-devel
+%endif
+%if %{with modsecurity}
+BuildRequires:	lua-devel
+%endif
+%if %{with perl}
+BuildRequires:	perl-CGI
+BuildRequires:	perl-devel
+BuildRequires:	python
+BuildRequires:	rpm-perlprov
+%endif
+%if %{with ssl}
+BuildRequires:	openssl-devel >= %{ssl_version}
+Requires:	openssl >= %{ssl_version}
+%endif
+%if %{with xslt}
+BuildRequires:	libxslt-devel
+%endif
 Provides:	group(http)
 Provides:	group(nginx)
 Provides:	user(nginx)
@@ -120,6 +139,23 @@ opublikował źródła na licencji BSD. Mimo, że projekt jest ciągle w
 fazie beta, już zasłynął dzięki stabilności, bogactwu dodatków,
 prostej konfiguracji oraz małej "zasobożerności".
 
+%package mod_http_geoip
+Summary:	Nginx HTTP geoip module
+Group:		Daemons
+Requires:	%{name} = %{version}-%{release}
+Requires:	GeoIP
+
+%description mod_http_geoip
+Nginx HTTP geoip module.
+
+%package mod_http_image_filter
+Summary:	Nginx HTTP image filter module
+Group:		Daemons
+Requires:	%{name} = %{version}-%{release}
+
+%description mod_http_image_filter
+Nginx HTTP image filter module.
+
 %package mod_http_perl
 Summary:	Nginx HTTP Perl module
 Group:		Networking/Daemons/HTTP
@@ -128,6 +164,14 @@ Requires:	%{name} = %{version}-%{release}
 %description mod_http_perl
 Nginx HTTP Perl module.
 
+%package mod_http_xslt_filter
+Summary:	Nginx XSLT module
+Group:		Daemons
+Requires:	%{name} = %{version}-%{release}
+
+%description mod_http_xslt_filter
+Nginx XSLT module.
+
 %package mod_mail
 Summary:	Nginx mail module
 Group:		Networking/Daemons/HTTP
@@ -135,6 +179,14 @@ Requires:	%{name} = %{version}-%{release}
 
 %description mod_mail
 Nginx mail module.
+
+%package mod_stream
+Summary:	Nginx stream modules
+Group:		Daemons
+Requires:	%{name} = %{version}-%{release}
+
+%description mod_stream
+Nginx stream modules.
 
 %package -n monit-rc-nginx
 Summary:	nginx support for monit
@@ -183,12 +235,17 @@ cp -f configure auto/
 	%{?with_select:--with-select_module} \
 	%{?with_poll:--with-poll_module} \
 	%{?with_rtsig:--with-rtsig_module} \
-%if %{with perl}
-	--with-http_perl_module=dynamic \
-%endif
+	%{?with_perl:--with-http_perl_module=dynamic} \
+	%{?with_geoip:--with-http_geoip_module=dynamic} \
+	%{?with_gd:--with-http_image_filter_module=dynamic} \
+	%{?with_xslt:--with-http_xslt_module=dynamic} \
 %if %{with mail}
 	--with-mail=dynamic \
 	--with-mail_ssl_module \
+%endif
+%if %{with stream}
+	--with-stream=dynamic \
+	--with-stream_ssl_module \
 %endif
 	--with-cc="%{__cc}" \
 	--with-cc-opt="%{rpmcflags}" \
@@ -339,12 +396,20 @@ exit 0
 %attr(770,root,%{name}) /var/cache/%{name}
 %attr(754,root,root) /etc/rc.d/init.d/%{name}
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}.conf
+%dir %{_libdir}/%{name}
+%dir %{_libdir}/%{name}/modules
 %{systemdunitdir}/%{name}.service
 
-%if %{with mail}
-%files mod_mail
+%if %{with geoip}
+%files mod_http_geoip
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/%{name}/modules/ngx_mail_module.so
+%attr(755,root,root) %{_libdir}/%{name}/modules/ngx_http_geoip_module.so
+%endif
+
+%if %{with gd}
+%files mod_http_image_filter
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/%{name}/modules/ngx_http_image_filter_module.so
 %endif
 
 %if %{with perl}
@@ -355,6 +420,24 @@ exit 0
 %attr(755,root,root) %{perl_vendorarch}/auto/%{name}/%{name}.so
 %{perl_vendorarch}/%{name}.pm
 %{_mandir}/man3/nginx.3pm*
+%endif
+
+%if %{with xslt}
+%files mod_http_xslt_filter
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/%{name}/modules/ngx_http_xslt_filter_module.so
+%endif
+
+%if %{with mail}
+%files mod_mail
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/%{name}/modules/ngx_mail_module.so
+%endif
+
+%if %{with stream}
+%files mod_stream
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/%{name}/modules/ngx_stream_module.so
 %endif
 
 %files -n monit-rc-nginx
