@@ -12,7 +12,7 @@
 %bcond_without	dav		# WebDAV
 %bcond_without	flv		# http FLV module
 %bcond_without	gd		# without http image filter module
-%bcond_without	geoip		# without http geoip module
+%bcond_without	geoip		# without http geoip module and stream geoip module
 %bcond_without	http2		# HTTP/2 module
 %bcond_without	mail		# don't build imap/mail proxy
 %bcond_without	perl		# don't build with perl module
@@ -149,6 +149,15 @@ Requires:	GeoIP
 %description mod_http_geoip
 Nginx HTTP geoip module.
 
+%package mod_stream_geoip
+Summary:	Nginx stream geoip module
+Group:		Daemons
+Requires:	%{name} = %{version}-%{release}
+Requires:	GeoIP
+
+%description mod_stream_geoip
+Nginx stream geoip module.
+
 %package mod_http_image_filter
 Summary:	Nginx HTTP image filter module
 Group:		Daemons
@@ -236,9 +245,10 @@ cp -f configure auto/
 	%{?with_poll:--with-poll_module} \
 	%{?with_rtsig:--with-rtsig_module} \
 	%{?with_perl:--with-http_perl_module=dynamic} \
-	%{?with_geoip:--with-http_geoip_module=dynamic} \
 	%{?with_gd:--with-http_image_filter_module=dynamic} \
 	%{?with_xslt:--with-http_xslt_module=dynamic} \
+	%{?with_geoip:--with-http_geoip_module=dynamic} \
+	%{?with_geoip:--with-stream_geoip_module=dynamic} \
 %if %{with mail}
 	--with-mail=dynamic \
 	--with-mail_ssl_module \
@@ -404,6 +414,10 @@ exit 0
 %files mod_http_geoip
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/%{name}/modules/ngx_http_geoip_module.so
+
+%files mod_stream_geoip
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/%{name}/modules/ngx_stream_geoip_module.so
 %endif
 
 %if %{with gd}
