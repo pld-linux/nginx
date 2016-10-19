@@ -42,7 +42,7 @@ Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # - mainline: production quality but API can change
 Name:		nginx
 Version:	1.11.5
-Release:	0.2
+Release:	0.4
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	http://nginx.org/download/%{name}-%{version}.tar.gz
@@ -298,7 +298,7 @@ install -d $RPM_BUILD_ROOT/etc/rc.d/init.d \
 	$RPM_BUILD_ROOT%{_localstatedir}/log/{%{name},archive/%{name}} \
 	$RPM_BUILD_ROOT%{_localstatedir}/cache/%{name} \
 	$RPM_BUILD_ROOT%{_localstatedir}/lock/subsys/%{name} \
-	$RPM_BUILD_ROOT{%{_sbindir},%{_sysconfdir}/{conf,vhosts,webapps}.d} \
+	$RPM_BUILD_ROOT{%{_sbindir},%{_sysconfdir}/{conf,modules,vhosts,webapps}.d} \
 	$RPM_BUILD_ROOT/etc/{logrotate.d,monit} \
 	$RPM_BUILD_ROOT{%{systemdunitdir},/etc/systemd/system}
 
@@ -324,7 +324,7 @@ cp -p %{SOURCE1} $RPM_BUILD_ROOT%{_nginxdir}/html/favicon.ico
 load_module() {
 	local module=ngx_${1}_module.so conffile=mod_$1.conf
 	printf 'load_module "%{_libdir}/%{name}/modules/%s";' "$module" \
-		> $RPM_BUILD_ROOT%{_sysconfdir}/conf.d/$conffile
+		> $RPM_BUILD_ROOT%{_sysconfdir}/modules.d/$conffile
 }
 
 %if %{with perl}
@@ -394,6 +394,7 @@ fi
 %attr(754,root,root) /etc/rc.d/init.d/%{name}
 %dir %attr(750,root,nginx) %{_sysconfdir}
 %dir %{_sysconfdir}/conf.d
+%dir %{_sysconfdir}/modules.d
 %dir %{_sysconfdir}/vhosts.d
 %dir %{_sysconfdir}/webapps.d
 %attr(640,root,root) %{_sysconfdir}/mime.types
@@ -424,26 +425,26 @@ fi
 %if %{with geoip}
 %files mod_http_geoip
 %defattr(644,root,root,755)
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/conf.d/mod_http_geoip.conf
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/modules.d/mod_http_geoip.conf
 %attr(755,root,root) %{_libdir}/%{name}/modules/ngx_http_geoip_module.so
 
 %files mod_stream_geoip
 %defattr(644,root,root,755)
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/conf.d/mod_stream_geoip.conf
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/modules.d/mod_stream_geoip.conf
 %attr(755,root,root) %{_libdir}/%{name}/modules/ngx_stream_geoip_module.so
 %endif
 
 %if %{with gd}
 %files mod_http_image_filter
 %defattr(644,root,root,755)
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/conf.d/mod_http_image_filter.conf
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/modules.d/mod_http_image_filter.conf
 %attr(755,root,root) %{_libdir}/%{name}/modules/ngx_http_image_filter_module.so
 %endif
 
 %if %{with perl}
 %files mod_http_perl
 %defattr(644,root,root,755)
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/conf.d/mod_http_perl.conf
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/modules.d/mod_http_perl.conf
 %attr(755,root,root) %{_libdir}/%{name}/modules/ngx_http_perl_module.so
 %dir %{perl_vendorarch}/auto/%{name}
 %attr(755,root,root) %{perl_vendorarch}/auto/%{name}/%{name}.so
@@ -454,21 +455,21 @@ fi
 %if %{with xslt}
 %files mod_http_xslt_filter
 %defattr(644,root,root,755)
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/conf.d/mod_http_xslt_filter.conf
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/modules.d/mod_http_xslt_filter.conf
 %attr(755,root,root) %{_libdir}/%{name}/modules/ngx_http_xslt_filter_module.so
 %endif
 
 %if %{with mail}
 %files mod_mail
 %defattr(644,root,root,755)
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/conf.d/mod_mail.conf
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/modules.d/mod_mail.conf
 %attr(755,root,root) %{_libdir}/%{name}/modules/ngx_mail_module.so
 %endif
 
 %if %{with stream}
 %files mod_stream
 %defattr(644,root,root,755)
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/conf.d/mod_stream.conf
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/modules.d/mod_stream.conf
 %attr(755,root,root) %{_libdir}/%{name}/modules/ngx_stream_module.so
 %endif
 
