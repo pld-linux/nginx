@@ -427,15 +427,13 @@ build standard \
 	--with-http_secure_link_module \
 	%{nil}
 
-mv -f objs/nginx bin/nginx-standard
-
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT/etc/rc.d/init.d \
 	$RPM_BUILD_ROOT%{_nginxdir}/{cgi-bin,html,errors} \
 	$RPM_BUILD_ROOT%{_localstatedir}/log/{%{name},archive/%{name}} \
-	$RPM_BUILD_ROOT%{_localstatedir}/cache/{%{name}-standard,%{name}-perl,%{name}-mail,%{name}-light} \
-	$RPM_BUILD_ROOT%{_localstatedir}/lock/subsys/{%{name}-standard,%{name}-perl,%{name}-mail,%{name}-light} \
+	$RPM_BUILD_ROOT%{_localstatedir}/cache/%{name} \
+	$RPM_BUILD_ROOT%{_localstatedir}/lock/subsys/%{name} \
 	$RPM_BUILD_ROOT{%{_sbindir},%{_sysconfdir}/{vhosts,webapps}.d} \
 	$RPM_BUILD_ROOT/etc/{logrotate.d,monit} \
 	$RPM_BUILD_ROOT{%{systemdunitdir},/etc/systemd/system}
@@ -445,6 +443,11 @@ install -d $RPM_BUILD_ROOT/etc/rc.d/init.d \
 	DESTDIR=$RPM_BUILD_ROOT
 
 %{__rm} $RPM_BUILD_ROOT%{_sysconfdir}/*.default
+
+cp -p %{_sourcedir}/%{name}.conf $RPM_BUILD_ROOT%{_sysconfdir}/%{name}.conf
+cp -p %{_sourcedir}/%{name}-standard.service $RPM_BUILD_ROOT%{systemdunitdir}/%{name}.service
+cp -p %{_sourcedir}/%{name}-standard.monitrc $RPM_BUILD_ROOT/etc/monit/%{name}.monitrc
+install -p %{SOURCE7} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
 
 cp -p %{SOURCE3} $RPM_BUILD_ROOT/etc/logrotate.d/%{name}
 cp -p %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/proxy.conf
@@ -465,115 +468,37 @@ touch $RPM_BUILD_ROOT%{_sysconfdir}/{fastcgi,scgi,uwsgi}.params
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%pre common
+%pre
 %groupadd -r -g 213 %{name}
 %groupadd -g 51 http
 %useradd -r -u 213 -d /usr/share/empty -s /bin/false -c "Nginx HTTP User" -g %{name} %{name}
 %addusertogroup %{name} http
 
-%post standard
+%post
 for a in access.log error.log; do
-	if [ ! -f /var/log/%{name}/nginx-standard_$a ]; then
+	if [ ! -f /var/log/%{name}/$a ]; then
 		umask 022
-		touch /var/log/%{name}/nginx-standard_$a
-		chown nginx:nginx /var/log/%{name}/nginx-standard_$a
-		chmod 644 /var/log/%{name}/nginx-standard_$a
+		touch /var/log/%{name}/$a
+		chown nginx:nginx /var/log/%{name}/$a
+		chmod 644 /var/log/%{name}/$a
 	fi
 done
-/sbin/chkconfig --add %{name}-standard
-%systemd_post %{name}-standard.service
-%service %{name}-standard force-reload
-echo 'NOTE: this nginx daemon is using "/etc/nginx/nginx-standard.conf" as config.'
-if ! [ -L /etc/systemd/system/nginx.service ] ; then
-	ln -s %{systemdunitdir}/%{name}-standard.service /etc/systemd/system/nginx.service || :
-fi
+/sbin/chkconfig --add %{name}
+%systemd_post %{name}.service
+%service %{name} force-reload
 
-%post light
-for a in access.log error.log; do
-	if [ ! -f /var/log/%{name}/nginx-light_$a ]; then
-		umask 022
-		touch /var/log/%{name}/nginx-light_$a
-		chown nginx:nginx /var/log/%{name}/nginx-light_$a
-		chmod 644 /var/log/%{name}/nginx-light_$a
-	fi
-done
-/sbin/chkconfig --add %{name}-light
-%systemd_post %{name}-light.service
-%service %{name}-light force-reload
-echo 'NOTE: this nginx daemon is using "/etc/nginx/nginx-light.conf" as config'
-
-%post perl
-for a in access.log error.log; do
-	if [ ! -f /var/log/%{name}/nginx-perl_$a ]; then
-		umask 022
-		touch /var/log/%{name}/nginx-perl_$a
-		chown nginx:nginx /var/log/%{name}/nginx-perl_$a
-		chmod 644 /var/log/%{name}/nginx-perl_$a
-	fi
-done
-/sbin/chkconfig --add %{name}-perl
-%systemd_post %{name}-perl.service
-%service %{name}-perl force-reload
-echo 'NOTE: this nginx daemon is using "/etc/nginx/nginx-perl.conf" as config'
-
-%post mail
-for a in access.log error.log; do
-	if [ ! -f /var/log/%{name}/nginx-mail_$a ]; then
-		umask 022
-		touch /var/log/%{name}/nginx-mail_$a
-		chown nginx:nginx /var/log/%{name}/nginx-mail_$a
-		chmod 644 /var/log/%{name}/nginx-mail_$a
-	fi
-done
-/sbin/chkconfig --add %{name}-mail
-%systemd_post %{name}-mail.service
-%service %{name}-mail force-reload
-echo 'NOTE: this nginx daemon is using "/etc/nginx/nginx-mail.conf" as config'
-
-%preun standard
+%preun
 if [ "$1" = "0" ];then
-	%service %{name}-standard stop
-	/sbin/chkconfig --del %{name}-standard
+	%service %{name} stop
+	/sbin/chkconfig --del %{name}
 fi
-%systemd_preun %{name}-standard.service
+%systemd_preun %{name}.service
 
-%preun light
-if [ "$1" = "0" ]; then
-	%service %{name}-light stop
-	/sbin/chkconfig --del %{name}-light
-fi
-%systemd_preun %{name}-light.service
-
-%preun perl
-if [ "$1" = "0" ]; then
-	%service %{name}-perl stop
-	/sbin/chkconfig --del %{name}-perl
-fi
-%systemd_preun %{name}-perl.service
-
-%preun mail
-if [ "$1" = "0" ]; then
-	%service %{name}-mail stop
-	/sbin/chkconfig --del %{name}-mail
-fi
-%systemd_preun %{name}-mail.service
-
-%postun common
+%postun
 if [ "$1" = "0" ]; then
 	%userremove %{name}
 	%groupremove %{name}
 fi
-
-%postun standard
-%systemd_reload
-
-%postun light
-%systemd_reload
-
-%postun perl
-%systemd_reload
-
-%postun mail
 %systemd_reload
 
 %triggerpostun -- %{name}-standard < 1.4.1-4
@@ -596,7 +521,7 @@ ln -sf scgi_params %{_sysconfdir}/scgi.params
 ln -sf uwsgi_params %{_sysconfdir}/uwsgi.params
 exit 0
 
-%files common
+%files
 %defattr(644,root,root,755)
 %doc CHANGES LICENSE README html/index.html conf/nginx.conf
 %doc %lang(ru) CHANGES.ru
@@ -606,8 +531,6 @@ exit 0
 %dir %{_nginxdir}/html
 %dir %{_nginxdir}/errors
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/logrotate.d/%{name}
-# XXX: duplicates, don't use such glob here
-#%attr(640,root,root) %{_sysconfdir}/*[_-]*
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/proxy.conf
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/fastcgi_params
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/scgi_params
@@ -625,73 +548,35 @@ exit 0
 %attr(750,nginx,logs) /var/log/%{name}
 %config(noreplace,missingok) %verify(not md5 mtime size) %{_nginxdir}/html/*
 %config(noreplace,missingok) %verify(not md5 mtime size) %{_nginxdir}/errors/*
-%if 0
-%ghost /etc/systemd/system/nginx.service
 
-%files standard
 %defattr(644,root,root,755)
-%endif
 %attr(755,root,root) %{_sbindir}/%{name}
-%if 0
-%attr(770,root,%{name}) /var/cache/%{name}-standard
-%attr(754,root,root) /etc/rc.d/init.d/%{name}-standard
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}-standard.conf
-%{systemdunitdir}/%{name}-standard.service
-%endif
+%attr(770,root,%{name}) /var/cache/%{name}
+%attr(754,root,root) /etc/rc.d/init.d/%{name}
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}.conf
+%{systemdunitdir}/%{name}.service
 
 %if %{with mail}
 %files mail
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/%{name}/modules/ngx_mail_module.so
 %endif
-%if 0
-%attr(755,root,root) %{_sbindir}/%{name}-mail
-%attr(770,root,%{name}) /var/cache/%{name}-mail
-%attr(754,root,root) /etc/rc.d/init.d/%{name}-mail
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}-mail.conf
-%{systemdunitdir}/%{name}-mail.service
-%endif
 
 %if %{with light}
 %files light
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_sbindir}/%{name}-light
-%attr(770,root,%{name}) /var/cache/%{name}-light
-%attr(754,root,root) /etc/rc.d/init.d/%{name}-light
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}-light.conf
-%{systemdunitdir}/%{name}-light.service
 %endif
 
 %if %{with perl}
 %files perl
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/%{name}/modules/ngx_http_perl_module.so
-%if 0
-%attr(755,root,root) %{_sbindir}/%{name}-perl
-%attr(754,root,root) /etc/rc.d/init.d/%{name}-perl
-%attr(770,root,%{name}) /var/cache/%{name}-perl
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}-perl.conf
-%endif
 %dir %{perl_vendorarch}/auto/%{name}
 %attr(755,root,root) %{perl_vendorarch}/auto/%{name}/%{name}.so
 %{perl_vendorarch}/%{name}.pm
 %{_mandir}/man3/nginx.3pm*
-%if 0
-%{systemdunitdir}/%{name}-perl.service
-%endif
 %endif
 
-%if 0
 %files -n monit-rc-nginx
 %defattr(644,root,root,755)
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/monit/%{name}-standard.monitrc
-%if %{with perl}
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/monit/%{name}-perl.monitrc
-%endif
-%if %{with light}
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/monit/%{name}-light.monitrc
-%endif
-%if %{with mail}
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/monit/%{name}-mail.monitrc
-%endif
-%endif
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/monit/%{name}.monitrc
