@@ -335,6 +335,7 @@ load_module http_perl
 
 %if %{with geoip}
 load_module http_geoip
+load_module stream_geoip
 %endif
 %if %{with gd}
 load_module http_image_filter
@@ -436,11 +437,12 @@ exit 0
 %if %{with geoip}
 %files mod_http_geoip
 %defattr(644,root,root,755)
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/conf.d/mod_http_geoip.conf
 %attr(755,root,root) %{_libdir}/%{name}/modules/ngx_http_geoip_module.so
 
 %files mod_stream_geoip
 %defattr(644,root,root,755)
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/conf.d/mod_http_geoip.conf
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/conf.d/mod_stream_geoip.conf
 %attr(755,root,root) %{_libdir}/%{name}/modules/ngx_stream_geoip_module.so
 %endif
 
