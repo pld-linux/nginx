@@ -5,9 +5,9 @@
 # chkconfig:	345 85 15
 # description:  Nginx is an HTTP(S) server, HTTP(S) reverse \
 #               proxy and IMAP/POP3 proxy server
-# processname:	nginx-@type@
-# pidfile:	/var/run/nginx-@type@.pid
-# config:	/etc/nginx/nginx-@type@.conf
+# processname:	nginx
+# pidfile:	/var/run/nginx.pid
+# config:	/etc/nginx/nginx.conf
 
 # Source function library
 . /etc/rc.d/init.d/functions
@@ -15,8 +15,8 @@
 # Source networking configuration.
 . /etc/sysconfig/network
 
-nginx="/usr/sbin/nginx-@type@"
-svname="nginx (@type@)"
+nginx="/usr/sbin/nginx"
+svname="nginx"
 prog=${nginx##*/}
 
 sysconfig="/etc/sysconfig/$prog"

@@ -1,7 +1,7 @@
-check process nginx-light with pidfile /var/run/nginx-light.pid
+check process nginx with pidfile /var/run/nginx.pid
 	group www
-	start program = "/etc/rc.d/init.d/nginx-light start"
-	stop program = "/etc/rc.d/init.d/nginx-light stop"
+	start program = "/etc/rc.d/init.d/nginx start"
+	stop program = "/etc/rc.d/init.d/nginx stop"
 	if failed url http://localhost/ timeout 10 seconds then restart
 #	if failed host 192.168.1.1 port 443 type TCPSSL
 #		certmd5 12-34-56-78-90-AB-CD-EF-12-34-56-78-90-AB-CD-EF
@@ -9,10 +9,10 @@ check process nginx-light with pidfile /var/run/nginx-light.pid
 	if 5 restarts within 5 cycles then timeout
 #	alert root@localhost
 #	alert 123456@sms on { timeout }
-	depends on nginx-light_bin
-	depends on nginx-light_rc
+	depends on nginx_bin
+	depends on nginx_rc
 
-check file nginx-light_bin with path /usr/sbin/nginx-light
+check file nginx_bin with path /usr/sbin/nginx
 	group nginx
 	if failed checksum then unmonitor
 	if failed permission 755 then unmonitor
@@ -20,7 +20,7 @@ check file nginx-light_bin with path /usr/sbin/nginx-light
 	if failed gid root then unmonitor
 #	alert root@localhost
 
-check file nginx-light_rc with path /etc/rc.d/init.d/nginx-light
+check file nginx_rc with path /etc/rc.d/init.d/nginx
 	group nginx
 	if failed checksum then unmonitor
 	if failed permission 754 then unmonitor
@@ -28,6 +28,6 @@ check file nginx-light_rc with path /etc/rc.d/init.d/nginx-light
 	if failed gid root then unmonitor
 #	alert root@localhost
 
-check file nginx-light.conf path /etc/nginx/nginx-light.conf
+check file nginx-stanard.conf path /etc/nginx/nginx.conf
 	if changed sha1 checksum 
-	then exec "/etc/init.d/nginx-light graceful"
+	then exec "/etc/rc.d/init.d/nginx graceful"

@@ -3,17 +3,6 @@
 	create 644 nginx nginx
 	sharedscripts
 	postrotate
-		if [ -x /etc/rc.d/init.d/nginx-light ] ; then
-			/sbin/service nginx-light reopen-logs > /dev/null
-		fi
-		if [ -x /etc/rc.d/init.d/nginx-standard ] ; then
-			/sbin/service nginx-standard reopen-logs > /dev/null
-		fi
-		if [ -x /etc/rc.d/init.d/nginx-mail ] ; then
-			/sbin/service nginx-mail reopen-logs > /dev/null
-		fi
-		if [ -x /etc/rc.d/init.d/nginx-perl ] ; then
-			/sbin/service nginx-perl reopen-logs > /dev/null
-		fi
+		/sbin/service nginx reopen-logs > /dev/null
 	endscript
 }
