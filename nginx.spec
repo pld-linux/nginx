@@ -41,12 +41,12 @@ Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # - stable: production quality with stable API
 # - mainline: production quality but API can change
 Name:		nginx
-Version:	1.12.0
-Release:	4
+Version:	1.13.1
+Release:	1
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	http://nginx.org/download/%{name}-%{version}.tar.gz
-# Source0-md5:	995eb0a140455cf0cfc497e5bd7f94b3
+# Source0-md5:	5c2fe93447140b8b1a815a13bc89355b
 Source1:	http://nginx.net/favicon.ico
 # Source1-md5:	2aaf2115c752cbdbfb8a2f0b3c3189ab
 Source2:	proxy.conf
@@ -63,7 +63,7 @@ Source101:	https://github.com/arut/nginx-rtmp-module/archive/v%{rtmp_version}/%{
 # Source101-md5:	a87ab77c4414f80d394d712cceb39016
 Patch0:		%{name}-no-Werror.patch
 Patch1:		%{name}-modsecurity-xheaders.patch
-URL:		http://nginx.net/
+URL:		http://nginx.org/
 BuildRequires:	mailcap
 BuildRequires:	pcre-devel
 BuildRequires:	rpmbuild(macros) >= 1.644
