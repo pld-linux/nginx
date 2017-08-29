@@ -34,19 +34,19 @@
 
 %define		ssl_version	1.0.2
 %define		rtmp_version	1.1.11
-%define		modsecurity_version	2.9.1
+%define		modsecurity_version	2.9.2
 Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # nginx lines:
 # - stable: production quality with stable API
 # - mainline: production quality but API can change
 Name:		nginx
-Version:	1.13.3
+Version:	1.13.4
 Release:	1
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	http://nginx.org/download/%{name}-%{version}.tar.gz
-# Source0-md5:	1f8529568f825dfa4da4e99ba483678e
+# Source0-md5:	42a3ca70cd292a149ba4f60862599245
 Source1:	http://nginx.net/favicon.ico
 # Source1-md5:	2aaf2115c752cbdbfb8a2f0b3c3189ab
 Source2:	proxy.conf
@@ -58,7 +58,7 @@ Source14:	%{name}.conf
 Source17:	%{name}-mime.types.sh
 Source18:	%{name}.service
 Source22:	http://www.modsecurity.org/tarball/%{modsecurity_version}/modsecurity-%{modsecurity_version}.tar.gz
-# Source22-md5:	0fa92b852abc857a20b9e24f83f814cf
+# Source22-md5:	4d9454efb19269c4288ae408ea438b76
 Source101:	https://github.com/arut/nginx-rtmp-module/archive/v%{rtmp_version}/%{name}-rtmp-module-%{rtmp_version}.tar.gz
 # Source101-md5:	a87ab77c4414f80d394d712cceb39016
 Patch0:		%{name}-no-Werror.patch
