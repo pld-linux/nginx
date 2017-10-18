@@ -42,7 +42,7 @@ Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # - mainline: production quality but API can change
 Name:		nginx
 Version:	1.13.5
-Release:	1
+Release:	2
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	http://nginx.org/download/%{name}-%{version}.tar.gz
@@ -278,6 +278,7 @@ cp -f configure auto/
 	--http-fastcgi-temp-path=%{_localstatedir}/cache/%{name}/fastcgi_temp \
 	--http-proxy-temp-path=%{_localstatedir}/cache/%{name}/proxy_temp \
 	--http-uwsgi-temp-path=%{_localstatedir}/cache/%{name}/uwsgi_temp \
+	--http-scgi-temp-path=%{_localstatedir}/cache/%{name}/scgi_temp \
 	--user=nginx \
 	--group=nginx \
 	%{?with_select:--with-select_module} \
