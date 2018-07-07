@@ -41,12 +41,12 @@ Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # - stable: production quality with stable API
 # - mainline: production quality but API can change
 Name:		nginx
-Version:	1.14.0
+Version:	1.15.1
 Release:	1
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	http://nginx.org/download/%{name}-%{version}.tar.gz
-# Source0-md5:	2d856aca3dfe1d32e3c9f8c4cac0cc95
+# Source0-md5:	2dd5a265c54a76b699443931d80a61b9
 Source1:	http://nginx.net/favicon.ico
 # Source1-md5:	2aaf2115c752cbdbfb8a2f0b3c3189ab
 Source2:	proxy.conf
@@ -117,6 +117,9 @@ Requires(pre):	/usr/sbin/useradd
 Requires:	rc-scripts >= 0.2.0
 Requires:	systemd-units >= 38
 Suggests:	vim-syntax-nginx
+Obsoletes:	nginx-common < 1.13.3
+Obsoletes:	nginx-light < 1.13.3
+Obsoletes:	nginx-standard < 1.13.3
 Conflicts:	rpm < 4.4.2-0.2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
