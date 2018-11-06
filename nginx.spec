@@ -33,7 +33,7 @@
 %endif
 
 %define		ssl_version	1.0.2
-%define		rtmp_version	1.2.0
+%define		rtmp_version	1.2.1
 %define		modsecurity_version	2.9.2
 Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
@@ -60,7 +60,7 @@ Source18:	%{name}.service
 Source22:	http://www.modsecurity.org/tarball/%{modsecurity_version}/modsecurity-%{modsecurity_version}.tar.gz
 # Source22-md5:	4d9454efb19269c4288ae408ea438b76
 Source101:	https://github.com/arut/nginx-rtmp-module/archive/v%{rtmp_version}/%{name}-rtmp-module-%{rtmp_version}.tar.gz
-# Source101-md5:	1a47951b64f3f726a9d4620774643759
+# Source101-md5:	639ac2b78103adaccbcfe484a92acf44
 Patch0:		%{name}-no-Werror.patch
 Patch1:		%{name}-modsecurity-xheaders.patch
 URL:		http://nginx.org/
