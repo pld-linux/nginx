@@ -133,20 +133,29 @@ condrestart() {
 # http://nginx.org/en/docs/control.html#upgrade
 # TODO: handle revert back on failed upgrade
 upgrade() {
-	local oldbin_pidfile="${pidfile}.oldbin"
+	local oldbin_pidfile="${pidfile}.oldbin" retry
 
 	checkconfig
 	show "Upgrading $svname"
 	killproc -p $pidfile $prog -USR2
 	RETVAL=$?
-	sleep 1
-	if [ -f $oldbin_pidfile ] && [ -f $pidfile ]; then
-		show "Upgrade: stopping old process"
-		killproc -p $oldbin_pidfile $prog -QUIT
-		return 0
-	else
-		return 1
-	fi
+
+	# wait for 15s
+	retry=60
+	while [ $retry -gt 0 ]; do
+		if [ -f $oldbin_pidfile ] && [ -f $pidfile ]; then
+			show "Upgrade: stopping old process"
+			killproc -p $oldbin_pidfile $prog -QUIT
+			return 0
+		else
+			usleep 250000
+			retry=$(($retry -1))
+		fi
+	done
+
+	show "Upgrade: stopping old process"; fail
+	nls 'old process pid file was not found'
+	return 1
 }
 
 # Tell nginx to reopen logs
