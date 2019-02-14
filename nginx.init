@@ -152,6 +152,13 @@ upgrade() {
 # Tell nginx to reopen logs
 # http://nginx.org/en/docs/control.html#logs
 reopen_logs() {
+	local oldbin_pidfile="${pidfile}.oldbin"
+
+	if [ -f $oldbin_pidfile ]; then
+		show "Reopening $svname (oldbin) logs"
+		killproc -p $oldbin_pidfile $prog -USR1
+	fi
+
 	show "Reopening $svname logs"
 	killproc -p $pidfile $prog -USR1
 }
