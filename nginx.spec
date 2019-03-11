@@ -44,7 +44,7 @@ Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # - mainline: production quality but API can change
 Name:		nginx
 Version:	1.15.9
-Release:	2
+Release:	3
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	http://nginx.org/download/%{name}-%{version}.tar.gz
@@ -351,6 +351,7 @@ install -d $RPM_BUILD_ROOT/etc/rc.d/init.d \
 	$RPM_BUILD_ROOT%{_localstatedir}/cache/%{name} \
 	$RPM_BUILD_ROOT%{_localstatedir}/lock/subsys/%{name} \
 	$RPM_BUILD_ROOT{%{_sbindir},%{_sysconfdir}/{conf,modules,vhosts,webapps}.d} \
+	$RPM_BUILD_ROOT%{_sysconfdir}/snippets \
 	$RPM_BUILD_ROOT/etc/{logrotate.d,monit} \
 	$RPM_BUILD_ROOT{%{systemdunitdir},/etc/systemd/system}
 
@@ -456,6 +457,7 @@ fi
 %dir %attr(750,root,nginx) %{_sysconfdir}
 %dir %{_sysconfdir}/conf.d
 %dir %{_sysconfdir}/modules.d
+%dir %{_sysconfdir}/snippets
 %dir %{_sysconfdir}/vhosts.d
 %dir %{_sysconfdir}/webapps.d
 %attr(640,root,root) %{_sysconfdir}/mime.types
