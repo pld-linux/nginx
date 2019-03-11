@@ -27,6 +27,7 @@
 %bcond_with	http_browser	# http browser module (header "User-agent" parser)
 %bcond_with	modsecurity	# modsecurity module
 %bcond_with	rtmp		# rtmp support
+%bcond_without	vts		# virtual host traffic status module
 
 %ifarch x32
 %undefine	with_rtsig
@@ -34,6 +35,7 @@
 
 %define		ssl_version	1.0.2
 %define		rtmp_version	1.2.1
+%define		vts_version	0.1.18
 %define		modsecurity_version	2.9.2
 Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
@@ -42,7 +44,7 @@ Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # - mainline: production quality but API can change
 Name:		nginx
 Version:	1.15.9
-Release:	1
+Release:	2
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	http://nginx.org/download/%{name}-%{version}.tar.gz
@@ -61,6 +63,8 @@ Source22:	http://www.modsecurity.org/tarball/%{modsecurity_version}/modsecurity-
 # Source22-md5:	4d9454efb19269c4288ae408ea438b76
 Source101:	https://github.com/arut/nginx-rtmp-module/archive/v%{rtmp_version}/%{name}-rtmp-module-%{rtmp_version}.tar.gz
 # Source101-md5:	639ac2b78103adaccbcfe484a92acf44
+Source102:	https://github.com/vozlt/nginx-module-vts/archive/v%{vts_version}.tar.gz
+# Source102-md5:	409a10dbd85e0b807cc77eecec29a3b5
 Patch0:		%{name}-no-Werror.patch
 Patch1:		%{name}-modsecurity-xheaders.patch
 URL:		http://nginx.org/
@@ -253,12 +257,16 @@ monitrc file for monitoring nginx webserver.
 Plik monitrc do monitorowania serwera WWW nginx.
 
 %prep
-%setup -q %{?with_rtmp:-a101} %{?with_modsecurity:-a22}
+%setup -q %{?with_rtmp:-a101} %{?with_modsecurity:-a22} %{?with_vts:-a102}
 %patch0 -p0
 %{?with_modsecurity:%patch1 -p0}
 
 %if %{with rtmp}
 mv nginx-rtmp-module-%{rtmp_version} nginx-rtmp-module
+%endif
+
+%if %{with vts}
+mv nginx-module-vts-%{vts_version} nginx-vts-module
 %endif
 
 # build mime.types.conf
@@ -313,6 +321,7 @@ cp -f configure auto/
 	%{?with_ssl:--with-http_ssl_module} \
 	%{!?with_http_browser:--without-http_browser_module} \
 	%{?with_rtmp:--add-module=./nginx-rtmp-module} \
+	%{?with_vts:--add-module=./nginx-vts-module} \
 	%{?with_auth_request:--with-http_auth_request_module} \
 	%{?with_threads:--with-threads} \
 	%{?with_http2:--with-http_v2_module} \
