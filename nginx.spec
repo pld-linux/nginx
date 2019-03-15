@@ -235,6 +235,14 @@ Requires:	%{name} = %{version}-%{release}
 %description mod_mail
 Nginx mail module.
 
+%package mod_vts
+Summary:	Nginx virtual host traffic status module
+Group:		Networking/Daemons/HTTP
+Requires:	%{name} = %{version}-%{release}
+
+%description mod_vts
+Nginx virtual host traffic status module.
+
 %package mod_stream
 Summary:	Nginx stream modules
 Group:		Daemons
@@ -321,7 +329,7 @@ cp -f configure auto/
 	%{?with_ssl:--with-http_ssl_module} \
 	%{!?with_http_browser:--without-http_browser_module} \
 	%{?with_rtmp:--add-module=./nginx-rtmp-module} \
-	%{?with_vts:--add-module=./nginx-vts-module} \
+	%{?with_vts:--add-dynamic-module=./nginx-vts-module} \
 	%{?with_auth_request:--with-http_auth_request_module} \
 	%{?with_threads:--with-threads} \
 	%{?with_http2:--with-http_v2_module} \
@@ -399,6 +407,7 @@ load_module http_xslt_filter
 %if %{with mail}
 load_module mail
 %endif
+%{?with_vts:load_module vts}
 %if %{with stream}
 load_module stream
 %endif
@@ -445,6 +454,7 @@ fi
 %module_scripts mod_http_perl
 %module_scripts mod_http_xslt_filter
 %module_scripts mod_mail
+%module_scripts mod_vts
 %module_scripts mod_stream
 %module_scripts mod_stream_geoip
 
@@ -528,6 +538,13 @@ fi
 %defattr(644,root,root,755)
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/modules.d/mod_mail.conf
 %attr(755,root,root) %{_libdir}/%{name}/modules/ngx_mail_module.so
+%endif
+
+%if %{with vts}
+%files mod_vts
+%defattr(644,root,root,755)
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/modules.d/mod_vts.conf
+%attr(755,root,root) %{_libdir}/%{name}/modules/ngx_http_vhost_traffic_status_module.so
 %endif
 
 %if %{with stream}
