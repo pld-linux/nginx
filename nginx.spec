@@ -44,7 +44,7 @@ Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # - mainline: production quality but API can change
 Name:		nginx
 Version:	1.15.10
-Release:	1
+Release:	2
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	http://nginx.org/download/%{name}-%{version}.tar.gz
@@ -407,7 +407,7 @@ load_module http_xslt_filter
 %if %{with mail}
 load_module mail
 %endif
-%{?with_vts:load_module vts}
+%{?with_vts:load_module http_vhost_traffic_status}
 %if %{with stream}
 load_module stream
 %endif
@@ -543,7 +543,7 @@ fi
 %if %{with vts}
 %files mod_vts
 %defattr(644,root,root,755)
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/modules.d/mod_vts.conf
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/modules.d/mod_http_vhost_traffic_status.conf
 %attr(755,root,root) %{_libdir}/%{name}/modules/ngx_http_vhost_traffic_status_module.so
 %endif
 
