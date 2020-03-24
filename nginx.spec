@@ -43,6 +43,7 @@ Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # nginx lines:
 # - stable: production quality with stable API
 # - mainline: production quality but API can change
+# http://nginx.org/en/download.html
 Name:		nginx
 Version:	1.16.1
 Release:	3
