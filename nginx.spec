@@ -1,6 +1,7 @@
 # TODO
 # - /etc/sysconfig/nginx file
 # - missing perl build/install requires
+# - add njs: https://nginx.org/en/docs/njs/
 #
 # Conditional build for nginx:
 # Features
