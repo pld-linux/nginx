@@ -29,6 +29,7 @@
 %bcond_with	modsecurity	# modsecurity module
 %bcond_with	rtmp		# rtmp support
 %bcond_without	vts		# virtual host traffic status module
+%bcond_without	headers_more	# headers more module
 
 %ifarch x32
 %undefine	with_rtsig
@@ -37,6 +38,7 @@
 %define		ssl_version	1.0.2
 %define		rtmp_version	1.2.1
 %define		vts_version	0.1.18
+%define		headers_more_version	0.33
 %define		modsecurity_version	2.9.3
 Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
@@ -46,7 +48,7 @@ Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # http://nginx.org/en/download.html
 Name:		nginx
 Version:	1.18.0
-Release:	1
+Release:	2
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	http://nginx.org/download/%{name}-%{version}.tar.gz
@@ -67,6 +69,8 @@ Source101:	https://github.com/arut/nginx-rtmp-module/archive/v%{rtmp_version}/%{
 # Source101-md5:	639ac2b78103adaccbcfe484a92acf44
 Source102:	https://github.com/vozlt/nginx-module-vts/archive/v%{vts_version}.tar.gz
 # Source102-md5:	409a10dbd85e0b807cc77eecec29a3b5
+Source103:	https://github.com/openresty/headers-more-nginx-module/archive/v%{headers_more_version}.tar.gz
+# Source103-md5:	95e15a2331c2d4db3691a56268df5f47
 Patch0:		%{name}-no-Werror.patch
 Patch1:		%{name}-modsecurity-xheaders.patch
 URL:		http://nginx.org/
@@ -186,6 +190,15 @@ opublikował źródła na licencji BSD. Mimo, że projekt jest ciągle w
 fazie beta, już zasłynął dzięki stabilności, bogactwu dodatków,
 prostej konfiguracji oraz małej "zasobożerności".
 
+%package mod_headers_more
+Summary:	Nginx HTTP headers more module
+Group:		Daemons
+Requires:	%{name} = %{version}-%{release}
+Requires:	GeoIP
+
+%description mod_headers_more
+Set and clear input and output headers...more than "add".
+
 %package mod_http_geoip
 Summary:	Nginx HTTP geoip module
 Group:		Daemons
@@ -267,7 +280,7 @@ monitrc file for monitoring nginx webserver.
 Plik monitrc do monitorowania serwera WWW nginx.
 
 %prep
-%setup -q %{?with_rtmp:-a101} %{?with_modsecurity:-a22} %{?with_vts:-a102}
+%setup -q %{?with_rtmp:-a101} %{?with_modsecurity:-a22} %{?with_vts:-a102} %{?with_headers_more:-a103}
 %patch0 -p0
 %{?with_modsecurity:%patch1 -p0}
 
@@ -277,6 +290,10 @@ mv nginx-rtmp-module-%{rtmp_version} nginx-rtmp-module
 
 %if %{with vts}
 mv nginx-module-vts-%{vts_version} nginx-vts-module
+%endif
+
+%if %{with headers_more}
+mv headers-more-nginx-module-%{headers_more_version} nginx-headers-more-module
 %endif
 
 # build mime.types.conf
@@ -330,6 +347,7 @@ cp -f configure auto/
 	%{?with_stub_status:--with-http_stub_status_module} \
 	%{?with_ssl:--with-http_ssl_module} \
 	%{!?with_http_browser:--without-http_browser_module} \
+	%{?with_headers_more:--add-dynamic-module=./nginx-headers-more-module} \
 	%{?with_rtmp:--add-module=./nginx-rtmp-module} \
 	%{?with_vts:--add-dynamic-module=./nginx-vts-module} \
 	%{?with_auth_request:--with-http_auth_request_module} \
@@ -410,6 +428,7 @@ load_module http_xslt_filter
 load_module mail
 %endif
 %{?with_vts:load_module http_vhost_traffic_status}
+%{?with_headers_more:load_module http_headers_more_filter}
 %if %{with stream}
 load_module stream
 %endif
@@ -457,6 +476,7 @@ fi
 %module_scripts mod_http_xslt_filter
 %module_scripts mod_mail
 %module_scripts mod_vts
+%module_scripts mod_headers_more
 %module_scripts mod_stream
 %module_scripts mod_stream_geoip
 
@@ -540,6 +560,13 @@ fi
 %defattr(644,root,root,755)
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/modules.d/mod_mail.conf
 %attr(755,root,root) %{_libdir}/%{name}/modules/ngx_mail_module.so
+%endif
+
+%if %{with headers_more}
+%files mod_headers_more
+%defattr(644,root,root,755)
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/modules.d/mod_http_headers_more_filter.conf
+%attr(755,root,root) %{_libdir}/%{name}/modules/ngx_http_headers_more_filter_module.so
 %endif
 
 %if %{with vts}
