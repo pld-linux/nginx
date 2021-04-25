@@ -63,8 +63,8 @@ Source7:	%{name}.init
 Source14:	%{name}.conf
 Source17:	%{name}-mime.types.sh
 Source18:	%{name}.service
-Source22:	http://www.modsecurity.org/tarball/%{modsecurity_version}/modsecurity-%{modsecurity_version}.tar.gz
-# Source22-md5:	96718664193ad308a5ba91d90414710a
+Source33:	https://github.com/SpiderLabs/ModSecurity/releases/download/v%{modsecurity_version}/modsecurity-v%{modsecurity_version}.tar.gz
+# Source22-md5:	42c9860e0c073ca32a4a015ead970774
 Source101:	https://github.com/arut/nginx-rtmp-module/archive/v%{rtmp_version}/%{name}-rtmp-module-%{rtmp_version}.tar.gz
 # Source101-md5:	639ac2b78103adaccbcfe484a92acf44
 Source102:	https://github.com/vozlt/nginx-module-vts/archive/v%{vts_version}.tar.gz
