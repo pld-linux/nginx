@@ -39,7 +39,7 @@
 %define		rtmp_version	1.2.1
 %define		vts_version	0.1.18
 %define		headers_more_version	0.33
-%define		modsecurity_version	2.9.3
+%define		modsecurity_version	3.0.4
 Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # nginx lines:
@@ -47,12 +47,12 @@ Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # - mainline: production quality but API can change
 # http://nginx.org/en/download.html
 Name:		nginx
-Version:	1.18.0
-Release:	2
+Version:	1.20.0
+Release:	1
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	http://nginx.org/download/%{name}-%{version}.tar.gz
-# Source0-md5:	b2d33d24d89b8b1f87ff5d251aa27eb8
+# Source0-md5:	d3d7985527d535ebcda9fc3fdbd3a974
 Source1:	http://nginx.net/favicon.ico
 # Source1-md5:	2aaf2115c752cbdbfb8a2f0b3c3189ab
 Source2:	proxy.conf
@@ -64,7 +64,7 @@ Source14:	%{name}.conf
 Source17:	%{name}-mime.types.sh
 Source18:	%{name}.service
 Source22:	http://www.modsecurity.org/tarball/%{modsecurity_version}/modsecurity-%{modsecurity_version}.tar.gz
-# Source22-md5:	215a96d679a5b0fadcf13b5d09b35422
+# Source22-md5:	96718664193ad308a5ba91d90414710a
 Source101:	https://github.com/arut/nginx-rtmp-module/archive/v%{rtmp_version}/%{name}-rtmp-module-%{rtmp_version}.tar.gz
 # Source101-md5:	639ac2b78103adaccbcfe484a92acf44
 Source102:	https://github.com/vozlt/nginx-module-vts/archive/v%{vts_version}.tar.gz
@@ -194,7 +194,6 @@ prostej konfiguracji oraz małej "zasobożerności".
 Summary:	Nginx HTTP headers more module
 Group:		Daemons
 Requires:	%{name} = %{version}-%{release}
-Requires:	GeoIP
 
 %description mod_headers_more
 Set and clear input and output headers...more than "add".
