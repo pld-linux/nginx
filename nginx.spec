@@ -51,10 +51,10 @@ Version:	1.20.0
 Release:	2
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
-Source0:	http://nginx.org/download/%{name}-%{version}.tar.gz
+Source0:	https://nginx.org/download/%{name}-%{version}.tar.gz
 # Source0-md5:	d3d7985527d535ebcda9fc3fdbd3a974
-Source1:	http://nginx.net/favicon.ico
-# Source1-md5:	2aaf2115c752cbdbfb8a2f0b3c3189ab
+Source1:	https://nginx.org/favicon.ico
+# Source1-md5:	72e228c3809db53da8a884b6676ed36a
 Source2:	proxy.conf
 Source3:	%{name}.logrotate
 Source4:	%{name}.mime
@@ -64,7 +64,7 @@ Source14:	%{name}.conf
 Source17:	%{name}-mime.types.sh
 Source18:	%{name}.service
 Source33:	https://github.com/SpiderLabs/ModSecurity/releases/download/v%{modsecurity_version}/modsecurity-v%{modsecurity_version}.tar.gz
-# Source33-md5:	42c9860e0c073ca32a4a015ead970774
+# Source33-md5:	a8791b94fa09f2d3693fa1d22523e6c4
 Source101:	https://github.com/arut/nginx-rtmp-module/archive/v%{rtmp_version}/%{name}-rtmp-module-%{rtmp_version}.tar.gz
 # Source101-md5:	639ac2b78103adaccbcfe484a92acf44
 Source102:	https://github.com/vozlt/nginx-module-vts/archive/v%{vts_version}.tar.gz
@@ -73,7 +73,7 @@ Source103:	https://github.com/openresty/headers-more-nginx-module/archive/v%{hea
 # Source103-md5:	95e15a2331c2d4db3691a56268df5f47
 Patch0:		%{name}-no-Werror.patch
 Patch1:		%{name}-modsecurity-xheaders.patch
-URL:		http://nginx.org/
+URL:		https://nginx.org/
 BuildRequires:	mailcap
 BuildRequires:	pcre-devel
 BuildRequires:	rpmbuild(macros) >= 1.644
