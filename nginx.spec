@@ -47,14 +47,14 @@ Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # - mainline: production quality but API can change
 # http://nginx.org/en/download.html
 Name:		nginx
-Version:	1.20.0
-Release:	2
+Version:	1.20.1
+Release:	1
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	https://nginx.org/download/%{name}-%{version}.tar.gz
-# Source0-md5:	d3d7985527d535ebcda9fc3fdbd3a974
+# Source0-md5:	8ca6edd5076bdfad30a69c9c9b41cc68
 Source1:	https://nginx.org/favicon.ico
-# Source1-md5:	72e228c3809db53da8a884b6676ed36a
+# Source1-md5:	2aaf2115c752cbdbfb8a2f0b3c3189ab
 Source2:	proxy.conf
 Source3:	%{name}.logrotate
 Source4:	%{name}.mime
