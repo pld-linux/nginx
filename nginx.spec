@@ -40,6 +40,8 @@
 %define		vts_version	0.1.18
 %define		headers_more_version	0.33
 %define		modsecurity_version	3.0.5
+%define		http_cache_purge_version	2.5.1
+
 Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # nginx lines:
@@ -71,8 +73,9 @@ Source102:	https://github.com/vozlt/nginx-module-vts/archive/v%{vts_version}.tar
 # Source102-md5:	409a10dbd85e0b807cc77eecec29a3b5
 Source103:	https://github.com/openresty/headers-more-nginx-module/archive/v%{headers_more_version}.tar.gz
 # Source103-md5:	95e15a2331c2d4db3691a56268df5f47
-Source104:	https://ftp.debian.org:/debian/pool/main/n/nginx/%{name}_1.18.0-6.1.debian.tar.xz
-# Source104-md5:	285e1569cbcb08693a85ce5f9774799d
+# https://github.com/nginx-modules/ngx_cache_purge
+Source104:	https://github.com/nginx-modules/ngx_cache_purge/archive/refs/tags/%{http_cache_purge_version}.tar.gz
+# Source104-md5:	d42d996efcd6539d2e955c77d24b1e0f
 Patch0:		%{name}-no-Werror.patch
 Patch1:		%{name}-modsecurity-xheaders.patch
 URL:		https://nginx.org/
@@ -307,10 +310,7 @@ mv nginx-module-vts-%{vts_version} nginx-vts-module
 mv headers-more-nginx-module-%{headers_more_version} nginx-headers-more-module
 %endif
 
-cd debian/modules/http-cache-purge
-for p in ../patches/http-cache-purge/*.patch; do
-	patch -p1 < $p || exit 1
-done
+mv ngx_cache_purge-* ngx_cache_purge
 
 # build mime.types.conf
 #sh %{SOURCE17} /etc/mime.types
@@ -363,7 +363,7 @@ cp -f configure auto/
 	%{?with_stub_status:--with-http_stub_status_module} \
 	%{?with_ssl:--with-http_ssl_module} \
 	%{!?with_http_browser:--without-http_browser_module} \
-	--add-dynamic-module=debian/modules/http-cache-purge \
+	--add-dynamic-module=./ngx_cache_purge \
 	%{?with_headers_more:--add-dynamic-module=./nginx-headers-more-module} \
 	%{?with_rtmp:--add-module=./nginx-rtmp-module} \
 	%{?with_vts:--add-dynamic-module=./nginx-vts-module} \
@@ -604,7 +604,7 @@ fi
 
 %files mod_http_cache_purge
 %defattr(644,root,root,755)
-%doc debian/modules/http-cache-purge/{CHANGES,README.md,TODO.md}
+%doc ngx_cache_purge/{CHANGES,README.md}
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/modules.d/mod_http_cache_purge.conf
 %attr(755,root,root) %{_libdir}/%{name}/modules/ngx_http_cache_purge_module.so
 
