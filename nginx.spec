@@ -71,6 +71,8 @@ Source102:	https://github.com/vozlt/nginx-module-vts/archive/v%{vts_version}.tar
 # Source102-md5:	409a10dbd85e0b807cc77eecec29a3b5
 Source103:	https://github.com/openresty/headers-more-nginx-module/archive/v%{headers_more_version}.tar.gz
 # Source103-md5:	95e15a2331c2d4db3691a56268df5f47
+Source104:	https://ftp.debian.org:/debian/pool/main/n/nginx/%{name}_1.18.0-6.1.debian.tar.xz
+# Source104-md5:	285e1569cbcb08693a85ce5f9774799d
 Patch0:		%{name}-no-Werror.patch
 Patch1:		%{name}-modsecurity-xheaders.patch
 URL:		https://nginx.org/
@@ -265,6 +267,16 @@ Requires:	%{name} = %{version}-%{release}
 %description mod_stream
 Nginx stream modules.
 
+%package mod_http_cache_purge
+Summary:	Nginx cache purge module
+Group:		Daemons
+Requires:	%{name} = %{version}-%{release}
+
+%description mod_http_cache_purge
+`ngx_cache_purge` is `nginx` module which adds ability to purge
+content from `FastCGI`, `proxy`, `SCGI` and `uWSGI` caches.
+
+
 %package -n monit-rc-nginx
 Summary:	nginx support for monit
 Summary(pl.UTF-8):	Wsparcie nginx dla monit
@@ -279,7 +291,7 @@ monitrc file for monitoring nginx webserver.
 Plik monitrc do monitorowania serwera WWW nginx.
 
 %prep
-%setup -q %{?with_rtmp:-a101} %{?with_modsecurity:-a22} %{?with_vts:-a102} %{?with_headers_more:-a103}
+%setup -q %{?with_rtmp:-a101} %{?with_modsecurity:-a22} %{?with_vts:-a102} %{?with_headers_more:-a103} -a104
 %patch0 -p0
 %{?with_modsecurity:%patch1 -p0}
 
@@ -294,6 +306,11 @@ mv nginx-module-vts-%{vts_version} nginx-vts-module
 %if %{with headers_more}
 mv headers-more-nginx-module-%{headers_more_version} nginx-headers-more-module
 %endif
+
+cd debian/modules/http-cache-purge
+for p in ../patches/http-cache-purge/*.patch; do
+	patch -p1 < $p || exit 1
+done
 
 # build mime.types.conf
 #sh %{SOURCE17} /etc/mime.types
@@ -346,6 +363,7 @@ cp -f configure auto/
 	%{?with_stub_status:--with-http_stub_status_module} \
 	%{?with_ssl:--with-http_ssl_module} \
 	%{!?with_http_browser:--without-http_browser_module} \
+	--add-dynamic-module=debian/modules/http-cache-purge \
 	%{?with_headers_more:--add-dynamic-module=./nginx-headers-more-module} \
 	%{?with_rtmp:--add-module=./nginx-rtmp-module} \
 	%{?with_vts:--add-dynamic-module=./nginx-vts-module} \
@@ -431,6 +449,7 @@ load_module mail
 %if %{with stream}
 load_module stream
 %endif
+load_module http_cache_purge
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -478,6 +497,7 @@ fi
 %module_scripts mod_headers_more
 %module_scripts mod_stream
 %module_scripts mod_stream_geoip
+%module_scripts mod_http_cache_purge
 
 %files
 %defattr(644,root,root,755)
@@ -581,6 +601,12 @@ fi
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/modules.d/mod_stream.conf
 %attr(755,root,root) %{_libdir}/%{name}/modules/ngx_stream_module.so
 %endif
+
+%files mod_http_cache_purge
+%defattr(644,root,root,755)
+%doc debian/modules/http-cache-purge/{CHANGES,README.md,TODO.md}
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/modules.d/mod_http_cache_purge.conf
+%attr(755,root,root) %{_libdir}/%{name}/modules/ngx_http_cache_purge_module.so
 
 %files -n monit-rc-nginx
 %defattr(644,root,root,755)
