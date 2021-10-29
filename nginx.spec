@@ -36,10 +36,10 @@
 %endif
 
 %define		ssl_version	1.0.2
-%define		rtmp_version	1.2.1
+%define		rtmp_version	1.2.2
 %define		vts_version	0.1.18
 %define		headers_more_version	0.33
-%define		modsecurity_version	3.0.4
+%define		modsecurity_version	3.0.5
 Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # nginx lines:
@@ -47,14 +47,14 @@ Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # - mainline: production quality but API can change
 # http://nginx.org/en/download.html
 Name:		nginx
-Version:	1.20.1
-Release:	2
+Version:	1.21.3
+Release:	1
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	https://nginx.org/download/%{name}-%{version}.tar.gz
-# Source0-md5:	8ca6edd5076bdfad30a69c9c9b41cc68
+# Source0-md5:	21cf8dbb90efc89012fe8b49e3e025d3
 Source1:	https://nginx.org/favicon.ico
-# Source1-md5:	2aaf2115c752cbdbfb8a2f0b3c3189ab
+# Source1-md5:	72e228c3809db53da8a884b6676ed36a
 Source2:	proxy.conf
 Source3:	%{name}.logrotate
 Source4:	%{name}.mime
@@ -64,9 +64,9 @@ Source14:	%{name}.conf
 Source17:	%{name}-mime.types.sh
 Source18:	%{name}.service
 Source33:	https://github.com/SpiderLabs/ModSecurity/releases/download/v%{modsecurity_version}/modsecurity-v%{modsecurity_version}.tar.gz
-# Source33-md5:	a8791b94fa09f2d3693fa1d22523e6c4
+# Source33-md5:	8143ac32fbeec6bc9685f11faab6ea79
 Source101:	https://github.com/arut/nginx-rtmp-module/archive/v%{rtmp_version}/%{name}-rtmp-module-%{rtmp_version}.tar.gz
-# Source101-md5:	639ac2b78103adaccbcfe484a92acf44
+# Source101-md5:	9bb7a06aede38d9e36ad13dc1354d8f9
 Source102:	https://github.com/vozlt/nginx-module-vts/archive/v%{vts_version}.tar.gz
 # Source102-md5:	409a10dbd85e0b807cc77eecec29a3b5
 Source103:	https://github.com/openresty/headers-more-nginx-module/archive/v%{headers_more_version}.tar.gz
