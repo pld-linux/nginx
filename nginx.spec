@@ -6,6 +6,7 @@
 # Conditional build for nginx:
 # Features
 %bcond_with	debug		# enable debug logging: http://nginx.org/en/docs/debugging_log.html
+%bcond_without	file_aio	# file AIO support
 %bcond_without	threads		# thread pool support
 # Modules
 %bcond_without	addition	# http addition module
@@ -372,6 +373,7 @@ cp -f configure auto/
 	%{?with_http2:--with-http_v2_module} \
 	%{?with_modsecurity:--add-module=modsecurity-%{modsecurity_version}/nginx/modsecurity} \
 	--with-http_secure_link_module \
+	%{?with_file_aio:--with-file-aio} \
 	%{nil}
 
 %{__make}
