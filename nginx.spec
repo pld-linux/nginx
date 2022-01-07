@@ -49,12 +49,12 @@ Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # - mainline: production quality but API can change
 # http://nginx.org/en/download.html
 Name:		nginx
-Version:	1.21.4
+Version:	1.21.5
 Release:	1
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	https://nginx.org/download/%{name}-%{version}.tar.gz
-# Source0-md5:	58295ef467a7122987a55df2c644b950
+# Source0-md5:	55783f98814279d5036cb0feb4a062b7
 Source1:	https://nginx.org/favicon.ico
 # Source1-md5:	72e228c3809db53da8a884b6676ed36a
 Source2:	proxy.conf
@@ -80,7 +80,7 @@ Patch0:		%{name}-no-Werror.patch
 Patch1:		%{name}-modsecurity-xheaders.patch
 URL:		https://nginx.org/
 BuildRequires:	mailcap
-BuildRequires:	pcre-devel
+BuildRequires:	pcre2-8-devel
 BuildRequires:	rpmbuild(macros) >= 1.644
 BuildRequires:	zlib-devel
 %if %{with geoip}
