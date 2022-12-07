@@ -38,10 +38,10 @@
 
 %define		ssl_version	1.0.2
 %define		rtmp_version	1.2.2
-%define		vts_version	0.1.18
-%define		headers_more_version	0.33
-%define		modsecurity_version	3.0.5
-%define		http_cache_purge_version	2.5.1
+%define		vts_version	0.2.1
+%define		headers_more_version	0.34
+%define		modsecurity_version	3.0.8
+%define		http_cache_purge_version	2.5.2
 
 Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
@@ -50,12 +50,12 @@ Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # - mainline: production quality but API can change
 # http://nginx.org/en/download.html
 Name:		nginx
-Version:	1.22.0
-Release:	2
+Version:	1.22.1
+Release:	1
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	https://nginx.org/download/%{name}-%{version}.tar.gz
-# Source0-md5:	9b1fb7dae677b22ce4b4e271a4de3501
+# Source0-md5:	8296d957561aeed0261d9be4d3decaec
 Source1:	https://nginx.org/favicon.ico
 # Source1-md5:	72e228c3809db53da8a884b6676ed36a
 Source2:	proxy.conf
@@ -67,16 +67,16 @@ Source14:	%{name}.conf
 Source17:	%{name}-mime.types.sh
 Source18:	%{name}.service
 Source33:	https://github.com/SpiderLabs/ModSecurity/releases/download/v%{modsecurity_version}/modsecurity-v%{modsecurity_version}.tar.gz
-# Source33-md5:	8143ac32fbeec6bc9685f11faab6ea79
+# Source33-md5:	ef62527cbed82c0993a1781414163b01
 Source101:	https://github.com/arut/nginx-rtmp-module/archive/v%{rtmp_version}/%{name}-rtmp-module-%{rtmp_version}.tar.gz
 # Source101-md5:	9bb7a06aede38d9e36ad13dc1354d8f9
 Source102:	https://github.com/vozlt/nginx-module-vts/archive/v%{vts_version}.tar.gz
-# Source102-md5:	409a10dbd85e0b807cc77eecec29a3b5
+# Source102-md5:	730163ed1eeecf39179f95fd973ac64b
 Source103:	https://github.com/openresty/headers-more-nginx-module/archive/v%{headers_more_version}.tar.gz
-# Source103-md5:	95e15a2331c2d4db3691a56268df5f47
+# Source103-md5:	a1c5af547af31b058c3e75c40b6f58b1
 # https://github.com/nginx-modules/ngx_cache_purge
 Source104:	https://github.com/nginx-modules/ngx_cache_purge/archive/refs/tags/%{http_cache_purge_version}.tar.gz
-# Source104-md5:	d42d996efcd6539d2e955c77d24b1e0f
+# Source104-md5:	ea728fb28ed6c7c6326fb1abb8aa66a8
 Patch0:		%{name}-no-Werror.patch
 Patch1:		%{name}-modsecurity-xheaders.patch
 URL:		https://nginx.org/
