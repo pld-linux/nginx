@@ -41,7 +41,7 @@
 %define		vts_version	0.2.1
 %define		headers_more_version	0.34
 %define		modsecurity_version	3.0.8
-%define		http_cache_purge_version	2.5.2
+%define		http_cache_purge_version	2.5.3
 
 Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
@@ -50,12 +50,12 @@ Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # - mainline: production quality but API can change
 # http://nginx.org/en/download.html
 Name:		nginx
-Version:	1.22.1
-Release:	2
+Version:	1.24.0
+Release:	1
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	https://nginx.org/download/%{name}-%{version}.tar.gz
-# Source0-md5:	8296d957561aeed0261d9be4d3decaec
+# Source0-md5:	f95835b55b3cbf05a4368e7bccbb8a46
 Source1:	https://nginx.org/favicon.ico
 # Source1-md5:	72e228c3809db53da8a884b6676ed36a
 Source2:	proxy.conf
@@ -76,7 +76,7 @@ Source103:	https://github.com/openresty/headers-more-nginx-module/archive/v%{hea
 # Source103-md5:	a1c5af547af31b058c3e75c40b6f58b1
 # https://github.com/nginx-modules/ngx_cache_purge
 Source104:	https://github.com/nginx-modules/ngx_cache_purge/archive/refs/tags/%{http_cache_purge_version}.tar.gz
-# Source104-md5:	ea728fb28ed6c7c6326fb1abb8aa66a8
+# Source104-md5:	bf92baae08e4c850825a8543c7d4aaa8
 Patch0:		%{name}-no-Werror.patch
 Patch1:		%{name}-modsecurity-xheaders.patch
 URL:		https://nginx.org/
