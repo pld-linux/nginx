@@ -140,11 +140,13 @@ upgrade() {
 	killproc -p $pidfile $prog -USR2
 	RETVAL=$?
 
-	# wait for 15s
-	retry=60
+	# wait for 3m
+	retry=720
 	while [ $retry -gt 0 ]; do
 		if [ -f $oldbin_pidfile ] && [ -f $pidfile ]; then
-			show "Upgrade: stopping old process"
+                        show "Upgrade: stopping old workers"
+                        killproc -p $oldbin_pidfile $prog -WINCH
+			show "Upgrade: stopping old master process"
 			killproc -p $oldbin_pidfile $prog -QUIT
 			return 0
 		else
