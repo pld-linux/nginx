@@ -27,7 +27,7 @@
 %bcond_without	sub		# ngx_http_sub_module
 %bcond_without	xslt		# without http xslt module
 %bcond_with	http_browser	# http browser module (header "User-agent" parser)
-%bcond_with	modsecurity	# modsecurity module
+%bcond_without	modsecurity	# modsecurity module
 %bcond_with	rtmp		# rtmp support
 %bcond_without	vts		# virtual host traffic status module
 %bcond_without	headers_more	# headers more module
@@ -40,7 +40,7 @@
 %define		rtmp_version	1.2.2
 %define		vts_version	0.2.1
 %define		headers_more_version	0.34
-%define		modsecurity_version	3.0.8
+%define		modsecurity_version	1.0.3
 %define		http_cache_purge_version	2.5.3
 
 Summary:	High perfomance HTTP and reverse proxy server
@@ -51,7 +51,7 @@ Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # http://nginx.org/en/download.html
 Name:		nginx
 Version:	1.24.0
-Release:	2
+Release:	3
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	https://nginx.org/download/%{name}-%{version}.tar.gz
@@ -66,8 +66,8 @@ Source7:	%{name}.init
 Source14:	%{name}.conf
 Source17:	%{name}-mime.types.sh
 Source18:	%{name}.service
-Source33:	https://github.com/SpiderLabs/ModSecurity/releases/download/v%{modsecurity_version}/modsecurity-v%{modsecurity_version}.tar.gz
-# Source33-md5:	ef62527cbed82c0993a1781414163b01
+Source33:	https://github.com/SpiderLabs/ModSecurity-nginx/releases/download/v%{modsecurity_version}/modsecurity-%{name}-v%{modsecurity_version}.tar.gz
+# Source33-md5:	b85e1996f81b51a06a32e73b3be4709d
 Source101:	https://github.com/arut/nginx-rtmp-module/archive/v%{rtmp_version}/%{name}-rtmp-module-%{rtmp_version}.tar.gz
 # Source101-md5:	9bb7a06aede38d9e36ad13dc1354d8f9
 Source102:	https://github.com/vozlt/nginx-module-vts/archive/v%{vts_version}.tar.gz
@@ -78,7 +78,6 @@ Source103:	https://github.com/openresty/headers-more-nginx-module/archive/v%{hea
 Source104:	https://github.com/nginx-modules/ngx_cache_purge/archive/refs/tags/%{http_cache_purge_version}.tar.gz
 # Source104-md5:	bf92baae08e4c850825a8543c7d4aaa8
 Patch0:		%{name}-no-Werror.patch
-Patch1:		%{name}-modsecurity-xheaders.patch
 URL:		https://nginx.org/
 BuildRequires:	mailcap
 BuildRequires:	pcre2-8-devel
@@ -92,6 +91,7 @@ BuildRequires:	gd-devel
 %endif
 %if %{with modsecurity}
 BuildRequires:	lua-devel
+BuildRequires:  libmodsecurity-devel
 %endif
 %if %{with perl}
 BuildRequires:	perl-CGI
@@ -280,6 +280,15 @@ Requires:	%{name} = %{version}-%{release}
 `ngx_cache_purge` is `nginx` module which adds ability to purge
 content from `FastCGI`, `proxy`, `SCGI` and `uWSGI` caches.
 
+%package mod_http_modsecurity
+Summary:	Nginx modsecurity module
+Group:		Daemons
+Requires:	%{name} = %{version}-%{release}
+
+%description mod_http_modsecurity
+The ModSecurity-nginx connector takes the form of an nginx module. The
+module simply serves as a layer of communication between nginx and
+ModSecurity.
 
 %package -n monit-rc-nginx
 Summary:	nginx support for monit
@@ -295,9 +304,8 @@ monitrc file for monitoring nginx webserver.
 Plik monitrc do monitorowania serwera WWW nginx.
 
 %prep
-%setup -q %{?with_rtmp:-a101} %{?with_modsecurity:-a22} %{?with_vts:-a102} %{?with_headers_more:-a103} -a104
+%setup -q %{?with_rtmp:-a101} %{?with_modsecurity:-a33} %{?with_vts:-a102} %{?with_headers_more:-a103} -a104
 %patch0 -p0
-%{?with_modsecurity:%patch1 -p0}
 
 %if %{with rtmp}
 mv nginx-rtmp-module-%{rtmp_version} nginx-rtmp-module
@@ -336,6 +344,7 @@ cp -f configure auto/
 	--http-scgi-temp-path=%{_localstatedir}/cache/%{name}/scgi_temp \
 	--user=nginx \
 	--group=nginx \
+ 	--with-compat \
 	%{?with_select:--with-select_module} \
 	%{?with_poll:--with-poll_module} \
 	%{?with_rtsig:--with-rtsig_module} \
@@ -371,24 +380,12 @@ cp -f configure auto/
 	%{?with_auth_request:--with-http_auth_request_module} \
 	%{?with_threads:--with-threads} \
 	%{?with_http2:--with-http_v2_module} \
-	%{?with_modsecurity:--add-module=modsecurity-%{modsecurity_version}/nginx/modsecurity} \
+	%{?with_modsecurity:--add-dynamic-module=modsecurity-nginx-v%{modsecurity_version}} \
 	--with-http_secure_link_module \
 	%{?with_file_aio:--with-file-aio} \
 	%{nil}
 
 %{__make}
-
-%if %{with modsecurity}
-cd modsecurity-%{modsecurity_version}
-./autogen.sh
-%configure \
-	--enable-standalone-module \
-	--disable-mlogc \
-	--enable-alp2 \
-	--with-lua=/usr
-%{__make}
-cd ..
-%endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -450,6 +447,9 @@ load_module mail
 %{?with_headers_more:load_module http_headers_more_filter}
 %if %{with stream}
 load_module stream
+%endif
+%if %{with modsecurity}
+load_module http_modsecurity
 %endif
 load_module http_cache_purge
 
@@ -609,6 +609,12 @@ fi
 %doc ngx_cache_purge/{CHANGES,README.md}
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/modules.d/mod_http_cache_purge.conf
 %attr(755,root,root) %{_libdir}/%{name}/modules/ngx_http_cache_purge_module.so
+
+%files mod_http_modsecurity
+%defattr(644,root,root,755)
+%doc ngx_cache_purge/{CHANGES,README.md}
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/modules.d/mod_http_modsecurity.conf
+%attr(755,root,root) %{_libdir}/%{name}/modules/ngx_http_modsecurity_module.so
 
 %files -n monit-rc-nginx
 %defattr(644,root,root,755)
