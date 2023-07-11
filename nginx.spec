@@ -96,7 +96,7 @@ BuildRequires:  libmodsecurity-devel
 %if %{with perl}
 BuildRequires:	perl-CGI
 BuildRequires:	perl-devel
-BuildRequires:	python
+BuildRequires:	python3
 BuildRequires:	rpm-perlprov
 %endif
 %if %{with ssl}
