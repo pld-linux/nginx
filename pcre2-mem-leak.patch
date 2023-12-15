@@ -1,0 +1,54 @@
+From 284a0c73771e3a2c57af6e74d96d9a6878b2e7b4 Mon Sep 17 00:00:00 2001
+From: Maxim Dounin <mdounin@mdounin.ru>
+Date: Tue, 17 Oct 2023 02:39:38 +0300
+Subject: [PATCH] Core: fixed memory leak on configuration reload with PCRE2.
+
+In ngx_regex_cleanup() allocator wasn't configured when calling
+pcre2_compile_context_free() and pcre2_match_data_free(), resulting
+in no ngx_free() call and leaked memory.  Fix is ensure that allocator
+is configured for global allocations, so that ngx_free() is actually
+called to free memory.
+
+Additionally, ngx_regex_compile_context was cleared in
+ngx_regex_module_init().  It should be either not cleared, so it will
+be freed by ngx_regex_cleanup(), or properly freed.  Fix is to
+not clear it, so ngx_regex_cleanup() will be able to free it.
+
+Reported by ZhenZhong Wu,
+https://mailman.nginx.org/pipermail/nginx-devel/2023-September/3Z5FIKUDRN2WBSL3JWTZJ7SXDA6YIWPB.html
+---
+ src/core/ngx_regex.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/src/core/ngx_regex.c b/src/core/ngx_regex.c
+index 91381f4994..5b13c5db38 100644
+--- a/src/core/ngx_regex.c
++++ b/src/core/ngx_regex.c
+@@ -600,6 +600,8 @@ ngx_regex_cleanup(void *data)
+      * the new cycle, these will be re-allocated.
+      */
+ 
++    ngx_regex_malloc_init(NULL);
++
+     if (ngx_regex_compile_context) {
+         pcre2_compile_context_free(ngx_regex_compile_context);
+         ngx_regex_compile_context = NULL;
+@@ -611,6 +613,8 @@ ngx_regex_cleanup(void *data)
+         ngx_regex_match_data_size = 0;
+     }
+ 
++    ngx_regex_malloc_done();
++
+ #endif
+ }
+ 
+@@ -706,9 +710,6 @@ ngx_regex_module_init(ngx_cycle_t *cycle)
+     ngx_regex_malloc_done();
+ 
+     ngx_regex_studies = NULL;
+-#if (NGX_PCRE2)
+-    ngx_regex_compile_context = NULL;
+-#endif
+ 
+     return NGX_OK;
+ }
