@@ -38,8 +38,8 @@
 
 %define		ssl_version	1.0.2
 %define		rtmp_version	1.2.2
-%define		vts_version	0.2.1
-%define		headers_more_version	0.34
+%define		vts_version	0.2.2
+%define		headers_more_version	0.37
 %define		modsecurity_version	1.0.3
 %define		http_cache_purge_version	2.5.3
 
@@ -51,7 +51,7 @@ Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # http://nginx.org/en/download.html
 Name:		nginx
 Version:	1.24.0
-Release:	5
+Release:	6
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	https://nginx.org/download/%{name}-%{version}.tar.gz
@@ -71,9 +71,9 @@ Source33:	https://github.com/SpiderLabs/ModSecurity-nginx/releases/download/v%{m
 Source101:	https://github.com/arut/nginx-rtmp-module/archive/v%{rtmp_version}/%{name}-rtmp-module-%{rtmp_version}.tar.gz
 # Source101-md5:	9bb7a06aede38d9e36ad13dc1354d8f9
 Source102:	https://github.com/vozlt/nginx-module-vts/archive/v%{vts_version}.tar.gz
-# Source102-md5:	730163ed1eeecf39179f95fd973ac64b
+# Source102-md5:	aeb08aec8dc89e45fb9411be76850d63
 Source103:	https://github.com/openresty/headers-more-nginx-module/archive/v%{headers_more_version}.tar.gz
-# Source103-md5:	a1c5af547af31b058c3e75c40b6f58b1
+# Source103-md5:	21782630f592fd2e046df96de30923ad
 # https://github.com/nginx-modules/ngx_cache_purge
 Source104:	https://github.com/nginx-modules/ngx_cache_purge/archive/refs/tags/%{http_cache_purge_version}.tar.gz
 # Source104-md5:	bf92baae08e4c850825a8543c7d4aaa8
