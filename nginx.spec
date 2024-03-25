@@ -16,6 +16,7 @@
 %bcond_without	gd		# without http image filter module
 %bcond_without	geoip		# without http geoip module and stream geoip module
 %bcond_without	http2		# HTTP/2 module
+%bcond_without	http3		# HTTP/3 module
 %bcond_without	mail		# don't build imap/mail proxy
 %bcond_without	perl		# don't build with perl module
 %bcond_without	poll		# poll module
@@ -45,17 +46,15 @@
 
 Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
-# nginx lines:
-# - stable: production quality with stable API
-# - mainline: production quality but API can change
+# nginx mainline is recommended by nginx team: https://www.nginx.com/blog/nginx-1-6-1-7-released/
 # http://nginx.org/en/download.html
 Name:		nginx
-Version:	1.24.0
-Release:	6
+Version:	1.25.4
+Release:	1
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	https://nginx.org/download/%{name}-%{version}.tar.gz
-# Source0-md5:	f95835b55b3cbf05a4368e7bccbb8a46
+# Source0-md5:	527a2e135e8b158ef502239ce4701018
 Source1:	https://nginx.org/favicon.ico
 # Source1-md5:	72e228c3809db53da8a884b6676ed36a
 Source2:	proxy.conf
@@ -78,7 +77,6 @@ Source103:	https://github.com/openresty/headers-more-nginx-module/archive/v%{hea
 Source104:	https://github.com/nginx-modules/ngx_cache_purge/archive/refs/tags/%{http_cache_purge_version}.tar.gz
 # Source104-md5:	bf92baae08e4c850825a8543c7d4aaa8
 Patch0:		%{name}-no-Werror.patch
-Patch1:		pcre2-mem-leak.patch
 URL:		https://nginx.org/
 BuildRequires:	mailcap
 BuildRequires:	pcre2-8-devel
@@ -307,7 +305,6 @@ Plik monitrc do monitorowania serwera WWW nginx.
 %prep
 %setup -q %{?with_rtmp:-a101} %{?with_modsecurity:-a33} %{?with_vts:-a102} %{?with_headers_more:-a103} -a104
 %patch0 -p0
-%patch1 -p1
 
 %if %{with rtmp}
 mv nginx-rtmp-module-%{rtmp_version} nginx-rtmp-module
@@ -382,6 +379,7 @@ cp -f configure auto/
 	%{?with_auth_request:--with-http_auth_request_module} \
 	%{?with_threads:--with-threads} \
 	%{?with_http2:--with-http_v2_module} \
+	%{?with_http3:--with-http_v3_module} \
 	%{?with_modsecurity:--add-dynamic-module=modsecurity-nginx-v%{modsecurity_version}} \
 	--with-http_secure_link_module \
 	%{?with_file_aio:--with-file-aio} \
