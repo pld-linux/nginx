@@ -77,6 +77,7 @@ Source103:	https://github.com/openresty/headers-more-nginx-module/archive/v%{hea
 Source104:	https://github.com/nginx-modules/ngx_cache_purge/archive/refs/tags/%{http_cache_purge_version}.tar.gz
 # Source104-md5:	bf92baae08e4c850825a8543c7d4aaa8
 Patch0:		%{name}-no-Werror.patch
+Patch1:		modsecurity-gcc14.patch
 URL:		https://nginx.org/
 BuildRequires:	mailcap
 BuildRequires:	pcre2-8-devel
@@ -305,6 +306,7 @@ Plik monitrc do monitorowania serwera WWW nginx.
 %prep
 %setup -q %{?with_rtmp:-a101} %{?with_modsecurity:-a33} %{?with_vts:-a102} %{?with_headers_more:-a103} -a104
 %patch0 -p0
+%{?with_modsecurity:%patch1 -p1 -d modsecurity-nginx-v%{modsecurity_version}}
 
 %if %{with rtmp}
 mv nginx-rtmp-module-%{rtmp_version} nginx-rtmp-module
