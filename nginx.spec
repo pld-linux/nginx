@@ -49,12 +49,12 @@ Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # nginx mainline is recommended by nginx team: https://www.nginx.com/blog/nginx-1-6-1-7-released/
 # http://nginx.org/en/download.html
 Name:		nginx
-Version:	1.27.1
+Version:	1.27.2
 Release:	1
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	https://nginx.org/download/%{name}-%{version}.tar.gz
-# Source0-md5:	6d2314dda88aefe8d5519d8642d3fa6a
+# Source0-md5:	a0411bcbd1ff88bb2ea542af2ef57314
 Source1:	https://nginx.org/favicon.ico
 # Source1-md5:	72e228c3809db53da8a884b6676ed36a
 Source2:	proxy.conf
@@ -505,7 +505,7 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc CHANGES LICENSE README html/index.html conf/nginx.conf
+%doc CHANGES LICENSE README.md html/index.html conf/nginx.conf
 %doc %lang(ru) CHANGES.ru
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/logrotate.d/%{name}
 %attr(754,root,root) /etc/rc.d/init.d/%{name}
