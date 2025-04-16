@@ -305,8 +305,8 @@ Plik monitrc do monitorowania serwera WWW nginx.
 
 %prep
 %setup -q %{?with_rtmp:-a101} %{?with_modsecurity:-a33} %{?with_vts:-a102} %{?with_headers_more:-a103} -a104
-%patch0 -p0
-%{?with_modsecurity:%patch1 -p1 -d modsecurity-nginx-v%{modsecurity_version}}
+%patch -P0 -p0
+%{?with_modsecurity:%patch -P1 -p1 -d modsecurity-nginx-v%{modsecurity_version}}
 
 %if %{with rtmp}
 mv nginx-rtmp-module-%{rtmp_version} nginx-rtmp-module
