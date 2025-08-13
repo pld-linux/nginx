@@ -40,8 +40,8 @@
 %define		ssl_version	1.0.2
 %define		rtmp_version	1.2.2
 %define		vts_version	0.2.4
-%define		headers_more_version	0.38
-%define		modsecurity_version	1.0.3
+%define		headers_more_version	0.39
+%define		modsecurity_version	1.0.4
 %define		http_cache_purge_version	2.5.3
 
 Summary:	High perfomance HTTP and reverse proxy server
@@ -49,12 +49,12 @@ Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # nginx mainline is recommended by nginx team: https://www.nginx.com/blog/nginx-1-6-1-7-released/
 # http://nginx.org/en/download.html
 Name:		nginx
-Version:	1.28.0
-Release:	3
+Version:	1.29.1
+Release:	1
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	https://nginx.org/download/%{name}-%{version}.tar.gz
-# Source0-md5:	1ad2b6606c3709ed1268ca32ae447c21
+# Source0-md5:	060fdcccf3a825719319e2d9fa42d14d
 Source1:	https://nginx.org/favicon.ico
 # Source1-md5:	72e228c3809db53da8a884b6676ed36a
 Source2:	proxy.conf
@@ -66,18 +66,17 @@ Source14:	%{name}.conf
 Source17:	%{name}-mime.types.sh
 Source18:	%{name}.service
 Source33:	https://github.com/SpiderLabs/ModSecurity-nginx/releases/download/v%{modsecurity_version}/modsecurity-%{name}-v%{modsecurity_version}.tar.gz
-# Source33-md5:	b85e1996f81b51a06a32e73b3be4709d
+# Source33-md5:	500c37fefb2e3c8afa1245fff3b0d86d
 Source101:	https://github.com/arut/nginx-rtmp-module/archive/v%{rtmp_version}/%{name}-rtmp-module-%{rtmp_version}.tar.gz
 # Source101-md5:	9bb7a06aede38d9e36ad13dc1354d8f9
 Source102:	https://github.com/vozlt/nginx-module-vts/archive/v%{vts_version}.tar.gz
 # Source102-md5:	ed27608606c25d49d5facb56bc8d5256
 Source103:	https://github.com/openresty/headers-more-nginx-module/archive/v%{headers_more_version}.tar.gz
-# Source103-md5:	520e4099ea40b62069ec92534d723627
+# Source103-md5:	b4f2092439252e6a4ebd5c1741cffe42
 # https://github.com/nginx-modules/ngx_cache_purge
 Source104:	https://github.com/nginx-modules/ngx_cache_purge/archive/refs/tags/%{http_cache_purge_version}.tar.gz
 # Source104-md5:	bf92baae08e4c850825a8543c7d4aaa8
 Patch0:		%{name}-no-Werror.patch
-Patch1:		modsecurity-gcc14.patch
 URL:		https://nginx.org/
 BuildRequires:	mailcap
 BuildRequires:	pcre2-8-devel
@@ -306,7 +305,6 @@ Plik monitrc do monitorowania serwera WWW nginx.
 %prep
 %setup -q %{?with_rtmp:-a101} %{?with_modsecurity:-a33} %{?with_vts:-a102} %{?with_headers_more:-a103} -a104
 %patch -P0 -p0
-%{?with_modsecurity:%patch -P1 -p1 -d modsecurity-nginx-v%{modsecurity_version}}
 
 %if %{with rtmp}
 mv nginx-rtmp-module-%{rtmp_version} nginx-rtmp-module
@@ -382,7 +380,7 @@ cp -f configure auto/
 	%{?with_threads:--with-threads} \
 	%{?with_http2:--with-http_v2_module} \
 	%{?with_http3:--with-http_v3_module} \
-	%{?with_modsecurity:--add-dynamic-module=modsecurity-nginx-v%{modsecurity_version}} \
+	%{?with_modsecurity:--add-dynamic-module=ModSecurity-nginx-v%{modsecurity_version}} \
 	--with-http_secure_link_module \
 	%{?with_file_aio:--with-file-aio} \
 	%{nil}
