@@ -50,7 +50,7 @@ Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # http://nginx.org/en/download.html
 Name:		nginx
 Version:	1.29.1
-Release:	1
+Release:	2
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	https://nginx.org/download/%{name}-%{version}.tar.gz
@@ -367,6 +367,7 @@ cp -f configure auto/
 	%{?with_addition:--with-http_addition_module} \
 	%{?with_dav:--with-http_dav_module} \
 	%{?with_flv:--with-http_flv_module} \
+	--with-http_gunzip_module \
 	%{?with_sub:--with-http_sub_module} \
 	%{?with_realip:--with-http_realip_module} \
 	%{?with_stub_status:--with-http_stub_status_module} \
