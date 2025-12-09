@@ -42,19 +42,19 @@
 %define		vts_version	0.2.4
 %define		headers_more_version	0.39
 %define		modsecurity_version	1.0.4
-%define		http_cache_purge_version	2.5.3
+%define		http_cache_purge_version	2.5.4
 
 Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # nginx mainline is recommended by nginx team: https://www.nginx.com/blog/nginx-1-6-1-7-released/
 # http://nginx.org/en/download.html
 Name:		nginx
-Version:	1.29.3
+Version:	1.29.4
 Release:	1
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	https://nginx.org/download/%{name}-%{version}.tar.gz
-# Source0-md5:	020fddf0390e89ce0892f9a97e051d0a
+# Source0-md5:	38db76dbdf9cc25a645f5e94b8e7fad2
 Source1:	https://nginx.org/favicon.ico
 # Source1-md5:	72e228c3809db53da8a884b6676ed36a
 Source2:	proxy.conf
@@ -75,7 +75,7 @@ Source103:	https://github.com/openresty/headers-more-nginx-module/archive/v%{hea
 # Source103-md5:	b4f2092439252e6a4ebd5c1741cffe42
 # https://github.com/nginx-modules/ngx_cache_purge
 Source104:	https://github.com/nginx-modules/ngx_cache_purge/archive/refs/tags/%{http_cache_purge_version}.tar.gz
-# Source104-md5:	bf92baae08e4c850825a8543c7d4aaa8
+# Source104-md5:	1699521665acf85b85c09d8d62ff690e
 Patch0:		%{name}-no-Werror.patch
 URL:		https://nginx.org/
 BuildRequires:	mailcap
