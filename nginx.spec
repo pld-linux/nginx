@@ -39,10 +39,10 @@
 
 %define		ssl_version	1.0.2
 %define		rtmp_version	1.2.2
-%define		vts_version	0.2.4
+%define		vts_version	0.2.5
 %define		headers_more_version	0.39
 %define		modsecurity_version	1.0.4
-%define		http_cache_purge_version	2.5.4
+%define		http_cache_purge_version	2.5.5
 
 Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
@@ -50,7 +50,7 @@ Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # http://nginx.org/en/download.html
 Name:		nginx
 Version:	1.29.4
-Release:	1
+Release:	2
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	https://nginx.org/download/%{name}-%{version}.tar.gz
@@ -70,12 +70,12 @@ Source33:	https://github.com/SpiderLabs/ModSecurity-nginx/releases/download/v%{m
 Source101:	https://github.com/arut/nginx-rtmp-module/archive/v%{rtmp_version}/%{name}-rtmp-module-%{rtmp_version}.tar.gz
 # Source101-md5:	9bb7a06aede38d9e36ad13dc1354d8f9
 Source102:	https://github.com/vozlt/nginx-module-vts/archive/v%{vts_version}.tar.gz
-# Source102-md5:	ed27608606c25d49d5facb56bc8d5256
+# Source102-md5:	d0f54a715b620670fd9c6492a7fe8fc0
 Source103:	https://github.com/openresty/headers-more-nginx-module/archive/v%{headers_more_version}.tar.gz
 # Source103-md5:	b4f2092439252e6a4ebd5c1741cffe42
 # https://github.com/nginx-modules/ngx_cache_purge
 Source104:	https://github.com/nginx-modules/ngx_cache_purge/archive/refs/tags/%{http_cache_purge_version}.tar.gz
-# Source104-md5:	1699521665acf85b85c09d8d62ff690e
+# Source104-md5:	e3d43ae95613cd538d2af0ccb0d642c7
 Patch0:		%{name}-no-Werror.patch
 URL:		https://nginx.org/
 BuildRequires:	mailcap
