@@ -50,7 +50,7 @@ Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # http://nginx.org/en/download.html
 Name:		nginx
 Version:	1.29.5
-Release:	1
+Release:	2
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	https://nginx.org/download/%{name}-%{version}.tar.gz
@@ -77,6 +77,7 @@ Source103:	https://github.com/openresty/headers-more-nginx-module/archive/v%{hea
 Source104:	https://github.com/nginx-modules/ngx_cache_purge/archive/refs/tags/%{http_cache_purge_version}.tar.gz
 # Source104-md5:	e3d43ae95613cd538d2af0ccb0d642c7
 Patch0:		%{name}-no-Werror.patch
+Patch1:		ngx_cache_purge-nginx-1.29.4.patch
 URL:		https://nginx.org/
 BuildRequires:	mailcap
 BuildRequires:	pcre2-8-devel
@@ -319,6 +320,9 @@ mv headers-more-nginx-module-%{headers_more_version} nginx-headers-more-module
 %endif
 
 mv ngx_cache_purge-* ngx_cache_purge
+cd ngx_cache_purge
+%patch -P1 -p1
+cd ..
 
 # build mime.types.conf
 #sh %{SOURCE17} /etc/mime.types
