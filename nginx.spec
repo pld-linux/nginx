@@ -42,7 +42,7 @@
 %define		vts_version	0.2.5
 %define		headers_more_version	0.39
 %define		modsecurity_version	1.0.4
-%define		http_cache_purge_version	2.5.5
+%define		http_cache_purge_version	2.5.6
 
 Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
@@ -75,9 +75,8 @@ Source103:	https://github.com/openresty/headers-more-nginx-module/archive/v%{hea
 # Source103-md5:	b4f2092439252e6a4ebd5c1741cffe42
 # https://github.com/nginx-modules/ngx_cache_purge
 Source104:	https://github.com/nginx-modules/ngx_cache_purge/archive/refs/tags/%{http_cache_purge_version}.tar.gz
-# Source104-md5:	e3d43ae95613cd538d2af0ccb0d642c7
+# Source104-md5:	fb8d7b4af4d9b3e6463e836607674177
 Patch0:		%{name}-no-Werror.patch
-Patch1:		ngx_cache_purge-nginx-1.29.4.patch
 URL:		https://nginx.org/
 BuildRequires:	mailcap
 BuildRequires:	pcre2-8-devel
@@ -320,9 +319,6 @@ mv headers-more-nginx-module-%{headers_more_version} nginx-headers-more-module
 %endif
 
 mv ngx_cache_purge-* ngx_cache_purge
-cd ngx_cache_purge
-%patch -P1 -p1
-cd ..
 
 # build mime.types.conf
 #sh %{SOURCE17} /etc/mime.types
