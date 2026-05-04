@@ -42,11 +42,10 @@
 %define		vts_version	0.2.5
 %define		headers_more_version	0.39
 %define		modsecurity_version	1.0.4
-%define		http_cache_purge_version	2.5.6
+%define		http_cache_purge_version	3.0.1
 
 Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
-# nginx mainline is recommended by nginx team: https://www.nginx.com/blog/nginx-1-6-1-7-released/
 # http://nginx.org/en/download.html
 Name:		nginx
 Version:	1.31.0
@@ -75,7 +74,7 @@ Source103:	https://github.com/openresty/headers-more-nginx-module/archive/v%{hea
 # Source103-md5:	b4f2092439252e6a4ebd5c1741cffe42
 # https://github.com/nginx-modules/ngx_cache_purge
 Source104:	https://github.com/nginx-modules/ngx_cache_purge/archive/refs/tags/%{http_cache_purge_version}.tar.gz
-# Source104-md5:	fb8d7b4af4d9b3e6463e836607674177
+# Source104-md5:	76b6dbe4f4b81b2d098a67f7eb4b58fa
 Patch0:		%{name}-no-Werror.patch
 URL:		https://nginx.org/
 BuildRequires:	mailcap
@@ -607,13 +606,13 @@ fi
 
 %files mod_http_cache_purge
 %defattr(644,root,root,755)
-%doc ngx_cache_purge/{CHANGES,README.md}
+%doc ngx_cache_purge/README.md
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/modules.d/mod_http_cache_purge.conf
 %attr(755,root,root) %{_libdir}/%{name}/modules/ngx_http_cache_purge_module.so
 
 %files mod_http_modsecurity
 %defattr(644,root,root,755)
-%doc ngx_cache_purge/{CHANGES,README.md}
+%doc ModSecurity-nginx-v%{modsecurity_version}/{AUTHORS,CHANGES,README.md}
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/modules.d/mod_http_modsecurity.conf
 %attr(755,root,root) %{_libdir}/%{name}/modules/ngx_http_modsecurity_module.so
 
