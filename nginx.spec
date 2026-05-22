@@ -42,18 +42,18 @@
 %define		vts_version	0.2.5
 %define		headers_more_version	0.39
 %define		modsecurity_version	1.0.4
-%define		http_cache_purge_version	3.0.1
+%define		http_cache_purge_version	3.0.2
 
 Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # http://nginx.org/en/download.html
 Name:		nginx
-Version:	1.31.0
+Version:	1.31.1
 Release:	1
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	https://nginx.org/download/%{name}-%{version}.tar.gz
-# Source0-md5:	40b2a7057eb55965d42d5416636c27e2
+# Source0-md5:	c1584eaaf9cdcc4c406c94b6b518e8dd
 Source1:	https://nginx.org/favicon.ico
 # Source1-md5:	72e228c3809db53da8a884b6676ed36a
 Source2:	proxy.conf
@@ -74,7 +74,7 @@ Source103:	https://github.com/openresty/headers-more-nginx-module/archive/v%{hea
 # Source103-md5:	b4f2092439252e6a4ebd5c1741cffe42
 # https://github.com/nginx-modules/ngx_cache_purge
 Source104:	https://github.com/nginx-modules/ngx_cache_purge/archive/refs/tags/%{http_cache_purge_version}.tar.gz
-# Source104-md5:	76b6dbe4f4b81b2d098a67f7eb4b58fa
+# Source104-md5:	de4ee3e612ae99c7992bcb6db60c6413
 Patch0:		%{name}-no-Werror.patch
 URL:		https://nginx.org/
 BuildRequires:	mailcap
