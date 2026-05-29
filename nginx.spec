@@ -1,7 +1,6 @@
 # TODO
 # - /etc/sysconfig/nginx file
 # - missing perl build/install requires
-# - add njs: https://nginx.org/en/docs/njs/
 #
 # Conditional build for nginx:
 # Features
@@ -18,6 +17,7 @@
 %bcond_without	http2		# HTTP/2 module
 %bcond_without	http3		# HTTP/3 module
 %bcond_without	mail		# don't build imap/mail proxy
+%bcond_without	njs		# njs JavaScript module with QuickJS engine
 %bcond_without	perl		# don't build with perl module
 %bcond_without	poll		# poll module
 %bcond_without	realip		# real ip (behind proxy)
@@ -43,13 +43,15 @@
 %define		headers_more_version	0.39
 %define		modsecurity_version	1.0.4
 %define		http_cache_purge_version	3.0.2
+%define		njs_version		0.9.9
+%define		quickjs_commit		d73189dd5a582c19c565774bd56fed4e72d33c99
 
 Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # http://nginx.org/en/download.html
 Name:		nginx
 Version:	1.31.1
-Release:	1
+Release:	2
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	https://nginx.org/download/%{name}-%{version}.tar.gz
@@ -75,6 +77,8 @@ Source103:	https://github.com/openresty/headers-more-nginx-module/archive/v%{hea
 # https://github.com/nginx-modules/ngx_cache_purge
 Source104:	https://github.com/nginx-modules/ngx_cache_purge/archive/refs/tags/%{http_cache_purge_version}.tar.gz
 # Source104-md5:	de4ee3e612ae99c7992bcb6db60c6413
+Source105:	https://github.com/nginx/njs/archive/%{njs_version}/njs-%{njs_version}.tar.gz
+Source106:	https://github.com/bellard/quickjs/archive/%{quickjs_commit}/quickjs-%{quickjs_commit}.tar.gz
 Patch0:		%{name}-no-Werror.patch
 URL:		https://nginx.org/
 BuildRequires:	mailcap
@@ -288,6 +292,17 @@ The ModSecurity-nginx connector takes the form of an nginx module. The
 module simply serves as a layer of communication between nginx and
 ModSecurity.
 
+%package mod_http_js
+Summary:	njs JavaScript scripting module for nginx
+Group:		Daemons
+Requires:	%{name} = %{version}-%{release}
+%if %{with stream}
+Requires:	%{name}-mod_stream = %{version}-%{release}
+%endif
+
+%description mod_http_js
+The njs dynamic module adds JavaScript scripting support to nginx.
+
 %package -n monit-rc-nginx
 Summary:	nginx support for monit
 Summary(pl.UTF-8):	Wsparcie nginx dla monit
@@ -302,7 +317,7 @@ monitrc file for monitoring nginx webserver.
 Plik monitrc do monitorowania serwera WWW nginx.
 
 %prep
-%setup -q %{?with_rtmp:-a101} %{?with_modsecurity:-a33} %{?with_vts:-a102} %{?with_headers_more:-a103} -a104
+%setup -q %{?with_rtmp:-a101} %{?with_modsecurity:-a33} %{?with_vts:-a102} %{?with_headers_more:-a103} -a104 %{?with_njs:-a105 -a106}
 %patch -P0 -p0
 
 %if %{with rtmp}
@@ -319,12 +334,21 @@ mv headers-more-nginx-module-%{headers_more_version} nginx-headers-more-module
 
 mv ngx_cache_purge-* ngx_cache_purge
 
+%if %{with njs}
+mv njs-%{njs_version} nginx-njs
+mv quickjs-%{quickjs_commit} quickjs
+%endif
+
 # build mime.types.conf
 #sh %{SOURCE17} /etc/mime.types
 
 %build
 # NB: not autoconf generated configure
 cp -f configure auto/
+
+%if %{with njs}
+%{__make} -C quickjs CFLAGS='-fPIC %{rpmcflags} -D_GNU_SOURCE -DCONFIG_VERSION=\"%{quickjs_commit}\"' libquickjs.a
+%endif
 
 ./configure \
 	--prefix=%{_prefix} \
@@ -360,8 +384,8 @@ cp -f configure auto/
 	--with-stream_ssl_module \
 %endif
 	--with-cc="%{__cc}" \
-	--with-cc-opt="%{rpmcflags}" \
-	--with-ld-opt="%{rpmldflags}" \
+	--with-cc-opt="%{rpmcflags}%{?with_njs: -I%{_builddir}/%{name}-%{version}/quickjs}" \
+	--with-ld-opt="%{rpmldflags}%{?with_njs: -L%{_builddir}/%{name}-%{version}/quickjs}" \
 	%{?with_debug:--with-debug} \
 	%{?with_addition:--with-http_addition_module} \
 	%{?with_dav:--with-http_dav_module} \
@@ -381,6 +405,7 @@ cp -f configure auto/
 	%{?with_http2:--with-http_v2_module} \
 	%{?with_http3:--with-http_v3_module} \
 	%{?with_modsecurity:--add-dynamic-module=ModSecurity-nginx-v%{modsecurity_version}} \
+	%{?with_njs:--add-dynamic-module=./nginx-njs/nginx} \
 	--with-http_secure_link_module \
 	%{?with_file_aio:--with-file-aio} \
 	%{nil}
@@ -452,6 +477,12 @@ load_module stream
 load_module http_modsecurity
 %endif
 load_module http_cache_purge
+%if %{with njs}
+load_module http_js
+%if %{with stream}
+load_module stream_js
+%endif
+%endif
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -500,6 +531,7 @@ fi
 %module_scripts mod_stream
 %module_scripts mod_stream_geoip
 %module_scripts mod_http_cache_purge
+%{?with_njs:%module_scripts mod_http_js}
 
 %files
 %defattr(644,root,root,755)
@@ -615,6 +647,17 @@ fi
 %doc ModSecurity-nginx-v%{modsecurity_version}/{AUTHORS,CHANGES,README.md}
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/modules.d/mod_http_modsecurity.conf
 %attr(755,root,root) %{_libdir}/%{name}/modules/ngx_http_modsecurity_module.so
+
+%if %{with njs}
+%files mod_http_js
+%defattr(644,root,root,755)
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/modules.d/mod_http_js.conf
+%attr(755,root,root) %{_libdir}/%{name}/modules/ngx_http_js_module.so
+%if %{with stream}
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/modules.d/mod_stream_js.conf
+%attr(755,root,root) %{_libdir}/%{name}/modules/ngx_stream_js_module.so
+%endif
+%endif
 
 %files -n monit-rc-nginx
 %defattr(644,root,root,755)
