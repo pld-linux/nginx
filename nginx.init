@@ -140,8 +140,11 @@ upgrade() {
 	killproc -p $pidfile $prog -USR2
 	RETVAL=$?
 
-	# wait for 3m
-	retry=720
+	# only wait for the new master if USR2 was delivered; otherwise the .oldbin
+	# pid file can never appear, so skip the 3m wait and fall through to the
+	# failure message below.
+	retry=0
+	[ $RETVAL -eq 0 ] && retry=720
 	while [ $retry -gt 0 ]; do
 		if [ -f $oldbin_pidfile ] && [ -f $pidfile ]; then
                         show "Upgrade: stopping old workers"
@@ -172,6 +175,7 @@ reopen_logs() {
 
 	show "Reopening $svname logs"
 	killproc -p $pidfile $prog -USR1
+	RETVAL=$?
 }
 
 RETVAL=0
