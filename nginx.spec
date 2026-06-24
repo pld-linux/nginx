@@ -40,10 +40,10 @@
 %define		ssl_version	1.0.2
 %define		rtmp_version	1.2.2
 %define		vts_version	0.2.5
-%define		headers_more_version	0.39
+%define		headers_more_version	0.40
 %define		modsecurity_version	1.0.4
 %define		http_cache_purge_version	3.0.2
-%define		njs_version		0.9.9
+%define		njs_version		1.0.0
 %define		quickjs_commit		d73189dd5a582c19c565774bd56fed4e72d33c99
 
 Summary:	High perfomance HTTP and reverse proxy server
@@ -51,7 +51,7 @@ Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # http://nginx.org/en/download.html
 Name:		nginx
 Version:	1.31.2
-Release:	1
+Release:	2
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	https://nginx.org/download/%{name}-%{version}.tar.gz
@@ -73,12 +73,12 @@ Source101:	https://github.com/arut/nginx-rtmp-module/archive/v%{rtmp_version}/%{
 Source102:	https://github.com/vozlt/nginx-module-vts/archive/v%{vts_version}.tar.gz
 # Source102-md5:	d0f54a715b620670fd9c6492a7fe8fc0
 Source103:	https://github.com/openresty/headers-more-nginx-module/archive/v%{headers_more_version}.tar.gz
-# Source103-md5:	b4f2092439252e6a4ebd5c1741cffe42
+# Source103-md5:	1a85bf5c3b07c217d6683e4002ccc542
 # https://github.com/nginx-modules/ngx_cache_purge
 Source104:	https://github.com/nginx-modules/ngx_cache_purge/archive/refs/tags/%{http_cache_purge_version}.tar.gz
 # Source104-md5:	de4ee3e612ae99c7992bcb6db60c6413
 Source105:	https://github.com/nginx/njs/archive/%{njs_version}/njs-%{njs_version}.tar.gz
-# Source105-md5:	d6cccfdb76d3163c3eba3aac17e3e528
+# Source105-md5:	7b6824c93e8fa79b8fcdf35b85ecc7ce
 Source106:	https://github.com/bellard/quickjs/archive/%{quickjs_commit}/quickjs-%{quickjs_commit}.tar.gz
 # Source106-md5:	913c3fc48570d2660d5b243e9b6e6d7a
 Patch0:		%{name}-no-Werror.patch
