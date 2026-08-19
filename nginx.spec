@@ -38,8 +38,9 @@
 %endif
 
 %define		ssl_version	1.0.2
+%define		quic_ssl_version	1.1.1
 %define		rtmp_version	1.2.2
-%define		vts_version	0.2.5
+%define		vts_version	0.2.7
 %define		headers_more_version	0.40
 %define		modsecurity_version	1.0.4
 %define		http_cache_purge_version	3.0.2
@@ -50,12 +51,12 @@ Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # http://nginx.org/en/download.html
 Name:		nginx
-Version:	1.31.3
-Release:	2
+Version:	1.31.4
+Release:	1
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	https://nginx.org/download/%{name}-%{version}.tar.gz
-# Source0-md5:	70e0d6e9a391149e41fa0817f9d95002
+# Source0-md5:	f73114f560071ae341e57ed123322f4c
 Source1:	https://nginx.org/favicon.ico
 # Source1-md5:	72e228c3809db53da8a884b6676ed36a
 Source2:	proxy.conf
@@ -71,7 +72,7 @@ Source33:	https://github.com/SpiderLabs/ModSecurity-nginx/releases/download/v%{m
 Source101:	https://github.com/arut/nginx-rtmp-module/archive/v%{rtmp_version}/%{name}-rtmp-module-%{rtmp_version}.tar.gz
 # Source101-md5:	9bb7a06aede38d9e36ad13dc1354d8f9
 Source102:	https://github.com/vozlt/nginx-module-vts/archive/v%{vts_version}.tar.gz
-# Source102-md5:	d0f54a715b620670fd9c6492a7fe8fc0
+# Source102-md5:	55c3ebaa6034081095cd5815034983e7
 Source103:	https://github.com/openresty/headers-more-nginx-module/archive/v%{headers_more_version}.tar.gz
 # Source103-md5:	1a85bf5c3b07c217d6683e4002ccc542
 # https://github.com/nginx-modules/ngx_cache_purge
@@ -105,7 +106,9 @@ BuildRequires:	rpm-perlprov
 %endif
 %if %{with ssl}
 BuildRequires:	openssl-devel >= %{ssl_version}
-Requires:	openssl >= %{ssl_version}
+%endif
+%if %{with http3}
+BuildRequires:	openssl-devel >= %{quic_ssl_version}
 %endif
 %if %{with xslt}
 BuildRequires:	libxslt-devel
