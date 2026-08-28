@@ -1,0 +1,24 @@
+# Build environment for nginx dynamic modules packaged outside nginx.spec.
+
+# nginx_version ngx_load_module() compares against; changes force module rebuilds
+%nginx_modules_api	@VERSION@
+
+# run nginx's own configure here, with --with-compat --add-dynamic-module=<dir>
+%nginx_srcdir		@SRCDIR@
+
+# resolved at use time, so one arch-independent file serves every arch
+%nginx_moduledir	%{_libdir}/nginx/modules
+
+# reload the server once at end of transaction, as nginx.spec does for its own
+%nginx_module_scripts()	\
+%post -n %1 \
+if [ "$1" = "1" ]; then \
+	%systemd_post nginx.service \
+	%service nginx force-reload \
+fi \
+\
+%postun -n %1 \
+if [ "$1" = "0" ]; then \
+	%systemd_post nginx.service \
+	%service nginx force-reload \
+fi
