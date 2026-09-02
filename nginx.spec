@@ -4,6 +4,7 @@
 #
 # Conditional build for nginx:
 # Features
+%bcond_without	control_api	# control API socket (when started with -l option)
 %bcond_with	debug		# enable debug logging: http://nginx.org/en/docs/debugging_log.html
 %bcond_without	file_aio	# file AIO support
 %bcond_without	threads		# thread pool support
@@ -16,6 +17,7 @@
 %bcond_without	geoip		# without http geoip module and stream geoip module
 %bcond_without	http2		# HTTP/2 module
 %bcond_without	http3		# HTTP/3 module
+%bcond_without	http_json	# http json module (json_set)
 %bcond_without	mail		# don't build imap/mail proxy
 %bcond_without	njs		# njs JavaScript module with QuickJS engine
 %bcond_without	perl		# don't build with perl module
@@ -44,19 +46,19 @@
 %define		headers_more_version	0.40
 %define		modsecurity_version	1.0.4
 %define		http_cache_purge_version	3.0.2
-%define		njs_version		1.0.0
+%define		njs_version		1.0.1
 %define		quickjs_commit		d73189dd5a582c19c565774bd56fed4e72d33c99
 
 Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # http://nginx.org/en/download.html
 Name:		nginx
-Version:	1.31.4
-Release:	2
+Version:	1.31.5
+Release:	1
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	https://nginx.org/download/%{name}-%{version}.tar.gz
-# Source0-md5:	f73114f560071ae341e57ed123322f4c
+# Source0-md5:	9624b5253f3f792bdbba4ad54d64d913
 Source1:	https://nginx.org/favicon.ico
 # Source1-md5:	72e228c3809db53da8a884b6676ed36a
 Source2:	proxy.conf
@@ -80,7 +82,7 @@ Source103:	https://github.com/openresty/headers-more-nginx-module/archive/v%{hea
 Source104:	https://github.com/nginx-modules/ngx_cache_purge/archive/refs/tags/%{http_cache_purge_version}.tar.gz
 # Source104-md5:	de4ee3e612ae99c7992bcb6db60c6413
 Source105:	https://github.com/nginx/njs/archive/%{njs_version}/njs-%{njs_version}.tar.gz
-# Source105-md5:	7b6824c93e8fa79b8fcdf35b85ecc7ce
+# Source105-md5:	c1a758b8356331c7eec569a4a7a647b3
 Source106:	https://github.com/bellard/quickjs/archive/%{quickjs_commit}/quickjs-%{quickjs_commit}.tar.gz
 # Source106-md5:	913c3fc48570d2660d5b243e9b6e6d7a
 Patch0:		%{name}-no-Werror.patch
@@ -96,13 +98,14 @@ BuildRequires:	GeoIP-devel
 BuildRequires:	gd-devel
 %endif
 %if %{with modsecurity}
-BuildRequires:	lua-devel
 BuildRequires:  libmodsecurity-devel
 %endif
+%if %{with njs}
+# njs autodetects libxml2 and builds its xml module only when it is found
+BuildRequires:	libxml2-devel
+%endif
 %if %{with perl}
-BuildRequires:	perl-CGI
 BuildRequires:	perl-devel
-BuildRequires:	python3
 BuildRequires:	rpm-perlprov
 %endif
 %if %{with ssl}
@@ -437,6 +440,7 @@ cp -f configure auto/
 	%{?with_sub:--with-http_sub_module} \
 	%{?with_realip:--with-http_realip_module} \
 	%{?with_stub_status:--with-http_stub_status_module} \
+	%{?with_http_json:--with-http_json_module} \
 	%{?with_ssl:--with-http_ssl_module} \
 	%{!?with_http_browser:--without-http_browser_module} \
 	--add-dynamic-module=./ngx_cache_purge \
@@ -445,6 +449,7 @@ cp -f configure auto/
 	%{?with_vts:--add-dynamic-module=./nginx-vts-module} \
 	%{?with_auth_request:--with-http_auth_request_module} \
 	%{?with_threads:--with-threads} \
+	%{?with_control_api:--with-control-api} \
 	%{?with_http2:--with-http_v2_module} \
 	%{?with_http3:--with-http_v3_module} \
 	%{?with_modsecurity:--add-dynamic-module=ModSecurity-nginx-v%{modsecurity_version}} \
