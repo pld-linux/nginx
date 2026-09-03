@@ -4,7 +4,7 @@
 #
 # Conditional build for nginx:
 # Features
-%bcond_without	control_api	# control API socket (when started with -l option)
+%bcond_without	control_api	%dnl control API socket (when started with -l option)
 %bcond_with	debug		# enable debug logging: http://nginx.org/en/docs/debugging_log.html
 %bcond_without	file_aio	# file AIO support
 %bcond_without	threads		# thread pool support
