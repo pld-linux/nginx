@@ -54,7 +54,7 @@ Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # http://nginx.org/en/download.html
 Name:		nginx
 Version:	1.31.5
-Release:	2
+Release:	3
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	https://nginx.org/download/%{name}-%{version}.tar.gz
@@ -75,6 +75,7 @@ Source33:	https://github.com/SpiderLabs/ModSecurity-nginx/releases/download/v%{m
 Source34:	%{name}-modsecurity.conf
 Source35:	%{name}-modsecurity-main.conf
 Source36:	%{name}-modsecurity-local.conf
+Source37:	%{name}-modsecurity.logrotate
 Source101:	https://github.com/arut/nginx-rtmp-module/archive/v%{rtmp_version}/%{name}-rtmp-module-%{rtmp_version}.tar.gz
 # Source101-md5:	9bb7a06aede38d9e36ad13dc1354d8f9
 Source102:	https://github.com/vozlt/nginx-module-vts/archive/v%{vts_version}.tar.gz
@@ -549,6 +550,7 @@ cp -p %{SOURCE34} $RPM_BUILD_ROOT%{_sysconfdir}/conf.d/modsecurity.conf
 cp -p %{SOURCE35} $RPM_BUILD_ROOT%{_sysconfdir}/modsecurity/main.conf
 cp -p %{name}-modsecurity.conf $RPM_BUILD_ROOT%{_sysconfdir}/modsecurity/modsecurity.conf
 cp -p %{SOURCE36} $RPM_BUILD_ROOT%{_sysconfdir}/modsecurity/rules.d/00_local.conf
+cp -p %{SOURCE37} $RPM_BUILD_ROOT/etc/logrotate.d/%{name}-modsecurity
 %endif
 load_module http_cache_purge
 %if %{with njs}
@@ -736,6 +738,7 @@ fi
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/modsecurity/modsecurity.conf
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/modsecurity/rules.d/00_local.conf
 %attr(755,root,root) %{_libdir}/%{name}/modules/ngx_http_modsecurity_module.so
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/logrotate.d/%{name}-modsecurity
 %dir /var/lib/%{name}
 %attr(770,nginx,root) %dir /var/lib/%{name}/modsecurity
 
