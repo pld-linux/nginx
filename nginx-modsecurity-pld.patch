@@ -1,8 +1,8 @@
 PLD paths for the engine config copied from libmodsecurity modsecurity.conf-recommended;
-SecRuleEngine On is the PLD default, upstream ships DetectionOnly.
+SecRuleEngine On is the PLD default, upstream ships DetectionOnly; JSON audit log (one object per line) for tooling.
 
---- a/nginx-modsecurity.conf	2026-09-11 08:50:17.243723202 +0200
-+++ b/nginx-modsecurity.conf	2026-09-11 08:50:17.246745296 +0200
+--- a/nginx-modsecurity.conf	2026-09-12 00:43:21.131284516 +0200
++++ b/nginx-modsecurity.conf	2026-09-12 00:43:21.133951561 +0200
 @@ -4,7 +4,7 @@
  # only to start with, because that minimises the chances of post-installation
  # disruption.
@@ -46,12 +46,13 @@ SecRuleEngine On is the PLD default, upstream ships DetectionOnly.
  #SecDebugLogLevel 3
  
  
-@@ -249,10 +249,10 @@
+@@ -249,10 +249,11 @@
  # assumes that you will use the audit log only ocassionally.
  #
  SecAuditLogType Serial
 -SecAuditLog /var/log/modsec_audit.log
-+SecAuditLog /var/log/nginx/modsec_audit.log
++SecAuditLogFormat JSON
++SecAuditLog /var/log/nginx/modsec_audit.json
  
  # Specify the path for concurrent audit logging.
 -#SecAuditLogStorageDir /opt/modsecurity/var/audit/
@@ -59,7 +60,7 @@ SecRuleEngine On is the PLD default, upstream ships DetectionOnly.
  
  
  # -- Miscellaneous -----------------------------------------------------------
-@@ -274,7 +274,7 @@
+@@ -274,7 +275,7 @@
  # to properly map encoded data to your language. Properly setting
  # these directives helps to reduce false positives and negatives.
  #

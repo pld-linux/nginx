@@ -1,0 +1,7 @@
+/var/log/nginx/modsec_audit.json {
+	olddir /var/log/archive/nginx
+	missingok
+	notifempty
+	# libmodsecurity opens the serial audit log once; nginx reopen-logs (USR1) does not reopen it
+	copytruncate
+}
