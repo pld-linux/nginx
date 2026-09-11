@@ -54,7 +54,7 @@ Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # http://nginx.org/en/download.html
 Name:		nginx
 Version:	1.31.5
-Release:	1
+Release:	2
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	https://nginx.org/download/%{name}-%{version}.tar.gz
@@ -72,6 +72,9 @@ Source18:	%{name}.service
 Source19:	macros.%{name}
 Source33:	https://github.com/SpiderLabs/ModSecurity-nginx/releases/download/v%{modsecurity_version}/modsecurity-%{name}-v%{modsecurity_version}.tar.gz
 # Source33-md5:	500c37fefb2e3c8afa1245fff3b0d86d
+Source34:	%{name}-modsecurity.conf
+Source35:	%{name}-modsecurity-main.conf
+Source36:	%{name}-modsecurity-local.conf
 Source101:	https://github.com/arut/nginx-rtmp-module/archive/v%{rtmp_version}/%{name}-rtmp-module-%{rtmp_version}.tar.gz
 # Source101-md5:	9bb7a06aede38d9e36ad13dc1354d8f9
 Source102:	https://github.com/vozlt/nginx-module-vts/archive/v%{vts_version}.tar.gz
@@ -86,6 +89,7 @@ Source105:	https://github.com/nginx/njs/archive/%{njs_version}/njs-%{njs_version
 Source106:	https://github.com/bellard/quickjs/archive/%{quickjs_commit}/quickjs-%{quickjs_commit}.tar.gz
 # Source106-md5:	913c3fc48570d2660d5b243e9b6e6d7a
 Patch0:		%{name}-no-Werror.patch
+Patch1:		%{name}-modsecurity-pld.patch
 URL:		https://nginx.org/
 BuildRequires:	mailcap
 BuildRequires:	pcre2-8-devel
@@ -98,6 +102,8 @@ BuildRequires:	GeoIP-devel
 BuildRequires:	gd-devel
 %endif
 %if %{with modsecurity}
+# modsecurity.conf-recommended in /usr/share/libmodsecurity
+BuildRequires:	libmodsecurity >= 3.0.16-4
 BuildRequires:  libmodsecurity-devel
 %endif
 %if %{with njs}
@@ -364,6 +370,10 @@ Plik monitrc do monitorowania serwera WWW nginx.
 %prep
 %setup -q %{?with_rtmp:-a101} %{?with_modsecurity:-a33} %{?with_vts:-a102} %{?with_headers_more:-a103} -a104 %{?with_njs:-a105 -a106}
 %patch -P0 -p0
+%if %{with modsecurity}
+cp -p %{_datadir}/libmodsecurity/modsecurity.conf-recommended %{name}-modsecurity.conf
+%patch -P1 -p1
+%endif
 
 %if %{with rtmp}
 mv nginx-rtmp-module-%{rtmp_version} nginx-rtmp-module
@@ -534,6 +544,11 @@ load_module stream
 %endif
 %if %{with modsecurity}
 load_module http_modsecurity
+install -d $RPM_BUILD_ROOT{%{_sysconfdir}/modsecurity/rules.d,/var/lib/%{name}/modsecurity}
+cp -p %{SOURCE34} $RPM_BUILD_ROOT%{_sysconfdir}/conf.d/modsecurity.conf
+cp -p %{SOURCE35} $RPM_BUILD_ROOT%{_sysconfdir}/modsecurity/main.conf
+cp -p %{name}-modsecurity.conf $RPM_BUILD_ROOT%{_sysconfdir}/modsecurity/modsecurity.conf
+cp -p %{SOURCE36} $RPM_BUILD_ROOT%{_sysconfdir}/modsecurity/rules.d/00_local.conf
 %endif
 load_module http_cache_purge
 %if %{with njs}
@@ -714,7 +729,15 @@ fi
 %defattr(644,root,root,755)
 %doc ModSecurity-nginx-v%{modsecurity_version}/{AUTHORS,CHANGES,README.md}
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/modules.d/mod_http_modsecurity.conf
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/conf.d/modsecurity.conf
+%dir %{_sysconfdir}/modsecurity
+%dir %{_sysconfdir}/modsecurity/rules.d
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/modsecurity/main.conf
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/modsecurity/modsecurity.conf
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/modsecurity/rules.d/00_local.conf
 %attr(755,root,root) %{_libdir}/%{name}/modules/ngx_http_modsecurity_module.so
+%dir /var/lib/%{name}
+%attr(770,nginx,root) %dir /var/lib/%{name}/modsecurity
 
 %if %{with njs}
 %files mod_http_js
