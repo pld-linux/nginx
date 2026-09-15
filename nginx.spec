@@ -53,12 +53,12 @@ Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # http://nginx.org/en/download.html
 Name:		nginx
-Version:	1.31.5
-Release:	3
+Version:	1.31.6
+Release:	1
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	https://nginx.org/download/%{name}-%{version}.tar.gz
-# Source0-md5:	9624b5253f3f792bdbba4ad54d64d913
+# Source0-md5:	6d59f919382fae46812c44ffbc87498a
 Source1:	https://nginx.org/favicon.ico
 # Source1-md5:	72e228c3809db53da8a884b6676ed36a
 Source2:	proxy.conf
@@ -67,7 +67,6 @@ Source4:	%{name}.mime
 Source6:	%{name}.monitrc
 Source7:	%{name}.init
 Source14:	%{name}.conf
-Source17:	%{name}-mime.types.sh
 Source18:	%{name}.service
 Source19:	macros.%{name}
 Source33:	https://github.com/SpiderLabs/ModSecurity-nginx/releases/download/v%{modsecurity_version}/modsecurity-%{name}-v%{modsecurity_version}.tar.gz
@@ -92,7 +91,6 @@ Source106:	https://github.com/bellard/quickjs/archive/%{quickjs_commit}/quickjs-
 Patch0:		%{name}-no-Werror.patch
 Patch1:		%{name}-modsecurity-pld.patch
 URL:		https://nginx.org/
-BuildRequires:	mailcap
 BuildRequires:	pcre2-8-devel
 BuildRequires:	rpmbuild(macros) >= 1.644
 BuildRequires:	zlib-devel
@@ -162,7 +160,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		_sysconfdir	/etc/%{name}
 %define		_nginxdir	/home/services/%{name}
 
-# stops perl deps from the shipped tree; %{name} would be the subpackage name here
+# stops perl deps from the shipped tree; %%{name} would be the subpackage name here
 %define		_noautoprovfiles	%{_datadir}/nginx/src/.*
 %define		_noautoreqfiles		%{_datadir}/nginx/src/.*
 
@@ -262,7 +260,6 @@ Set and clear input and output headers...more than "add".
 Summary:	Nginx HTTP geoip module
 Group:		Daemons
 Requires:	%{name} = %{version}-%{release}
-Requires:	GeoIP
 
 %description mod_http_geoip
 Nginx HTTP geoip module.
@@ -272,7 +269,6 @@ Summary:	Nginx stream geoip module
 Group:		Daemons
 Requires:	%{name} = %{version}-%{release}
 Requires:	%{name}-mod_stream = %{version}-%{release}
-Requires:	GeoIP
 
 %description mod_stream_geoip
 Nginx stream geoip module.
@@ -395,9 +391,6 @@ mv njs-%{njs_version} nginx-njs
 mv quickjs-%{quickjs_commit} quickjs
 %endif
 
-# build mime.types.conf
-#sh %{SOURCE17} /etc/mime.types
-
 %build
 # NB: not autoconf generated configure
 cp -f configure auto/
@@ -494,6 +487,9 @@ install -d $RPM_BUILD_ROOT%{_datadir}/%{name}/src
 cp -a auto src configure $RPM_BUILD_ROOT%{_datadir}/%{name}/src
 # %build copied configure into auto/; only the top-level one is used
 %{__rm} $RPM_BUILD_ROOT%{_datadir}/%{name}/src/auto/configure
+# patch(1) backs up every file whose hunk lands at an offset; those copies are
+# pre-patch upstream and must not reach the tree modules are built against
+find $RPM_BUILD_ROOT%{_datadir}/%{name}/src '(' -name '*~' -o -name '*.orig' ')' -print0 | xargs -0 -r -l512 rm -f
 
 install -d $RPM_BUILD_ROOT%{_rpmmacrodir}
 sed -e 's|@VERSION@|%{version}|' \
