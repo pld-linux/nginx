@@ -46,19 +46,19 @@
 %define		headers_more_version	0.40
 %define		modsecurity_version	1.0.4
 %define		http_cache_purge_version	3.0.2
-%define		njs_version		1.0.1
+%define		njs_version		1.0.2
 %define		quickjs_commit		d73189dd5a582c19c565774bd56fed4e72d33c99
 
 Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # http://nginx.org/en/download.html
 Name:		nginx
-Version:	1.31.6
+Version:	1.31.7
 Release:	1
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	https://nginx.org/download/%{name}-%{version}.tar.gz
-# Source0-md5:	6d59f919382fae46812c44ffbc87498a
+# Source0-md5:	dd4e4b12fac25b27de3b024082b11c04
 Source1:	https://nginx.org/favicon.ico
 # Source1-md5:	72e228c3809db53da8a884b6676ed36a
 Source2:	proxy.conf
@@ -85,7 +85,7 @@ Source103:	https://github.com/openresty/headers-more-nginx-module/archive/v%{hea
 Source104:	https://github.com/nginx-modules/ngx_cache_purge/archive/refs/tags/%{http_cache_purge_version}.tar.gz
 # Source104-md5:	de4ee3e612ae99c7992bcb6db60c6413
 Source105:	https://github.com/nginx/njs/archive/%{njs_version}/njs-%{njs_version}.tar.gz
-# Source105-md5:	c1a758b8356331c7eec569a4a7a647b3
+# Source105-md5:	55a9ece21b193edfa773e4437aefd97c
 Source106:	https://github.com/bellard/quickjs/archive/%{quickjs_commit}/quickjs-%{quickjs_commit}.tar.gz
 # Source106-md5:	913c3fc48570d2660d5b243e9b6e6d7a
 Patch0:		%{name}-no-Werror.patch
@@ -96,6 +96,8 @@ BuildRequires:	rpmbuild(macros) >= 1.644
 BuildRequires:	zlib-devel
 %if %{with geoip}
 BuildRequires:	GeoIP-devel
+# geoip modules read MaxMind DB (mmdb) besides legacy GeoIP; configure links whichever it finds
+BuildRequires:	libmaxminddb-devel
 %endif
 %if %{with gd}
 BuildRequires:	gd-devel
@@ -603,6 +605,7 @@ fi
 %module_scripts mod_stream
 %module_scripts mod_stream_geoip
 %module_scripts mod_http_cache_purge
+%module_scripts mod_http_modsecurity
 %{?with_njs:%module_scripts mod_http_js}
 
 %files
@@ -723,6 +726,7 @@ fi
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/modules.d/mod_http_cache_purge.conf
 %attr(755,root,root) %{_libdir}/%{name}/modules/ngx_http_cache_purge_module.so
 
+%if %{with modsecurity}
 %files mod_http_modsecurity
 %defattr(644,root,root,755)
 %doc ModSecurity-nginx-v%{modsecurity_version}/{AUTHORS,CHANGES,README.md}
@@ -737,6 +741,7 @@ fi
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/logrotate.d/%{name}-modsecurity
 %dir /var/lib/%{name}
 %attr(770,nginx,root) %dir /var/lib/%{name}/modsecurity
+%endif
 
 %if %{with njs}
 %files mod_http_js
