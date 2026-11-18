@@ -53,12 +53,12 @@ Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # http://nginx.org/en/download.html
 Name:		nginx
-Version:	1.31.8
-Release:	2
+Version:	1.31.9
+Release:	1
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	https://nginx.org/download/%{name}-%{version}.tar.gz
-# Source0-md5:	bb17043d54a75e82e261b258df163ecd
+# Source0-md5:	c6babcadfb410174fe640ae128635070
 Source1:	https://nginx.org/favicon.ico
 # Source1-md5:	72e228c3809db53da8a884b6676ed36a
 Source2:	proxy.conf
@@ -90,6 +90,7 @@ Source106:	https://github.com/bellard/quickjs/archive/%{quickjs_commit}/quickjs-
 # Source106-md5:	913c3fc48570d2660d5b243e9b6e6d7a
 Patch0:		%{name}-no-Werror.patch
 Patch1:		%{name}-modsecurity-pld.patch
+Patch2:		%{name}-vts-upstream-key-overflow.patch
 URL:		https://nginx.org/
 BuildRequires:	pcre2-8-devel
 BuildRequires:	rpmbuild(macros) >= 1.644
@@ -108,8 +109,10 @@ BuildRequires:	libmodsecurity >= 3.0.16-4
 BuildRequires:  libmodsecurity-devel
 %endif
 %if %{with njs}
-# njs autodetects libxml2 and builds its xml module only when it is found
+# nginx/config always enables njs crypto and xml, linked through nginx's OPENSSL and LIBXSLT
 BuildRequires:	libxml2-devel
+BuildRequires:	libxslt-devel
+BuildRequires:	openssl-devel
 %endif
 %if %{with perl}
 BuildRequires:	perl-devel
@@ -380,6 +383,7 @@ mv nginx-rtmp-module-%{rtmp_version} nginx-rtmp-module
 
 %if %{with vts}
 mv nginx-module-vts-%{vts_version} nginx-vts-module
+%patch -P2 -p1 -d nginx-vts-module
 %endif
 
 %if %{with headers_more}
