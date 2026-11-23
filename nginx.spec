@@ -43,7 +43,7 @@
 %define		quic_ssl_version	1.1.1
 %define		rtmp_version	1.2.2
 %define		vts_version	0.2.7
-%define		headers_more_version	0.41
+%define		headers_more_version	0.42
 %define		modsecurity_version	1.0.4
 %define		http_cache_purge_version	3.0.4
 %define		njs_version		1.0.2
@@ -53,12 +53,12 @@ Summary:	High perfomance HTTP and reverse proxy server
 Summary(pl.UTF-8):	Serwer HTTP i odwrotne proxy o wysokiej wydajności
 # http://nginx.org/en/download.html
 Name:		nginx
-Version:	1.31.9
+Version:	1.31.10
 Release:	1
 License:	BSD-like
 Group:		Networking/Daemons/HTTP
 Source0:	https://nginx.org/download/%{name}-%{version}.tar.gz
-# Source0-md5:	c6babcadfb410174fe640ae128635070
+# Source0-md5:	85fa33da34c8a9e17bd036c604d67f9f
 Source1:	https://nginx.org/favicon.ico
 # Source1-md5:	72e228c3809db53da8a884b6676ed36a
 Source2:	proxy.conf
@@ -80,7 +80,7 @@ Source101:	https://github.com/arut/nginx-rtmp-module/archive/v%{rtmp_version}/%{
 Source102:	https://github.com/vozlt/nginx-module-vts/archive/v%{vts_version}.tar.gz
 # Source102-md5:	55c3ebaa6034081095cd5815034983e7
 Source103:	https://github.com/openresty/headers-more-nginx-module/archive/v%{headers_more_version}.tar.gz
-# Source103-md5:	6fd3dd1e5dc20abe1eeca9a2c6e12740
+# Source103-md5:	22c1bb1b987cfbf4cba1d9947c3e2097
 # https://github.com/nginx-modules/ngx_cache_purge
 Source104:	https://github.com/nginx-modules/ngx_cache_purge/archive/refs/tags/%{http_cache_purge_version}.tar.gz
 # Source104-md5:	14006973f52082819bdb2f14983efaff
@@ -91,6 +91,8 @@ Source106:	https://github.com/bellard/quickjs/archive/%{quickjs_commit}/quickjs-
 Patch0:		%{name}-no-Werror.patch
 Patch1:		%{name}-modsecurity-pld.patch
 Patch2:		%{name}-vts-upstream-key-overflow.patch
+# https://github.com/nginx/njs/commit/997957b3db (stack overflow via negative AES-CTR length)
+Patch3:		%{name}-njs-aes-ctr-length.patch
 URL:		https://nginx.org/
 BuildRequires:	pcre2-8-devel
 BuildRequires:	rpmbuild(macros) >= 1.644
@@ -394,6 +396,7 @@ mv ngx_cache_purge-* ngx_cache_purge
 
 %if %{with njs}
 mv njs-%{njs_version} nginx-njs
+%patch -P3 -p1 -d nginx-njs
 mv quickjs-%{quickjs_commit} quickjs
 %endif
 

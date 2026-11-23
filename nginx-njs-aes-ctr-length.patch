@@ -1,0 +1,44 @@
+From 997957b3dbc7716344b8c9747e96bd04f3102a30 Mon Sep 17 00:00:00 2001
+From: basavaraj-sm05 <basavaraj@digiscrypt.com>
+Date: Fri, 20 Nov 2026 22:27:11 +0530
+Subject: [PATCH] WebCrypto: reject out-of-range AES-CTR counter length
+
+The AES-CTR counter length from algorithm.length was read as a signed
+integer and only rejected when it was zero or above 128, so a negative
+value passed the check.  It was then handed to njs_bn_counter128(),
+whose bits parameter is njs_uint_t (uintptr_t on 64-bit builds), so a
+negative length turned into a very large unsigned count.  The derived
+byte count then drove a memcpy() into a 16-byte stack buffer with an
+attacker-influenced size, overflowing it and reading past the counter
+block.  The value reaches here directly from crypto.subtle.encrypt()
+and decrypt() calls on both engines.
+
+Reject any length below 1 as well, matching the 1 to 128 range the
+error message already states and the WebCrypto specification requires.
+---
+diff --git a/external/njs_webcrypto_module.c b/external/njs_webcrypto_module.c
+index f6932832c..04e441fe7 100644
+--- a/external/njs_webcrypto_module.c
++++ b/external/njs_webcrypto_module.c
+@@ -1302,7 +1302,7 @@ njs_cipher_aes_ctr(njs_vm_t *vm, njs_str_t *data, njs_webcrypto_key_t *key,
+         return NJS_ERROR;
+     }
+ 
+-    if (njs_slow_path(length == 0 || length > 128)) {
++    if (njs_slow_path(length < 1 || length > 128)) {
+         njs_vm_type_error(vm, "AES-CTR algorithm.length must be between "
+                           "1 and 128");
+         return NJS_ERROR;
+diff --git a/external/qjs_webcrypto_module.c b/external/qjs_webcrypto_module.c
+index 23de3d71d..712a18ac7 100644
+--- a/external/qjs_webcrypto_module.c
++++ b/external/qjs_webcrypto_module.c
+@@ -1183,7 +1183,7 @@ qjs_cipher_aes_ctr(JSContext *cx, njs_str_t *data, qjs_webcrypto_key_t *key,
+         return JS_EXCEPTION;
+     }
+ 
+-    if (length == 0 || length > 128) {
++    if (length < 1 || length > 128) {
+         JS_ThrowTypeError(cx, "AES-CTR algorithm.length must be between "
+                           "1 and 128");
+         return JS_EXCEPTION;
